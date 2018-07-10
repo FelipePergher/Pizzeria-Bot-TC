@@ -5,8 +5,10 @@ using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pizzaria.Data.Models;
 
 namespace Pizzaria
 {
@@ -64,6 +66,9 @@ namespace Pizzaria
 
                 options.Middleware.Add(new ConversationState<EchoState>(dataStore));
             });
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,9 +79,28 @@ namespace Pizzaria
                 app.UseDeveloperExceptionPage();
             }
 
+            SeedData.ApplyMigrations(app.ApplicationServices);
+
             app.UseDefaultFiles()
                 .UseStaticFiles()
                 .UseBotFramework();
         }
+
+        public static class SeedData
+        {
+            private static readonly string[] Roles = new string[] { "Administrator", "User" };
+
+            public static void ApplyMigrations(IServiceProvider serviceProvider)
+            {
+                using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                    {
+                        context.Database.Migrate();
+                    }
+                }
+            }
+        }
+
     }
 }
