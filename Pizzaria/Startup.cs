@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Bot.Builder.Ai.LUIS;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -9,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pizzaria.Data.Models;
+using Pizzaria.Dialogs;
 
 namespace Pizzaria
 {
@@ -36,35 +39,20 @@ namespace Pizzaria
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 
-                // The CatchExceptionMiddleware provides a top-level exception handler for your bot. 
-                // Any exceptions thrown by other Middleware, or by your OnTurn method, will be 
-                // caught here. To facillitate debugging, the exception is sent out, via Trace, 
-                // to the emulator. Trace activities are NOT displayed to users, so in addition
-                // an "Ooops" message is sent. 
                 options.Middleware.Add(new CatchExceptionMiddleware<Exception>(async (context, exception) =>
                 {
-                    await context.TraceActivity("EchoBot Exception", exception);
-                    await context.SendActivity("Sorry, it looks like something went wrong!");
+                    await context.TraceActivity("Exception", exception);
+                    await context.SendActivity("Desculpe, Alguma coisa deu errado!");
                 }));
 
-                // The Memory Storage used here is for local bot debugging only. When the bot
-                // is restarted, anything stored in memory will be gone. 
                 IStorage dataStore = new MemoryStorage();
 
-                // The File data store, shown here, is suitable for bots that run on 
-                // a single machine and need durable state across application restarts.                 
-                // IStorage dataStore = new FileStorage(System.IO.Path.GetTempPath());
+                options.Middleware.Add(new ConversationState<Dictionary<string, object>>(dataStore));
 
-                // For production bots use the Azure Table Store, Azure Blob, or 
-                // Azure CosmosDB storage provides, as seen below. To include any of 
-                // the Azure based storage providers, add the Microsoft.Bot.Builder.Azure 
-                // Nuget package to your solution. That package is found at:
-                //      https://www.nuget.org/packages/Microsoft.Bot.Builder.Azure/
 
-                // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureTableStorage("AzureTablesConnectionString", "TableName");
-                // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage("AzureBlobConnectionString", "containerName");
-
-                options.Middleware.Add(new ConversationState<EchoState>(dataStore));
+                var (modelId, subscriptionKey, url) = GetLuisConfiguration(Configuration);
+                var model = new LuisModel(modelId, subscriptionKey, url);
+                options.Middleware.Add(new LuisRecognizerMiddleware(model));
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -79,27 +67,30 @@ namespace Pizzaria
                 app.UseDeveloperExceptionPage();
             }
 
-            SeedData.ApplyMigrations(app.ApplicationServices);
+            ApplyMigrations(app.ApplicationServices);
 
             app.UseDefaultFiles()
                 .UseStaticFiles()
                 .UseBotFramework();
         }
 
-        public static class SeedData
+        private void ApplyMigrations(IServiceProvider serviceProvider)
         {
-            private static readonly string[] Roles = new string[] { "Administrator", "User" };
-
-            public static void ApplyMigrations(IServiceProvider serviceProvider)
+            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                 {
-                    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
-                    {
-                        context.Database.Migrate();
-                    }
+                    context.Database.Migrate();
                 }
             }
+        }
+
+        private (string modelId, string subscriptionKey, Uri url) GetLuisConfiguration(IConfiguration configuration)
+        {
+            var modelId = configuration.GetSection("Luis-ModelId")?.Value;
+            var subscriptionKey = configuration.GetSection("Luis-SubscriptionId")?.Value;
+            var url = configuration.GetSection("Luis-Url")?.Value;
+            return (modelId, subscriptionKey, new Uri(url));
         }
 
     }
