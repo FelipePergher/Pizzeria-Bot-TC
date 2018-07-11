@@ -35,7 +35,7 @@ namespace Pizzaria
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBot<EchoBot>(options =>
+            services.AddBot<Bot>(options =>
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 

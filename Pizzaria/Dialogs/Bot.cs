@@ -12,14 +12,14 @@ using Microsoft.Recognizers.Text;
 
 namespace Pizzaria.Dialogs
 {
-    public class EchoBot : IBot
+    public class Bot : IBot
     {
 
         private const double LUIS_INTENT_THRESHOLD = 0.7d;
 
         private readonly DialogSet dialogs;
 
-        public EchoBot()
+        public Bot()
         {
             dialogs = new DialogSet();
             dialogs.Add("None", new WaterfallStep[] { None });
