@@ -26,6 +26,10 @@ namespace Pizzaria.Dialogs
             dialogs.Add("Salutation", new WaterfallStep[] { Salutation });
             dialogs.Add("Salutation_How_Is", new WaterfallStep[] { Salutation_How_Is });
             dialogs.Add("How_Is", new WaterfallStep[] { How_Is });
+            dialogs.Add("History", new WaterfallStep[] { History });
+            dialogs.Add("Ask_Status", new WaterfallStep[] { Ask_Status });
+            dialogs.Add("Ask_Pizza", new WaterfallStep[] { Ask_Pizza });
+            dialogs.Add("Ask_Drink", new WaterfallStep[] { Ask_Drink });
         }
 
         public async Task OnTurn(ITurnContext turnContext)
@@ -45,7 +49,7 @@ namespace Pizzaria.Dialogs
                     var (intent, score) = luisResult.GetTopScoringIntent();
                     var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
 
-                    await dialogContext.Begin(intent);
+                    await dialogContext.Begin(intentResult);
                 }
             }
         }
@@ -65,6 +69,22 @@ namespace Pizzaria.Dialogs
         private Task How_Is(DialogContext dialogContext, object args, SkipStepFunction next)
         {
             return dialogContext.Context.SendActivity("How is");
+        }
+        private Task History(DialogContext dialogContext, object args, SkipStepFunction next)
+        {
+            return dialogContext.Context.SendActivity("History");
+        }
+        private Task Ask_Status(DialogContext dialogContext, object args, SkipStepFunction next)
+        {
+            return dialogContext.Context.SendActivity("Ask_Status");
+        }
+        private Task Ask_Pizza(DialogContext dialogContext, object args, SkipStepFunction next)
+        {
+            return dialogContext.Context.SendActivity("Ask_Pizza");
+        }
+        private Task Ask_Drink(DialogContext dialogContext, object args, SkipStepFunction next)
+        {
+            return dialogContext.Context.SendActivity("Ask_Drink");
         }
     }
 }
