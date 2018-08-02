@@ -10,8 +10,8 @@ using Pizzaria.Data.Models;
 namespace Pizzaria.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180712024055_User")]
-    partial class User
+    [Migration("20180802005430_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,43 @@ namespace Pizzaria.Migrations
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.Drink", b =>
+                {
+                    b.Property<int>("DrinkId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("DrinkId");
+
+                    b.ToTable("Drinks");
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.DrinkSize", b =>
+                {
+                    b.Property<int>("DrinkId");
+
+                    b.Property<int>("SizeId");
+
+                    b.HasKey("DrinkId", "SizeId");
+
+                    b.HasIndex("SizeId");
+
+                    b.ToTable("DrinkSize");
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.Size", b =>
+                {
+                    b.Property<int>("SizeId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Quantity");
+
+                    b.HasKey("SizeId");
+
+                    b.ToTable("Sizes");
+                });
+
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
@@ -27,11 +64,7 @@ namespace Pizzaria.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("PizzaId");
-
                     b.HasKey("IngredientId");
-
-                    b.HasIndex("PizzaId");
 
                     b.ToTable("Ingredients");
                 });
@@ -41,11 +74,26 @@ namespace Pizzaria.Migrations
                     b.Property<int>("PizzaId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Name");
+
                     b.Property<bool>("Vegetarian");
 
                     b.HasKey("PizzaId");
 
                     b.ToTable("Pizzas");
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.PizzaIngredient", b =>
+                {
+                    b.Property<int>("IngredientId");
+
+                    b.Property<int>("PizzaId");
+
+                    b.HasKey("IngredientId", "PizzaId");
+
+                    b.HasIndex("PizzaId");
+
+                    b.ToTable("PizzaIngredient");
                 });
 
             modelBuilder.Entity("Pizzaria.Data.Models.UserModels.Address", b =>
@@ -92,11 +140,30 @@ namespace Pizzaria.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.Ingredient", b =>
+            modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.DrinkSize", b =>
                 {
-                    b.HasOne("Pizzaria.Data.Models.PizzaModels.Pizza")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("PizzaId");
+                    b.HasOne("Pizzaria.Data.Models.DrinkModels.Drink", "Drink")
+                        .WithMany("DrinkSizes")
+                        .HasForeignKey("DrinkId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Pizzaria.Data.Models.DrinkModels.Size", "Size")
+                        .WithMany("DrinkSizes")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.PizzaIngredient", b =>
+                {
+                    b.HasOne("Pizzaria.Data.Models.PizzaModels.Ingredient", "Ingredient")
+                        .WithMany("PizzaIngredients")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Pizzaria.Data.Models.PizzaModels.Pizza", "Pizza")
+                        .WithMany("PizzaIngredients")
+                        .HasForeignKey("PizzaId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Pizzaria.Data.Models.UserModels.Address", b =>

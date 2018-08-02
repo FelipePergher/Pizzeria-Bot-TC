@@ -8,8 +8,13 @@ namespace Pizzaria.Data.Models.PizzaModels
 {
     public class Ingredient
     {
+        public Ingredient()
+        {
+            PizzaIngredients = new HashSet<PizzaIngredient>();
+        }
         [Key]
         public int IngredientId { get; set; }
         public string Name { get; set; }
+        public ICollection<PizzaIngredient> PizzaIngredients  { get; set; }
     }
 }

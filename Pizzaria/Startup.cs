@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder.Ai.LUIS;
@@ -11,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pizzaria.Data.Models;
+using Pizzaria.Data.Models.DrinkModels;
 using Pizzaria.Dialogs;
 
 namespace Pizzaria
@@ -68,6 +71,7 @@ namespace Pizzaria
             }
 
             ApplyMigrations(app.ApplicationServices);
+            SeedData(app.ApplicationServices);
 
             app.UseDefaultFiles()
                 .UseStaticFiles()
@@ -81,6 +85,90 @@ namespace Pizzaria
                 using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                 {
                     context.Database.Migrate();
+                }
+            }
+        }
+
+        private void SeedData(IServiceProvider serviceProvider)
+        {
+            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                {
+                    List<Size> sizes = new List<Size>
+                    {
+                        new Size
+                        {
+                            Quantity = 0.35d
+                        },
+                        new Size
+                        {
+                            Quantity = 0.5d
+                        },
+                        new Size
+                        {
+                            Quantity = 0.6d
+                        },
+                        new Size
+                        {
+                            Quantity = 1.0d
+                        },
+                        new Size
+                        {
+                            Quantity = 1.5d
+                        },
+                        new Size
+                        {
+                            Quantity = 2.0d
+                        }
+                    };
+                    List<Drink> drinks = new List<Drink>
+                    {
+                        new Drink
+                        {
+                            Name = "Coca-Cola",
+                            DrinkSizes = new List<DrinkSize>
+                            {
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 0.35d).FirstOrDefault()
+                                },
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 0.6d).FirstOrDefault()
+                                },
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 2.0d).FirstOrDefault()
+                                }
+                            }
+                        },
+                        new Drink
+                        {
+                            Name = "Sprite",
+                            DrinkSizes = new List<DrinkSize>
+                            {
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 0.35d).FirstOrDefault()
+                                },
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 0.6d).FirstOrDefault()
+                                },
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 2.0d).FirstOrDefault()
+                                },
+                            }
+                        }
+                    };
+
+
+                    context.Sizes.AddRange(sizes);
+                    context.Drinks.AddRange(drinks);
+                    context.SaveChanges();
+
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace Pizzaria.Data.Models.PizzaModels
     {
         public Pizza()
         {
-            Ingredients = new HashSet<Ingredient>();
+            PizzaIngredients = new HashSet<PizzaIngredient>();
         }
 
         [Key]
@@ -18,6 +18,8 @@ namespace Pizzaria.Data.Models.PizzaModels
 
         public bool Vegetarian { get; set; }
 
-        public ICollection<Ingredient> Ingredients  { get; set; }
+        public string Name { get; set; }
+
+        public ICollection<PizzaIngredient> PizzaIngredients  { get; set; }
     }
 }
