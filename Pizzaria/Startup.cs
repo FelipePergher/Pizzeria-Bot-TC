@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pizzaria.Data.Models;
 using Pizzaria.Data.Models.DrinkModels;
+using Pizzaria.Data.Models.PizzaModels;
 using Pizzaria.Dialogs;
 
 namespace Pizzaria
@@ -95,7 +96,9 @@ namespace Pizzaria
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                 {
-                    List<Size> sizes = new List<Size>
+                    if (!context.Sizes.Any())
+                    {
+                        List<Size> sizes = new List<Size>
                     {
                         new Size
                         {
@@ -122,7 +125,7 @@ namespace Pizzaria
                             Quantity = 2.0d
                         }
                     };
-                    List<Drink> drinks = new List<Drink>
+                        List<Drink> drinks = new List<Drink>
                     {
                         new Drink
                         {
@@ -161,14 +164,245 @@ namespace Pizzaria
                                     Size = sizes.Where(x => x.Quantity == 2.0d).FirstOrDefault()
                                 },
                             }
+                        },
+                        new Drink
+                        {
+                            Name = "Água Mineral",
+                            DrinkSizes = new List<DrinkSize>
+                            {
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 0.5d).FirstOrDefault()
+                                },
+                                new DrinkSize
+                                {
+                                    Size = sizes.Where(x => x.Quantity == 1.5d).FirstOrDefault()
+                                },
+                            }
+                        }
+                    };
+                        List<Ingredient> ingredients = new List<Ingredient>
+                    {
+                        new Ingredient
+                        {
+                            Name = "milho"
+                        },
+                        new Ingredient
+                        {
+                            Name = "alho"
+                        },
+                        new Ingredient
+                        {
+                            Name = "atum"
+                        },
+                        new Ingredient
+                        {
+                            Name = "azeitona"
+                        },
+                        new Ingredient
+                        {
+                            Name = "bacon"
+                        },
+                        new Ingredient
+                        {
+                            Name = "banana"
+                        },
+                        new Ingredient
+                        {
+                            Name = "calabresa"
+                        },
+                        new Ingredient
+                        {
+                            Name = "carne"
+                        },
+                        new Ingredient
+                        {
+                            Name = "catupiry"
+                        },
+                        new Ingredient
+                        {
+                            Name = "cebola"
+                        },
+                        new Ingredient
+                        {
+                            Name = "champignon"
+                        },
+                        new Ingredient
+                        {
+                            Name = "cheddar"
+                        },
+                        new Ingredient
+                        {
+                            Name = "cream cheese"
+                        },
+                        new Ingredient
+                        {
+                            Name = "ervilha"
+                        },
+                        new Ingredient
+                        {
+                            Name = "frango"
+                        },
+                        new Ingredient
+                        {
+                            Name = "gorgonzola"
+                        },
+                        new Ingredient
+                        {
+                            Name = "lombo"
+                        },
+                        new Ingredient
+                        {
+                            Name = "mussarela"
+                        },
+                        new Ingredient
+                        {
+                            Name = "orégano"
+                        },
+                        new Ingredient
+                        {
+                            Name = "ovo"
+                        },
+                        new Ingredient
+                        {
+                            Name = "palmito"
+                        },
+                        new Ingredient
+                        {
+                            Name = "parmesão"
+                        },
+                        new Ingredient
+                        {
+                            Name = "pepino"
+                        },
+                        new Ingredient
+                        {
+                            Name = "pimenta"
+                        },
+                        new Ingredient
+                        {
+                            Name = "pimentão"
+                        },
+                        new Ingredient
+                        {
+                            Name = "presunto"
+                        },
+                        new Ingredient
+                        {
+                            Name = "provolone"
+                        },
+                        new Ingredient
+                        {
+                            Name = "queijo"
+                        },
+                        new Ingredient
+                        {
+                            Name = "requeijão"
+                        },
+                        new Ingredient
+                        {
+                            Name = "salame"
+                        },
+                        new Ingredient
+                        {
+                            Name = "tomate"
+                        },
+                        new Ingredient
+                        {
+                            Name = "molho"
+                        },
+                        new Ingredient
+                        {
+                            Name = "manjericão"
                         }
                     };
 
+                        List<Pizza> pizzas = new List<Pizza>
+                    {
+                        new Pizza
+                        {
+                            Name = "Calabresa",
+                            Vegetarian = false,
+                            PizzaIngredients = new List<PizzaIngredient>
+                            {
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "calabresa").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "cebola").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "orégano").FirstOrDefault()
+                                }
+                            }
+                        },
+                        new Pizza
+                        {
+                            Name = "Mussarela",
+                            Vegetarian = false,
+                            PizzaIngredients = new List<PizzaIngredient>
+                            {
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "tomate").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "orégano").FirstOrDefault()
+                                }
+                            }
+                        },
+                        new Pizza
+                        {
+                            Name = "Margherita",
+                            Vegetarian = false,
+                            PizzaIngredients = new List<PizzaIngredient>
+                            {
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "tomate").FirstOrDefault()
+                                },
+                                new PizzaIngredient
+                                {
+                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "manjericão").FirstOrDefault()
+                                }
+                            }
+                        }
+                    };
 
-                    context.Sizes.AddRange(sizes);
-                    context.Drinks.AddRange(drinks);
-                    context.SaveChanges();
-
+                        context.Sizes.AddRange(sizes);
+                        context.Drinks.AddRange(drinks);
+                        context.Ingredients.AddRange(ingredients);
+                        context.Pizzas.AddRange(pizzas);
+                        context.SaveChanges();
+                    }
                 }
             }
         }

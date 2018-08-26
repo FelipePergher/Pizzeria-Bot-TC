@@ -18,17 +18,17 @@ namespace Pizzaria.Dialogs
         private const double LUIS_INTENT_THRESHOLD = 0.7d;
 
         private readonly DialogSet dialogs;
+        private AskProduct askProduct = new AskProduct();
+        private SalutationTypes salutationTypes = new SalutationTypes();
 
         public Bot()
         {
             dialogs = new DialogSet();
             dialogs.Add("None", new WaterfallStep[] { None });
-            dialogs.Add("Salutation", new WaterfallStep[] { Salutation });
-            dialogs.Add("Salutation_How_Is", new WaterfallStep[] { Salutation_How_Is });
-            dialogs.Add("How_Is", new WaterfallStep[] { How_Is });
-            dialogs.Add("Ask_Product", new WaterfallStep[] { Ask_Product });
-            dialogs.Add("Ask_History", new WaterfallStep[] { Ask_History });
-            dialogs.Add("Ask_Status", new WaterfallStep[] { Ask_Status });
+            dialogs.Add("Salutation", new WaterfallStep[] { salutationTypes.Salutation });
+            dialogs.Add("Salutation_How_Is", new WaterfallStep[] { salutationTypes.Salutation_How_Is });
+            dialogs.Add("How_Is", new WaterfallStep[] { salutationTypes.How_Is });
+            dialogs.Add("Ask_Product", new WaterfallStep[] { askProduct.Ask_Product });
         }
 
         public async Task OnTurn(ITurnContext turnContext)
@@ -57,29 +57,7 @@ namespace Pizzaria.Dialogs
         {
             return dialogContext.Context.SendActivity("None");
         }
-        private Task Salutation(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("Salutation");
-        }
-        private Task Salutation_How_Is(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("Salutation How is");
-        }
-        private Task How_Is(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("How is");
-        }
-        private Task Ask_History(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("Ask_History");
-        }
-        private Task Ask_Status(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("Ask_Status");
-        }
-        private Task Ask_Product(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("Ask_Pizza");
-        }
+        
+       
     }
 }

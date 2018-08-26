@@ -48,17 +48,17 @@ namespace Pizzaria.Data.Models
                 .HasForeignKey(bc => bc.SizeId);
 
             modelBuilder.Entity<PizzaIngredient>()
-           .HasKey(bc => new { bc.IngredientId, bc.PizzaId });
-
-            modelBuilder.Entity<PizzaIngredient>()
-                .HasOne(bc => bc.Pizza)
-                .WithMany(b => b.PizzaIngredients)
-                .HasForeignKey(bc => bc.PizzaId);
+           .HasKey(bc => new { bc.PizzaId, bc.IngredientId });
 
             modelBuilder.Entity<PizzaIngredient>()
                 .HasOne(bc => bc.Ingredient)
                 .WithMany(c => c.PizzaIngredients)
                 .HasForeignKey(bc => bc.IngredientId);
+
+            modelBuilder.Entity<PizzaIngredient>()
+                .HasOne(bc => bc.Pizza)
+                .WithMany(b => b.PizzaIngredients)
+                .HasForeignKey(bc => bc.PizzaId);
         }
     }
 }
