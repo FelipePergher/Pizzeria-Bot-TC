@@ -12,6 +12,7 @@ using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pizzaria.Code;
 using Pizzaria.Data.Models;
 using Pizzaria.Data.Models.DrinkModels;
 using Pizzaria.Data.Models.PizzaModels;
@@ -50,8 +51,8 @@ namespace Pizzaria
                 }));
 
                 IStorage dataStore = new MemoryStorage();
-
                 options.Middleware.Add(new ConversationState<Dictionary<string, object>>(dataStore));
+                options.Middleware.Add(new UserState<BotUserState>(dataStore));
 
 
                 var (modelId, subscriptionKey, url) = GetLuisConfiguration(Configuration);

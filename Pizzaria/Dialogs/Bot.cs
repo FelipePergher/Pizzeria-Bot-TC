@@ -7,28 +7,18 @@ using Microsoft.Bot.Schema;
 using System.Linq;
 using Microsoft.Bot.Builder.Ai.LUIS;
 using System.Collections.Generic;
-using Prompts = Microsoft.Bot.Builder.Prompts;
-using Microsoft.Recognizers.Text;
+using System.Text.RegularExpressions;
 
 namespace Pizzaria.Dialogs
 {
     public class Bot : IBot
     {
-
         private const double LUIS_INTENT_THRESHOLD = 0.7d;
-
-        private readonly DialogSet dialogs;
-        private AskProduct askProduct = new AskProduct();
-        private SalutationTypes salutationTypes = new SalutationTypes();
+        private DialogFlow DialogFlow;
 
         public Bot()
         {
-            dialogs = new DialogSet();
-            dialogs.Add("None", new WaterfallStep[] { None });
-            dialogs.Add("Salutation", new WaterfallStep[] { salutationTypes.Salutation });
-            dialogs.Add("Salutation_How_Is", new WaterfallStep[] { salutationTypes.Salutation_How_Is });
-            dialogs.Add("How_Is", new WaterfallStep[] { salutationTypes.How_Is });
-            dialogs.Add("Ask_Product", new WaterfallStep[] { askProduct.Ask_Product });
+            DialogFlow = new DialogFlow();
         }
 
         public async Task OnTurn(ITurnContext turnContext)
@@ -39,17 +29,20 @@ namespace Pizzaria.Dialogs
             }
             else if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                var state = turnContext.GetConversationState<Dictionary<string, object>>();
-                var dialogContext = dialogs.CreateContext(turnContext, state);
+                var dialogState = turnContext.GetConversationState<Dictionary<string, object>>();
+
+                DialogContext dialogContext = DialogFlow.CreateContext(turnContext, dialogState);
+
+                await dialogContext.Continue();
 
                 if (!turnContext.Responded)
                 {
                     var luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
                     var (intent, score) = luisResult.GetTopScoringIntent();
                     var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
-
                     await dialogContext.Begin(intentResult);
                 }
+
             }
         }
 
@@ -57,7 +50,7 @@ namespace Pizzaria.Dialogs
         {
             return dialogContext.Context.SendActivity("None");
         }
-        
-       
+
     }
+
 }
