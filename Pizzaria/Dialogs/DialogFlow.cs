@@ -9,30 +9,23 @@ namespace Pizzaria.Dialogs
     public class DialogFlow : DialogSet
     {
         SalutationTypes SalutationTypes;
+        None None;
 
         public DialogFlow()
         {
             SalutationTypes = new SalutationTypes();
+            None = new None();
 
             Add(SalutationTypes.TextPrompt, new TextPrompt());
 
-            Add(SalutationTypes.SalutationBegin, new WaterfallStep[]
-            {
-                SalutationTypes.Salutation,
-                SalutationTypes.Answer
-            });
+            Add(None.NoneText, None.NoneWaterfall());
 
-            Add(SalutationTypes.Salutation_How_Is_Begin, new WaterfallStep[]
-            {
-                SalutationTypes.Salutation_How_Is,
-                SalutationTypes.Answer
-            });
+            Add(SalutationTypes.SalutationText, SalutationTypes.SalutationWaterfall());
 
-            Add(SalutationTypes.How_Is_Begin, new WaterfallStep[]
-            {
-                SalutationTypes.How_Is,
-                SalutationTypes.Answer
-            });
+            Add(SalutationTypes.Salutation_How_Is_Text, SalutationTypes.Salutation_How_Is_Waterfall());
+
+            Add(SalutationTypes.How_Is_Text, SalutationTypes.How_Is_Waterfall());
+
         }
     }
 }

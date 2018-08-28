@@ -11,26 +11,26 @@ namespace Pizzaria.Dialogs
     public class SalutationTypes : DialogSet
     {
         public string TextPrompt { get; set; } = "textPrompt";
-        public const string SalutationBegin = "Salutation";
-        public const string Salutation_How_Is_Begin = "Salutation_How_Is";
-        public const string How_Is_Begin = "How_Is";
+        public const string SalutationText = "Salutation";
+        public const string Salutation_How_Is_Text = "Salutation_How_Is";
+        public const string How_Is_Text = "How_Is";
 
-        public async Task Salutation(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        private async Task Salutation(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             dialogContext.ActiveDialog.State = new Dictionary<string, object>();
             await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
             await dialogContext.Prompt(TextPrompt, "Como você está se sentindo hoje?");
         }
-        public async Task Salutation_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        private async Task Salutation_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
             await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
         }
-        public async Task How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        private async Task How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
         }
-        public async Task Answer(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        private async Task Answer(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             dialogContext.ActiveDialog.State["status"] = args["Value"];
 
@@ -39,6 +39,34 @@ namespace Pizzaria.Dialogs
 
             await dialogContext.Context.SendActivity($"Que bom que você está: {userState.Status}!");
             await dialogContext.End();
+        }
+
+
+        public WaterfallStep[] SalutationWaterfall()
+        {
+            return new WaterfallStep[]
+            {
+                Salutation,
+                Answer
+            };
+        }
+
+        public WaterfallStep[] Salutation_How_Is_Waterfall()
+        {
+            return new WaterfallStep[]
+            {
+                Salutation_How_Is,
+                Answer
+            };
+        }
+
+        public WaterfallStep[] How_Is_Waterfall()
+        {
+            return new WaterfallStep[]
+            {
+                How_Is,
+                Answer
+            };
         }
     }
 }
