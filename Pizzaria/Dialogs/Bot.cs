@@ -5,9 +5,15 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Schema;
 using System.Linq;
+using Pizzaria.Code;
 using Microsoft.Bot.Builder.Ai.LUIS;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Microsoft.Cognitive.LUIS;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Pizzaria.Dialogs
 {
@@ -40,17 +46,18 @@ namespace Pizzaria.Dialogs
                     var luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
                     var (intent, score) = luisResult.GetTopScoringIntent();
                     var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
-                    await dialogContext.Begin(intentResult);
+
+                    IDictionary<string, object> args = new Dictionary<string, object>
+                    {
+                        { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                    };
+
+                    await dialogContext.Begin(intentResult, args);
                 }
 
             }
         }
-
-        private Task None(DialogContext dialogContext, object args, SkipStepFunction next)
-        {
-            return dialogContext.Context.SendActivity("None");
-        }
-
+        
     }
 
 }

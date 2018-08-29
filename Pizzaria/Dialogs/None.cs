@@ -1,4 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using Pizzaria.Code;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace Pizzaria.Dialogs
 
         private Task NoneBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
-            //Todo: Passar as intenções por parâmetro e usa-las para já continuar a conversa
+            EntitiesParse entities = (EntitiesParse) args["entities"];
+            //Todo: Usar as intenções para já continuar a conversa
             return dialogContext.Context.SendActivity("Me desculpe, mas não consegui entender o que você gostaria :(");
         }
 
