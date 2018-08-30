@@ -41,11 +41,18 @@ namespace Pizzaria.Dialogs
 
                 await dialogContext.Continue();
 
+                BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+               
                 if (!turnContext.Responded)
                 {
                     var luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
                     var (intent, score) = luisResult.GetTopScoringIntent();
                     var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
+
+                    if (!string.IsNullOrEmpty(userState.Status) && (intentResult == SalutationTypes.How_Is_Text || intentResult == SalutationTypes.SalutationText || intentResult == SalutationTypes.Salutation_How_Is_Text))
+                    {
+                        intentResult = "None";
+                    }
 
                     IDictionary<string, object> args = new Dictionary<string, object>
                     {

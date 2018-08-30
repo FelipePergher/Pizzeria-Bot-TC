@@ -37,17 +37,32 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
-            await dialogContext.Context.SendActivity($"Que bom que você está: {userState.Status}!");
+            await dialogContext.Context.SendActivity($"Legal!");
+            //Todo: Ver de pedidos antigos para oferecer
+            await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
             await dialogContext.End();
         }
 
+        private async Task Answer_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+
+            dialogContext.ActiveDialog.State["status"] = args["Value"];
+
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
+
+            await dialogContext.Context.SendActivity($"Eu estou ótimo hoje!");
+            //Todo: Ver de pedidos antigos para oferecer
+            await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
+            await dialogContext.End();
+        }
 
         public WaterfallStep[] SalutationWaterfall()
         {
             return new WaterfallStep[]
             {
                 Salutation,
-                Answer
+                Answer_How_Is
             };
         }
 
