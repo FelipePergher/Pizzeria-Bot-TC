@@ -14,10 +14,13 @@ namespace Pizzaria.Code
         {
             Drinks = new List<string>();
             Ingredients = new List<string>();
+            ProductTypes = new List<string>();
         }
 
         public List<string> Drinks { get; set; }
         public List<string> Ingredients { get; set; }
+        public List<string> ProductTypes { get; set; }
+
 
         public static EntitiesParse RecognizeEntities(JObject jObject)
         {
@@ -36,6 +39,9 @@ namespace Pizzaria.Code
                         } else if(entity.Key == "Ingredients")
                         {
                             entitiesParse.Ingredients.Add(item.First.ToString());
+                        } else if(entity.Key == "Product_Type")
+                        {
+                            entitiesParse.ProductTypes.Add(item.First.ToString());
                         }
                     }
                     
