@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Models\DrinkModels\" />
     <Folder Include="wwwroot\Images\Drinks\" />
   </ItemGroup>
 

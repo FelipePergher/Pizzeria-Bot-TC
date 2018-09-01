@@ -11,6 +11,7 @@ namespace Pizzaria.Data.Models.PizzaModels
         public Pizza()
         {
             PizzaIngredients = new HashSet<PizzaIngredient>();
+            PizzaSizes = new HashSet<PizzaSize>();
         }
 
         [Key]
@@ -24,8 +25,7 @@ namespace Pizzaria.Data.Models.PizzaModels
 
         public string Image { get; set; }
 
-        public double Price { get; set; }
-
         public ICollection<PizzaIngredient> PizzaIngredients  { get; set; }
+        public ICollection<PizzaSize> PizzaSizes { get; set; }
     }
 }

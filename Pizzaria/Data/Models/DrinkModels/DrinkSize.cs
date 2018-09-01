@@ -7,12 +7,14 @@ namespace Pizzaria.Data.Models.DrinkModels
 {
     public class DrinkSize
     {
-        public int SizeId { get; set; }
+        public int SizeDId { get; set; }
 
-        public Size Size { get; set; }
+        public SizeD SizeD { get; set; }
 
         public int DrinkId { get; set; }
 
         public Drink Drink { get; set; }
+
+        public double Price { get; set; }
     }
 }

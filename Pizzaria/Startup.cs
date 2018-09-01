@@ -33,9 +33,11 @@ namespace Pizzaria
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            Startup.ConfigurationStatic = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
+        public static IConfiguration ConfigurationStatic { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -97,316 +99,371 @@ namespace Pizzaria
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
                 {
-                    if (!context.Sizes.Any())
+                    if (!context.SizesD.Any())
                     {
-                        List<Size> sizes = new List<Size>
-                    {
-                        new Size
+                        List<SizeD> sizesD = new List<SizeD>
                         {
-                            Quantity = 0.35d
-                        },
-                        new Size
-                        {
-                            Quantity = 0.5d
-                        },
-                        new Size
-                        {
-                            Quantity = 0.6d
-                        },
-                        new Size
-                        {
-                            Quantity = 1.0d
-                        },
-                        new Size
-                        {
-                            Quantity = 1.5d
-                        },
-                        new Size
-                        {
-                            Quantity = 2.0d
-                        }
-                    };
+                            new SizeD
+                            {
+                                Quantity = InformationName.Lata350
+                            },
+                            new SizeD
+                            {
+                                Quantity = InformationName.Garrafa500
+                            },
+                            new SizeD
+                            {
+                                Quantity = InformationName.Garrafa600
+                            },
+                            new SizeD
+                            {
+                                Quantity = InformationName.Litro01
+                            },
+                            new SizeD
+                            {
+                                Quantity = InformationName.Litro02
+                            },
+                            new SizeD
+                            {
+                                Quantity = InformationName.Litro15
+                            }
+                        };
                         List<Drink> drinks = new List<Drink>
-                    {
-                        new Drink
                         {
-                            Name = "Coca-Cola",
-                            DrinkSizes = new List<DrinkSize>
+                            new Drink
                             {
-                                new DrinkSize
+                                Name = "Coca-Cola",
+                                DrinkSizes = new List<DrinkSize>
                                 {
-                                    Size = sizes.Where(x => x.Quantity == 0.35d).FirstOrDefault()
-                                },
-                                new DrinkSize
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Lata350).FirstOrDefault(),
+                                        Price = 3.50d
+                                    },
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Garrafa600).FirstOrDefault(),
+                                        Price = 5.00d
+                                    },
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Litro02).FirstOrDefault(),
+                                        Price = 7.50d
+                                    }
+                                }
+                            },
+                            new Drink
+                            {
+                                Name = "Sprite",
+                                DrinkSizes = new List<DrinkSize>
                                 {
-                                    Size = sizes.Where(x => x.Quantity == 0.6d).FirstOrDefault()
-                                },
-                                new DrinkSize
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Lata350).FirstOrDefault(),
+                                        Price = 3.50d
+                                    },
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Garrafa600).FirstOrDefault(),
+                                        Price = 5.00d
+                                    },
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Litro02).FirstOrDefault(),
+                                        Price = 7.50d
+                                    },
+                                }
+                            },
+                            new Drink
+                            {
+                                Name = "Água Mineral",
+                                DrinkSizes = new List<DrinkSize>
                                 {
-                                    Size = sizes.Where(x => x.Quantity == 2.0d).FirstOrDefault()
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Garrafa500).FirstOrDefault(),
+                                        Price = 3.00d
+                                    },
+                                    new DrinkSize
+                                    {
+                                        SizeD = sizesD.Where(x => x.Quantity == InformationName.Litro15).FirstOrDefault(),
+                                        Price = 5.00d
+                                    },
                                 }
                             }
-                        },
-                        new Drink
-                        {
-                            Name = "Sprite",
-                            DrinkSizes = new List<DrinkSize>
-                            {
-                                new DrinkSize
-                                {
-                                    Size = sizes.Where(x => x.Quantity == 0.35d).FirstOrDefault()
-                                },
-                                new DrinkSize
-                                {
-                                    Size = sizes.Where(x => x.Quantity == 0.6d).FirstOrDefault()
-                                },
-                                new DrinkSize
-                                {
-                                    Size = sizes.Where(x => x.Quantity == 2.0d).FirstOrDefault()
-                                },
-                            }
-                        },
-                        new Drink
-                        {
-                            Name = "Água Mineral",
-                            DrinkSizes = new List<DrinkSize>
-                            {
-                                new DrinkSize
-                                {
-                                    Size = sizes.Where(x => x.Quantity == 0.5d).FirstOrDefault()
-                                },
-                                new DrinkSize
-                                {
-                                    Size = sizes.Where(x => x.Quantity == 1.5d).FirstOrDefault()
-                                },
-                            }
-                        }
-                    };
+                        };
+
                         List<Ingredient> ingredients = new List<Ingredient>
-                    {
-                        new Ingredient
                         {
-                            Name = "milho"
-                        },
-                        new Ingredient
+                            new Ingredient
+                            {
+                                Name = "milho"
+                            },
+                            new Ingredient
+                            {
+                                Name = "alho"
+                            },
+                            new Ingredient
+                            {
+                                Name = "atum"
+                            },
+                            new Ingredient
+                            {
+                                Name = "azeitona"
+                            },
+                            new Ingredient
+                            {
+                                Name = "bacon"
+                            },
+                            new Ingredient
+                            {
+                                Name = "banana"
+                            },
+                            new Ingredient
+                            {
+                                Name = "calabresa"
+                            },
+                            new Ingredient
+                            {
+                                Name = "carne"
+                            },
+                            new Ingredient
+                            {
+                                Name = "catupiry"
+                            },
+                            new Ingredient
+                            {
+                                Name = "cebola"
+                            },
+                            new Ingredient
+                            {
+                                Name = "champignon"
+                            },
+                            new Ingredient
+                            {
+                                Name = "cheddar"
+                            },
+                            new Ingredient
+                            {
+                                Name = "cream cheese"
+                            },
+                            new Ingredient
+                            {
+                                Name = "ervilha"
+                            },
+                            new Ingredient
+                            {
+                                Name = "frango"
+                            },
+                            new Ingredient
+                            {
+                                Name = "gorgonzola"
+                            },
+                            new Ingredient
+                            {
+                                Name = "lombo"
+                            },
+                            new Ingredient
+                            {
+                                Name = "mussarela"
+                            },
+                            new Ingredient
+                            {
+                                Name = "orégano"
+                            },
+                            new Ingredient
+                            {
+                                Name = "ovo"
+                            },
+                            new Ingredient
+                            {
+                                Name = "palmito"
+                            },
+                            new Ingredient
+                            {
+                                Name = "parmesão"
+                            },
+                            new Ingredient
+                            {
+                                Name = "pepino"
+                            },
+                            new Ingredient
+                            {
+                                Name = "pimenta"
+                            },
+                            new Ingredient
+                            {
+                                Name = "pimentão"
+                            },
+                            new Ingredient
+                            {
+                                Name = "presunto"
+                            },
+                            new Ingredient
+                            {
+                                Name = "provolone"
+                            },
+                            new Ingredient
+                            {
+                                Name = "queijo"
+                            },
+                            new Ingredient
+                            {
+                                Name = "requeijão"
+                            },
+                            new Ingredient
+                            {
+                                Name = "salame"
+                            },
+                            new Ingredient
+                            {
+                                Name = "tomate"
+                            },
+                            new Ingredient
+                            {
+                                Name = "molho"
+                            },
+                            new Ingredient
+                            {
+                                Name = "manjericão"
+                            }
+                        };
+                        List<SizeP> sizesP = new List<SizeP>
                         {
-                            Name = "alho"
-                        },
-                        new Ingredient
+                            new SizeP
+                            {
+                                Size = InformationName.Small
+                            },
+                            new SizeP
+                            {
+                                Size = InformationName.Medium
+                            },
+                            new SizeP
+                            {
+                                Size = InformationName.Large
+                            },
+                            new SizeP
+                            {
+                                Size = InformationName.Family
+                            }
+                        };
+                        List<PizzaSize> pizzaSizes = new List<PizzaSize>
                         {
-                            Name = "atum"
-                        },
-                        new Ingredient
-                        {
-                            Name = "azeitona"
-                        },
-                        new Ingredient
-                        {
-                            Name = "bacon"
-                        },
-                        new Ingredient
-                        {
-                            Name = "banana"
-                        },
-                        new Ingredient
-                        {
-                            Name = "calabresa"
-                        },
-                        new Ingredient
-                        {
-                            Name = "carne"
-                        },
-                        new Ingredient
-                        {
-                            Name = "catupiry"
-                        },
-                        new Ingredient
-                        {
-                            Name = "cebola"
-                        },
-                        new Ingredient
-                        {
-                            Name = "champignon"
-                        },
-                        new Ingredient
-                        {
-                            Name = "cheddar"
-                        },
-                        new Ingredient
-                        {
-                            Name = "cream cheese"
-                        },
-                        new Ingredient
-                        {
-                            Name = "ervilha"
-                        },
-                        new Ingredient
-                        {
-                            Name = "frango"
-                        },
-                        new Ingredient
-                        {
-                            Name = "gorgonzola"
-                        },
-                        new Ingredient
-                        {
-                            Name = "lombo"
-                        },
-                        new Ingredient
-                        {
-                            Name = "mussarela"
-                        },
-                        new Ingredient
-                        {
-                            Name = "orégano"
-                        },
-                        new Ingredient
-                        {
-                            Name = "ovo"
-                        },
-                        new Ingredient
-                        {
-                            Name = "palmito"
-                        },
-                        new Ingredient
-                        {
-                            Name = "parmesão"
-                        },
-                        new Ingredient
-                        {
-                            Name = "pepino"
-                        },
-                        new Ingredient
-                        {
-                            Name = "pimenta"
-                        },
-                        new Ingredient
-                        {
-                            Name = "pimentão"
-                        },
-                        new Ingredient
-                        {
-                            Name = "presunto"
-                        },
-                        new Ingredient
-                        {
-                            Name = "provolone"
-                        },
-                        new Ingredient
-                        {
-                            Name = "queijo"
-                        },
-                        new Ingredient
-                        {
-                            Name = "requeijão"
-                        },
-                        new Ingredient
-                        {
-                            Name = "salame"
-                        },
-                        new Ingredient
-                        {
-                            Name = "tomate"
-                        },
-                        new Ingredient
-                        {
-                            Name = "molho"
-                        },
-                        new Ingredient
-                        {
-                            Name = "manjericão"
-                        }
-                    };
-
+                            new PizzaSize
+                            {
+                                SizeP = sizesP.Where(x => x.Size == InformationName.Family).FirstOrDefault(),
+                                Price = InformationName.FamilyPrice
+                            },
+                            new PizzaSize
+                            {
+                                SizeP = sizesP.Where(x => x.Size == InformationName.Small).FirstOrDefault(),
+                                Price = InformationName.SmallPrice
+                            },
+                            new PizzaSize
+                            {
+                                SizeP = sizesP.Where(x => x.Size == InformationName.Large).FirstOrDefault(),
+                                Price = InformationName.LargePrice
+                            },
+                            new PizzaSize
+                            {
+                                SizeP = sizesP.Where(x => x.Size == InformationName.Medium).FirstOrDefault(),
+                                Price = InformationName.MediumPrice
+                            }
+                        };
                         List<Pizza> pizzas = new List<Pizza>
-                    {
-                        new Pizza
                         {
-                            Name = "Calabresa",
-                            Vegetarian = false,
-                            PizzaType = InformationName.Salted,
-                            Image = "Images/Pizzas/calabresa.png",
-                            PizzaIngredients = new List<PizzaIngredient>
+                            new Pizza
                             {
-                                new PizzaIngredient
+                                Name = "Calabresa",
+                                Vegetarian = false,
+                                PizzaType = InformationName.Salted,
+                                Image = "Images/Pizzas/calabresa.png",
+                                PizzaSizes = pizzaSizes,
+                                PizzaIngredients = new List<PizzaIngredient>
                                 {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
-                                },
-                                new PizzaIngredient
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "calabresa").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "cebola").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "orégano").FirstOrDefault()
+                                    }
+                                }
+                            },
+                            new Pizza
+                            {
+                                Name = "Mussarela",
+                                Vegetarian = false,
+                                PizzaType = InformationName.Salted,
+                                Image = "Images/Pizzas/portuguesa.png",
+                                PizzaSizes = pizzaSizes,
+                                PizzaIngredients = new List<PizzaIngredient>
                                 {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
-                                },
-                                new PizzaIngredient
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "tomate").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "orégano").FirstOrDefault()
+                                    }
+                                }
+                            },
+                            new Pizza
+                            {
+                                Name = "Margherita",
+                                Vegetarian = false,
+                                PizzaType = InformationName.Salted,
+                                Image = "Images/Pizzas/bacon.png",
+                                PizzaSizes = pizzaSizes,
+                                PizzaIngredients = new List<PizzaIngredient>
                                 {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "calabresa").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "cebola").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "orégano").FirstOrDefault()
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "tomate").FirstOrDefault()
+                                    },
+                                    new PizzaIngredient
+                                    {
+                                        Ingredient = ingredients.Where(x => x.Name.ToLower() == "manjericão").FirstOrDefault()
+                                    }
                                 }
                             }
-                        },
-                        new Pizza
-                        {
-                            Name = "Mussarela",
-                            Vegetarian = false,
-                            PizzaType = InformationName.Salted,
-                            Image = "Images/Pizzas/portugues.png",
-                            PizzaIngredients = new List<PizzaIngredient>
-                            {
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "tomate").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "orégano").FirstOrDefault()
-                                }
-                            }
-                        },
-                        new Pizza
-                        {
-                            Name = "Margherita",
-                            Vegetarian = false,
-                            PizzaType = InformationName.Salted,
-                            Image = "Images/Pizzas/bacon.png",
-                            PizzaIngredients = new List<PizzaIngredient>
-                            {
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "molho").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "mussarela").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "tomate").FirstOrDefault()
-                                },
-                                new PizzaIngredient
-                                {
-                                    Ingredient = ingredients.Where(x => x.Name.ToLower() == "manjericão").FirstOrDefault()
-                                }
-                            }
-                        }
-                    };
+                        };
 
-                        context.Sizes.AddRange(sizes);
+                        context.SizesD.AddRange(sizesD);
                         context.Drinks.AddRange(drinks);
+
                         context.Ingredients.AddRange(ingredients);
+                        context.SizesP.AddRange(sizesP);
                         context.Pizzas.AddRange(pizzas);
                         context.SaveChanges();
                     }

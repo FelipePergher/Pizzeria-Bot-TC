@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Pizzaria.Data.Models.DrinkModels
 {
-    public class Size
+    public class SizeD
     {
-        public Size()
+        public SizeD()
         {
             DrinkSizes = new HashSet<DrinkSize>();
         }
 
         [Key]
-        public int SizeId { get; set; }
+        public int SizeDId { get; set; }
 
         public double Quantity { get; set; }
 

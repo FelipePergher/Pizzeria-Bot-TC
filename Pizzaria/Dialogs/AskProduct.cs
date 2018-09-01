@@ -4,6 +4,7 @@ using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Pizzaria.Code;
 using Pizzaria.Data.Models;
@@ -17,10 +18,15 @@ namespace Pizzaria.Dialogs
     public class AskProduct
     {
         public const string Ask_ProductText = "Ask_Product";
-        private ApplicationDbContext context;
+        private readonly ApplicationDbContext context;
+        private readonly IConfiguration Configuration;
+        private readonly string ServerUrl;
 
         public AskProduct()
         {
+            Configuration = Startup.ConfigurationStatic;
+            ServerUrl = Configuration.GetSection("ServerUrl").Value;
+            //ServerUrl = dialogContext.Context.Activity.ServiceUrl;
             context = ServiceProviderFactory.GetApplicationDbContext();
         }
        
@@ -29,7 +35,6 @@ namespace Pizzaria.Dialogs
             var pizzas = context.Pizzas;
             IList<Attachment> heroCardsAttachments = new List<Attachment>();
 
-            //Todo: Como a URL tá sendo pega a do ngrok, a imagem não está aparecendo
 
             foreach (var pizza in pizzas)
             {
@@ -38,19 +43,13 @@ namespace Pizzaria.Dialogs
                     {
                         Title = pizza.Name,
                         Subtitle = pizza.PizzaType,
-                        Images = new CardImage[] { new CardImage(url: dialogContext.Context.Activity.ServiceUrl + @"/" +pizza.Image) }
+                        Images = new CardImage[] { new CardImage(url: ServerUrl + @"/" + pizza.Image) }
                     }.ToAttachment());
             }
 
 
             IMessageActivity activity = MessageFactory.Attachment(heroCardsAttachments);
             activity.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-            activity.Attachments.Add(new Attachment()
-            {
-                ContentUrl = "http://localhost:3978/Images/pizzas/calabresa.png",
-                ContentType = "image/png",
-                Name = "Bender_Rodriguez.png"
-            });
 
             await dialogContext.Context.SendActivities(new[] { activity });
         }

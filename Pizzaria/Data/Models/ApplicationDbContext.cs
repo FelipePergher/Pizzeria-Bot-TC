@@ -27,15 +27,18 @@ namespace Pizzaria.Data.Models
 
         public DbSet<Drink> Drinks { get; set; }
 
-        public DbSet<Size> Sizes { get; set; }
+        public DbSet<SizeD> SizesD { get; set; }
+
+        public DbSet<SizeP> SizesP { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            //Drink with Drink Size N to N
             modelBuilder.Entity<DrinkSize>()
-            .HasKey(bc => new { bc.DrinkId, bc.SizeId});
+            .HasKey(bc => new { bc.DrinkId, bc.SizeDId});
 
             modelBuilder.Entity<DrinkSize>()
                 .HasOne(bc => bc.Drink)
@@ -43,10 +46,25 @@ namespace Pizzaria.Data.Models
                 .HasForeignKey(bc => bc.DrinkId);
 
             modelBuilder.Entity<DrinkSize>()
-                .HasOne(bc => bc.Size)
+                .HasOne(bc => bc.SizeD)
                 .WithMany(c => c.DrinkSizes)
-                .HasForeignKey(bc => bc.SizeId);
+                .HasForeignKey(bc => bc.SizeDId);
 
+            //Pizza with Pizza Size N to N
+            modelBuilder.Entity<PizzaSize>()
+            .HasKey(bc => new { bc.PizzaId, bc.SizePId });
+
+            modelBuilder.Entity<PizzaSize>()
+                .HasOne(bc => bc.Pizza)
+                .WithMany(b => b.PizzaSizes)
+                .HasForeignKey(bc => bc.PizzaId);
+
+            modelBuilder.Entity<PizzaSize>()
+                .HasOne(bc => bc.SizeP)
+                .WithMany(c => c.PizzaSizes)
+                .HasForeignKey(bc => bc.SizePId);
+
+            //Ingredient with Pizza N to N
             modelBuilder.Entity<PizzaIngredient>()
            .HasKey(bc => new { bc.PizzaId, bc.IngredientId });
 
