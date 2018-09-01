@@ -20,6 +20,12 @@ namespace Pizzaria.Data.Models.PizzaModels
 
         public string Name { get; set; }
 
+        public string PizzaType { get; set; }
+
+        public string Image { get; set; }
+
+        public double Price { get; set; }
+
         public ICollection<PizzaIngredient> PizzaIngredients  { get; set; }
     }
 }

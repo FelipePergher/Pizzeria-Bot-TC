@@ -45,7 +45,6 @@ namespace Pizzaria.Dialogs
 
         private async Task Answer_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
-
             dialogContext.ActiveDialog.State["status"] = args["Value"];
 
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using Pizzaria.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,13 @@ namespace Pizzaria.Dialogs
     public class DialogFlow : DialogSet
     {
         SalutationTypes SalutationTypes;
+        AskProduct AskProduct;
         None None;
 
         public DialogFlow()
         {
             SalutationTypes = new SalutationTypes();
+            AskProduct = new AskProduct();
             None = new None();
 
             Add(SalutationTypes.TextPrompt, new TextPrompt());
@@ -25,6 +28,8 @@ namespace Pizzaria.Dialogs
             Add(SalutationTypes.Salutation_How_Is_Text, SalutationTypes.Salutation_How_Is_Waterfall());
 
             Add(SalutationTypes.How_Is_Text, SalutationTypes.How_Is_Waterfall());
+
+            Add(AskProduct.Ask_ProductText, AskProduct.Ask_ProductWaterfall());
 
         }
     }

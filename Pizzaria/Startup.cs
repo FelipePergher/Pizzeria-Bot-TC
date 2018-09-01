@@ -324,6 +324,8 @@ namespace Pizzaria
                         {
                             Name = "Calabresa",
                             Vegetarian = false,
+                            PizzaType = InformationName.Salted,
+                            Image = "Images/Pizzas/calabresa.png",
                             PizzaIngredients = new List<PizzaIngredient>
                             {
                                 new PizzaIngredient
@@ -352,6 +354,8 @@ namespace Pizzaria
                         {
                             Name = "Mussarela",
                             Vegetarian = false,
+                            PizzaType = InformationName.Salted,
+                            Image = "Images/Pizzas/portugues.png",
                             PizzaIngredients = new List<PizzaIngredient>
                             {
                                 new PizzaIngredient
@@ -376,6 +380,8 @@ namespace Pizzaria
                         {
                             Name = "Margherita",
                             Vegetarian = false,
+                            PizzaType = InformationName.Salted,
+                            Image = "Images/Pizzas/bacon.png",
                             PizzaIngredients = new List<PizzaIngredient>
                             {
                                 new PizzaIngredient
