@@ -19,7 +19,7 @@ namespace Pizzaria.Dialogs
 {
     public class Bot : IBot
     {
-        private const double LUIS_INTENT_THRESHOLD = 0.7d;
+        private const double LUIS_INTENT_THRESHOLD = 0.75d;
         private DialogFlow DialogFlow;
 
         public Bot()

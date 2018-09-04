@@ -11,11 +11,13 @@ namespace Pizzaria.Dialogs
     {
         public const string NoneText = "None";
 
-        private Task NoneBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        private async Task NoneBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             EntitiesParse entities = (EntitiesParse) args["entities"];
             //Todo: Usar as intenções para já continuar a conversa
-            return dialogContext.Context.SendActivity("Me desculpe, mas não consegui entender o que você gostaria :(");
+            await dialogContext.Context.SendActivity("Olá senhor " + dialogContext.Context.Activity.From.Name );
+
+            await dialogContext.Context.SendActivity("Me desculpe, mas não consegui entender o que você gostaria :(");
         }
 
         public WaterfallStep[] NoneWaterfall()

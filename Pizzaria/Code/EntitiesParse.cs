@@ -33,13 +33,13 @@ namespace Pizzaria.Code
                 {
                     foreach (var item in entity.Value)
                     {
-                        if(entity.Key == "Drink")
+                        if(entity.Key == InformationName.DrinkEntitie)
                         {
                             entitiesParse.Drinks.Add(item.First.ToString());
-                        } else if(entity.Key == "Ingredients")
+                        } else if(entity.Key == InformationName.IngredientsEntitie)
                         {
                             entitiesParse.Ingredients.Add(item.First.ToString());
-                        } else if(entity.Key == "Product_Type")
+                        } else if(entity.Key == InformationName.Product_TypeEntitie)
                         {
                             entitiesParse.ProductTypes.Add(item.First.ToString());
                         }
