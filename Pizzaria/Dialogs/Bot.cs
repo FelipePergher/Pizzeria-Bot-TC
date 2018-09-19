@@ -45,21 +45,17 @@ namespace Pizzaria.Dialogs
                
                 if (!turnContext.Responded)
                 {
-                    var luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
-                    var (intent, score) = luisResult.GetTopScoringIntent();
-                    var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
-
-                    if (!string.IsNullOrEmpty(userState.Status) && (intentResult == SalutationTypes.How_Is_Text || intentResult == SalutationTypes.SalutationText || intentResult == SalutationTypes.Salutation_How_Is_Text))
-                    {
-                        intentResult = "None";
-                    }
+                    RecognizerResult luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                    string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
 
                     IDictionary<string, object> args = new Dictionary<string, object>
                     {
                         { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
                     };
 
-                    await dialogContext.Begin(intentResult, args);
+                    //Todo: Remover depois. Usado para ir direto para o pedido
+                    //await dialogContext.Begin(intentResult, args);
+                    await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, args);
                 }
 
             }

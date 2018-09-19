@@ -8,14 +8,14 @@ namespace Pizzaria.Code
     public class InformationName
     {
         //Pizza Types
-        public static string Candy { get; } = "Candy";
-        public static string Salted { get; } = "Salted";
+        public static string Candy { get; } = "Doce";
+        public static string Salted { get; } = "Salgada";
 
         //Pizza Sizes
-        public static string Large { get; } = "Large";
-        public static string Family { get; } = "Family";
-        public static string Medium { get; } = "Medium";
-        public static string Small { get; } = "Small";
+        public static string Large { get; } = "Grande";
+        public static string Family { get; } = "Família";
+        public static string Medium { get; } = "Média";
+        public static string Small { get; } = "Pequena";
 
         //Pizza Prices
         public static double LargePrice { get; } = 60d;

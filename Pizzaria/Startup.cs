@@ -49,7 +49,8 @@ namespace Pizzaria
                 options.Middleware.Add(new CatchExceptionMiddleware<Exception>(async (context, exception) =>
                 {
                     await context.TraceActivity("Exception", exception);
-                    await context.SendActivity("Desculpe, Alguma coisa deu errado!");
+                    await context.SendActivity(exception.Message);
+                    await context.SendActivity(exception.InnerException.ToString());
                 }));
 
                 IStorage dataStore = new MemoryStorage();
@@ -347,29 +348,6 @@ namespace Pizzaria
                                 Size = InformationName.Family
                             }
                         };
-                        List<PizzaSize> pizzaSizes = new List<PizzaSize>
-                        {
-                            new PizzaSize
-                            {
-                                SizeP = sizesP.Where(x => x.Size == InformationName.Family).FirstOrDefault(),
-                                Price = InformationName.FamilyPrice
-                            },
-                            new PizzaSize
-                            {
-                                SizeP = sizesP.Where(x => x.Size == InformationName.Small).FirstOrDefault(),
-                                Price = InformationName.SmallPrice
-                            },
-                            new PizzaSize
-                            {
-                                SizeP = sizesP.Where(x => x.Size == InformationName.Large).FirstOrDefault(),
-                                Price = InformationName.LargePrice
-                            },
-                            new PizzaSize
-                            {
-                                SizeP = sizesP.Where(x => x.Size == InformationName.Medium).FirstOrDefault(),
-                                Price = InformationName.MediumPrice
-                            }
-                        };
                         List<Pizza> pizzas = new List<Pizza>
                         {
                             new Pizza
@@ -378,7 +356,29 @@ namespace Pizzaria
                                 Vegetarian = false,
                                 PizzaType = InformationName.Salted,
                                 Image = "Images/Pizzas/calabresa.png",
-                                PizzaSizes = pizzaSizes,
+                                PizzaSizes = new List<PizzaSize>
+                                {
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Family).FirstOrDefault(),
+                                        Price = InformationName.FamilyPrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Small).FirstOrDefault(),
+                                        Price = InformationName.SmallPrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Large).FirstOrDefault(),
+                                        Price = InformationName.LargePrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Medium).FirstOrDefault(),
+                                        Price = InformationName.MediumPrice
+                                    }
+                                },
                                 PizzaIngredients = new List<PizzaIngredient>
                                 {
                                     new PizzaIngredient
@@ -409,7 +409,29 @@ namespace Pizzaria
                                 Vegetarian = false,
                                 PizzaType = InformationName.Salted,
                                 Image = "Images/Pizzas/portuguesa.png",
-                                PizzaSizes = pizzaSizes,
+                                PizzaSizes = new List<PizzaSize>
+                                {
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Family).FirstOrDefault(),
+                                        Price = InformationName.FamilyPrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Small).FirstOrDefault(),
+                                        Price = InformationName.SmallPrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Large).FirstOrDefault(),
+                                        Price = InformationName.LargePrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Medium).FirstOrDefault(),
+                                        Price = InformationName.MediumPrice
+                                    }
+                                },
                                 PizzaIngredients = new List<PizzaIngredient>
                                 {
                                     new PizzaIngredient
@@ -436,7 +458,29 @@ namespace Pizzaria
                                 Vegetarian = false,
                                 PizzaType = InformationName.Salted,
                                 Image = "Images/Pizzas/bacon.png",
-                                PizzaSizes = pizzaSizes,
+                                PizzaSizes = new List<PizzaSize>
+                                {
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Family).FirstOrDefault(),
+                                        Price = InformationName.FamilyPrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Small).FirstOrDefault(),
+                                        Price = InformationName.SmallPrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Large).FirstOrDefault(),
+                                        Price = InformationName.LargePrice
+                                    },
+                                    new PizzaSize
+                                    {
+                                        SizeP = sizesP.Where(x => x.Size == InformationName.Medium).FirstOrDefault(),
+                                        Price = InformationName.MediumPrice
+                                    }
+                                },
                                 PizzaIngredients = new List<PizzaIngredient>
                                 {
                                     new PizzaIngredient

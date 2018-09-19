@@ -15,9 +15,7 @@ namespace Pizzaria.Dialogs
         {
             EntitiesParse entities = (EntitiesParse) args["entities"];
             //Todo: Usar as intenções para já continuar a conversa
-            await dialogContext.Context.SendActivity("Olá senhor " + dialogContext.Context.Activity.From.Name );
-
-            await dialogContext.Context.SendActivity("Me desculpe, mas não consegui entender o que você gostaria :(");
+            await dialogContext.Context.SendActivity($"Me desculpe {dialogContext.Context.Activity.From.Name}, mas não consegui entender o que você gostaria :(");
         }
 
         public WaterfallStep[] NoneWaterfall()

@@ -23,14 +23,16 @@ namespace Pizzaria.Dialogs
 
             Add(None.NoneText, None.NoneWaterfall());
 
-            Add(SalutationTypes.SalutationText, SalutationTypes.SalutationWaterfall());
+            Add(SalutationTypes.SalutationWaterfallText, SalutationTypes.SalutationWaterfall());
 
-            Add(SalutationTypes.Salutation_How_Is_Text, SalutationTypes.Salutation_How_Is_Waterfall());
+            Add(SalutationTypes.Salutation_How_Is_Waterfall_Text, SalutationTypes.Salutation_How_Is_Waterfall());
 
-            Add(SalutationTypes.How_Is_Text, SalutationTypes.How_Is_Waterfall());
+            Add(SalutationTypes.How_Is_Waterfall_Text, SalutationTypes.How_Is_Waterfall());
 
-            Add(AskProduct.Ask_ProductText, AskProduct.Ask_ProductWaterfall());
+            Add(AskProduct.Ask_Product_Waterfall_Text, AskProduct.Ask_ProductWaterfall());
 
+            Add(AskProduct.Order_Product_Waterfall_Text, AskProduct.OrderProductsWaterfall());
+                
         }
     }
 }

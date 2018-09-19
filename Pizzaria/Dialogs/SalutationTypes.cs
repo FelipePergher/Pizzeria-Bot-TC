@@ -11,9 +11,9 @@ namespace Pizzaria.Dialogs
     public class SalutationTypes : DialogSet
     {
         public string TextPrompt { get; set; } = "textPrompt";
-        public const string SalutationText = "Salutation";
-        public const string Salutation_How_Is_Text = "Salutation_How_Is";
-        public const string How_Is_Text = "How_Is";
+        public const string SalutationWaterfallText = "Salutation";
+        public const string Salutation_How_Is_Waterfall_Text = "Salutation_How_Is";
+        public const string How_Is_Waterfall_Text = "How_Is";
 
         private async Task Salutation(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {

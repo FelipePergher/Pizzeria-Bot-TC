@@ -1,4 +1,7 @@
-﻿using Pizzaria.Models;
+﻿using Pizzaria.Data.Models;
+using Pizzaria.Data.Models.DrinkModels;
+using Pizzaria.Data.Models.PizzaModels;
+using Pizzaria.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +13,12 @@ namespace Pizzaria.Code
     {
         public string Name { get; set; }
 
-        public string Status { get; set; } = "";
+        //Todo: Usado para pular o comprimento do usuário
+        public string Status { get; set; } = "a";
 
         public Order Order { get; set; }
+
+        public EntitiesState EntitiesState { get; set; }
+
     }
 }

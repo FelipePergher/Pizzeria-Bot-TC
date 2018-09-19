@@ -13,6 +13,10 @@ namespace Pizzaria.Models
 
         public int Quantity { get; set; }
 
+        public string PizzaSize { get; set; }
+
+        public int PizzaSizeId { get; set; }
+
         public double Price { get; set; }
     }
 }
