@@ -58,7 +58,7 @@ namespace Pizzaria.Dialogs
 
                 List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
                 IMessageActivity activity = MessageFactory.Carousel(attachments);
-                await dialogContext.Context.SendActivity("Encontrei as seguintes pizzas que possuem (ingredientes que achou aqui)");
+                await dialogContext.Context.SendActivity($"Encontrei as seguintes pizzas que possuem {GetIngredientsText(pizzas, entities.Ingredients)}");
                 await dialogContext.Context.SendActivity(activity);
             }
             else
@@ -110,7 +110,9 @@ namespace Pizzaria.Dialogs
                 {
                     { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
                 };
-                await dialogContext.Replace(intentResult, createdArgs);
+                //Todo: voltar a usar a entidade normalmente depois de ajustar
+                await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, createdArgs);
+                //await dialogContext.Replace(intentResult, createdArgs);
             }
         }
 
@@ -122,6 +124,45 @@ namespace Pizzaria.Dialogs
         #endregion
 
         #region Private Methods
+
+        private string GetIngredientsText(List<Pizza> pizzas, List<string> ingredients)
+        {
+            List<string> allIngredients = new List<string>();
+            foreach (var pizza in pizzas)
+            {
+                allIngredients.AddRange(pizza.PizzaIngredients.Select(y => y.Ingredient.Name).ToList());
+            }
+
+            allIngredients = allIngredients.Distinct().ToList();
+            List<string> ingredientsFinded = new List<string>();
+
+            foreach (var ingredient in ingredients)
+            {
+                if (allIngredients.Contains(ingredient))
+                {
+                    ingredientsFinded.Add(ingredient);
+                }
+            }
+
+            string returnString = "";
+
+            foreach (var ingredientsFind in ingredientsFinded.Select((value, i) => new { i, value }))
+            {
+                if(ingredientsFind.i == 0)
+                {
+                    returnString += ingredientsFind.value;
+                } else if(ingredientsFind.i == ingredientsFinded.Count - 1)
+                {
+                    returnString += " e " + ingredientsFind.value;
+                }
+                else
+                {
+                    returnString += ", " + ingredientsFind.value;
+                }
+            }
+
+            return returnString;
+        }
 
         private List<Attachment> GetPizzaAttachments(List<Pizza> pizzas, BotUserState userState)
         {

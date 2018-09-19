@@ -57,7 +57,10 @@ namespace Pizzaria.Dialogs
                     //await dialogContext.Begin(intentResult, args);
                     await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, args);
                 }
-
+            }
+            else if(turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
+            {
+                await turnContext.SendActivity("Evento não tratado -> " + turnContext.Activity.Type);
             }
         }
         
