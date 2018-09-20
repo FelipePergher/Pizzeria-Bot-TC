@@ -11,6 +11,7 @@ using Pizzaria.Code;
 using Pizzaria.Data.Models;
 using Pizzaria.Data.Models.DrinkModels;
 using Pizzaria.Data.Models.PizzaModels;
+using Pizzaria.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,15 +58,14 @@ namespace Pizzaria.Dialogs
                 userState.EntitiesState.PizzasQuantityUsed++;
 
                 List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
-                IMessageActivity activity = MessageFactory.Carousel(attachments);
-                await dialogContext.Context.SendActivity($"Encontrei as seguintes pizzas que possuem {GetIngredientsText(pizzas, entities.Ingredients)}");
-                await dialogContext.Context.SendActivity(activity);
+                IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
+                await dialogContext.Context.SendActivity($"Encontrei as seguintes pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
+                await dialogContext.Context.SendActivity(messageActivity);
             }
             else
             {
                 //Todo: oferecerer as pizzas mais vendidas se não tiver bebidas nas entidades
                 await dialogContext.Context.SendActivity("nenhum ingrediente nas entidades");
-                await dialogContext.End();
             }
         }
 
@@ -80,15 +80,22 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(userState.EntitiesState.EntitiesParse.Ingredients, context);
 
-            if (activity.Text.Contains(ActionTypes.PostBack))
+            if (activity.Text.Contains(ActionTypes.PostBack + "AddPizza"))
             {
                 string[] productData = activity.Text.Split("||");
-                AddPizzaOrder(productData[0], productData[1]);
+                PizzaModel pizzaModel = AddPizzaOrder(productData[0], productData[1], userState);
+
                 //Todo: oferecer se o usuário quer ver mais pizzas
-                await dialogContext.Context.SendActivity("Clique no botão de um produto adicionar a ordem");
-                //await dialogContext.End();
+                await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} foi adicionada com sucesso :)");
+                await dialogContext.Context.SendActivity("Gostaria de ver mais alguma pizza? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
+
+                await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzas());
             }
-            else if (activity.Text.ToLower() == "more")
+            else if (activity.Text.Contains(ActionTypes.PostBack + "SuggestedAction"))
+            {
+                await dialogContext.Context.SendActivity("resposta do suggested action");
+            }
+            else if (activity.Text == (ActionTypes.PostBack + "More"))
             {
                 pizzas = pizzas.Skip(quantityProduct * userState.EntitiesState.PizzasQuantityUsed).ToList();
                 if (pizzas.Count > 0)
@@ -98,11 +105,9 @@ namespace Pizzaria.Dialogs
                     IMessageActivity activitySend = MessageFactory.Carousel(attachments);
                     await dialogContext.Context.SendActivity(activitySend);
                 }
-                //await dialogContext.Replace(Order_Product_Waterfall_Text, args);
             }
             else
             {
-                //reinit dialog of accord intention of the user
                 RecognizerResult luisResult = dialogContext.Context.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
                 string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
 
@@ -125,7 +130,23 @@ namespace Pizzaria.Dialogs
 
         #region Private Methods
 
-        private string GetIngredientsText(List<Pizza> pizzas, List<string> ingredients)
+        private IActivity GetSuggestedActionsNewsPizzas()
+        {
+            return MessageFactory.SuggestedActions(
+                new CardAction[]
+                {
+                    new CardAction
+                    {
+                        Title = "Quero",
+                        Type = ActionTypes.PostBack,
+                        Value = "quero||" + ActionTypes.PostBack + "SuggestedAction",
+                        Text = "asdasdasdsas"
+                        
+                    }
+                });
+        }
+
+        private string GetIngredientsFindedText(List<Pizza> pizzas, List<string> ingredients)
         {
             List<string> allIngredients = new List<string>();
             foreach (var pizza in pizzas)
@@ -148,10 +169,11 @@ namespace Pizzaria.Dialogs
 
             foreach (var ingredientsFind in ingredientsFinded.Select((value, i) => new { i, value }))
             {
-                if(ingredientsFind.i == 0)
+                if (ingredientsFind.i == 0)
                 {
                     returnString += ingredientsFind.value;
-                } else if(ingredientsFind.i == ingredientsFinded.Count - 1)
+                }
+                else if (ingredientsFind.i == ingredientsFinded.Count - 1)
                 {
                     returnString += " e " + ingredientsFind.value;
                 }
@@ -170,22 +192,7 @@ namespace Pizzaria.Dialogs
 
             foreach (var pizza in pizzas.Take(quantityProduct))
             {
-                string ingredients = "Ingredientes: ";
-                foreach (var ingredient in pizza.PizzaIngredients.Select((value, i) => new { i, value }))
-                {
-                    if (pizza.PizzaIngredients.Count - 1 == ingredient.i)
-                    {
-                        ingredients += " e " + ingredient.value.Ingredient.Name;
-                    }
-                    else if (ingredient.i == 0)
-                    {
-                        ingredients += ingredient.value.Ingredient.Name;
-                    }
-                    else
-                    {
-                        ingredients += ", " + ingredient.value.Ingredient.Name;
-                    }
-                }
+                string ingredients = GetIngredientsString(pizza.PizzaIngredients);
 
                 attachments.Add(new ThumbnailCard
                 {
@@ -197,7 +204,7 @@ namespace Pizzaria.Dialogs
                     {
                         Type = ActionTypes.PostBack,
                         Title = x.SizeP.Size + " ( R$ " + x.Price.ToString("F") + ")",
-                        Value = pizza.PizzaId + "||" + x.SizeP.Size + "||" + ActionTypes.PostBack
+                        Value = pizza.PizzaId + "||" + x.SizeP.Size + "||" + ActionTypes.PostBack + "AddPizza"
                     }).ToList()
                 }.ToAttachment());
             }
@@ -207,27 +214,99 @@ namespace Pizzaria.Dialogs
                 attachments.Add(new HeroCard
                 {
                     Images = new List<CardImage>
+                        {
+                            new CardImage
                             {
-                                new CardImage
-                                {
-                                    Url = ServerUrl + @"/Images/Icons/more-button.png",
-                                    Tap = new CardAction { Title = "Mais Pizzas", Value = "More", Type = ActionTypes.PostBack }
-                                }
+                                Url = ServerUrl + @"/Images/Icons/more-button.png",
+                                Tap = new CardAction { Title = "Mais Pizzas", Value = ActionTypes.PostBack + "More", Type = ActionTypes.PostBack }
                             }
+                        }
                 }.ToAttachment());
             }
             return attachments;
         }
 
-        private void AddPizzaOrder(string id, string size)
+        private string GetIngredientsString(ICollection<PizzaIngredient> pizzaIngredients)
         {
-            //Todo: Clique no botão de um produto adicionar a ordem
-            Pizza pizza = context.Pizzas
-                    .Where(x => x.PizzaId == int.Parse(id))
-                    .Include(x => x.PizzaIngredients)
-                        .ThenInclude(y => y.Ingredient)
-                    .Include(x => x.PizzaSizes).
-                        ThenInclude(y => y.SizeP).FirstOrDefault();
+            string ingredients = "Ingredientes: ";
+            foreach (var ingredient in pizzaIngredients.Select((value, i) => new { i, value }))
+            {
+                if (pizzaIngredients.Count - 1 == ingredient.i)
+                {
+                    ingredients += " e " + ingredient.value.Ingredient.Name;
+                }
+                else if (ingredient.i == 0)
+                {
+                    ingredients += ingredient.value.Ingredient.Name;
+                }
+                else
+                {
+                    ingredients += ", " + ingredient.value.Ingredient.Name;
+                }
+            }
+
+            return ingredients;
+        }
+
+        private PizzaModel AddPizzaOrder(string id, string size, BotUserState userState)
+        {
+            PizzaModel pizzaModelFind = userState.Order.Pizzas.Where(x => x.PizzaId == int.Parse(id) && x.SizeName == size).FirstOrDefault();
+
+            if (pizzaModelFind != null)
+            {
+                pizzaModelFind.Quantity++;
+                userState.Order.PriceTotal += pizzaModelFind.Price;
+                return pizzaModelFind;
+            }
+            else
+            {
+                Pizza pizza = context.Pizzas.Where(x => x.PizzaId == int.Parse(id)).FirstOrDefault();
+                PizzaSize pizzaSize = context.Pizzas.Include(x => x.PizzaIngredients).ThenInclude(y => y.Ingredient)
+                    .Include(x => x.PizzaSizes).ThenInclude(y => y.SizeP).FirstOrDefault().PizzaSizes.Where(x => x.SizeP.Size == size).FirstOrDefault();
+
+                PizzaModel pizzaModel = new PizzaModel
+                {
+                    PizzaId = pizza.PizzaId,
+                    PizzaName = pizza.Name,
+                    PizzaSizeId = pizzaSize.PizzaSizeId,
+                    SizeId = pizzaSize.SizePId,
+                    SizeName = pizzaSize.SizeP.Size,
+                    Quantity = 1,
+                    Price = pizzaSize.Price
+                };
+                userState.Order.Pizzas.Add(pizzaModel);
+                userState.Order.PriceTotal += (pizzaModel.Quantity * pizzaModel.Price);
+                return pizzaModel;
+            }
+        }
+
+        private ReceiptCard GetReceiptCart(BotUserState userState)
+        {
+            List<ReceiptItem> receiptItems = new List<ReceiptItem>();
+            foreach (var item in userState.Order.Pizzas)
+            {
+                Pizza pizza = context.Pizzas.Find(userState.Order.Pizzas.First().PizzaId);
+                double price = item.Price * item.Quantity;
+                receiptItems.Add(new ReceiptItem
+                {
+                    Title = $"({item.Quantity}) {item.PizzaName} | {item.SizeName}",
+                    Price = "R$" + price.ToString("F"),
+                    Quantity = item.Quantity.ToString(),
+                    Subtitle = GetIngredientsString(pizza.PizzaIngredients),
+                    Image = new CardImage(url: ServerUrl + @"/" + pizza.Image)
+                });
+            }
+
+            ReceiptCard receiptCard = new ReceiptCard
+            {
+                Title = "Dados da ordem",
+                Total = "R$ " + userState.Order.PriceTotal.ToString("F"),
+                Items = receiptItems
+            };
+
+
+
+            return receiptCard;
         }
 
         #endregion
