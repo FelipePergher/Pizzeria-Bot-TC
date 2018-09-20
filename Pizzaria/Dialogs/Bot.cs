@@ -31,6 +31,7 @@ namespace Pizzaria.Dialogs
         {
             if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
             {
+                //Todo: Informar ao usuário as funções que o bot realiza
                 await turnContext.SendActivity("Bem vindo a conversa.");
             }
             else if (turnContext.Activity.Type == ActivityTypes.Message)
@@ -54,8 +55,8 @@ namespace Pizzaria.Dialogs
                     };
 
                     //Todo: Remover depois. Usado para ir direto para o pedido
-                    //await dialogContext.Begin(intentResult, args);
-                    await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, args);
+                    await dialogContext.Begin(intentResult, args);
+                    //await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, args);
                 }
             }
             else if(turnContext.Activity.Type != ActivityTypes.ConversationUpdate)

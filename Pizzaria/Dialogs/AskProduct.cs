@@ -59,7 +59,7 @@ namespace Pizzaria.Dialogs
 
                 List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
-                await dialogContext.Context.SendActivity($"Encontrei as seguintes pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
+                await dialogContext.Context.SendActivity($"Estou lhe enviando as pizzas disponiveis, enviando primeiramente as pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
                 await dialogContext.Context.SendActivity(messageActivity);
             }
             else
@@ -85,15 +85,17 @@ namespace Pizzaria.Dialogs
                 string[] productData = activity.Text.Split("||");
                 PizzaModel pizzaModel = AddPizzaOrder(productData[0], productData[1], userState);
 
-                //Todo: oferecer se o usuário quer ver mais pizzas
                 await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} foi adicionada com sucesso :)");
                 await dialogContext.Context.SendActivity("Gostaria de ver mais alguma pizza? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
 
-                await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzas());
+                await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzas("Pizza"));
             }
-            else if (activity.Text.Contains(ActionTypes.PostBack + "SuggestedAction"))
+            else if (activity.Text.Contains(ActionTypes.PostBack + "SuggestedActionPizza"))
             {
-                await dialogContext.Context.SendActivity("resposta do suggested action");
+                List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
+                userState.EntitiesState.PizzasQuantityUsed++;
+                IMessageActivity activitySend = MessageFactory.Carousel(attachments);
+                await dialogContext.Context.SendActivity(activitySend);
             }
             else if (activity.Text == (ActionTypes.PostBack + "More"))
             {
@@ -116,8 +118,8 @@ namespace Pizzaria.Dialogs
                     { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
                 };
                 //Todo: voltar a usar a entidade normalmente depois de ajustar
-                await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, createdArgs);
-                //await dialogContext.Replace(intentResult, createdArgs);
+                //await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, createdArgs);
+                await dialogContext.Replace(intentResult, createdArgs);
             }
         }
 
@@ -130,7 +132,7 @@ namespace Pizzaria.Dialogs
 
         #region Private Methods
 
-        private IActivity GetSuggestedActionsNewsPizzas()
+        private IActivity GetSuggestedActionsNewsPizzas(string type)
         {
             return MessageFactory.SuggestedActions(
                 new CardAction[]
@@ -139,7 +141,7 @@ namespace Pizzaria.Dialogs
                     {
                         Title = "Quero",
                         Type = ActionTypes.PostBack,
-                        Value = "quero||" + ActionTypes.PostBack + "SuggestedAction",
+                        Value = "quero||" + ActionTypes.PostBack + "SuggestedAction" + type,
                         Text = "asdasdasdsas"
                         
                     }
@@ -280,34 +282,6 @@ namespace Pizzaria.Dialogs
             }
         }
 
-        private ReceiptCard GetReceiptCart(BotUserState userState)
-        {
-            List<ReceiptItem> receiptItems = new List<ReceiptItem>();
-            foreach (var item in userState.Order.Pizzas)
-            {
-                Pizza pizza = context.Pizzas.Find(userState.Order.Pizzas.First().PizzaId);
-                double price = item.Price * item.Quantity;
-                receiptItems.Add(new ReceiptItem
-                {
-                    Title = $"({item.Quantity}) {item.PizzaName} | {item.SizeName}",
-                    Price = "R$" + price.ToString("F"),
-                    Quantity = item.Quantity.ToString(),
-                    Subtitle = GetIngredientsString(pizza.PizzaIngredients),
-                    Image = new CardImage(url: ServerUrl + @"/" + pizza.Image)
-                });
-            }
-
-            ReceiptCard receiptCard = new ReceiptCard
-            {
-                Title = "Dados da ordem",
-                Total = "R$ " + userState.Order.PriceTotal.ToString("F"),
-                Items = receiptItems
-            };
-
-
-
-            return receiptCard;
-        }
 
         #endregion
 

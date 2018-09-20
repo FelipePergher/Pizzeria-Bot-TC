@@ -26,7 +26,14 @@ namespace Pizzaria.Code
 
             List<PizzaRecomendation> pizzaRecomendations = new List<PizzaRecomendation>();
 
-            foreach (var pizza in pizzas)
+            //todo: pegar as mais vendidas primeiro
+            List<Pizza> allpizzas = context.Pizzas
+                    .Include(x => x.PizzaIngredients)
+                        .ThenInclude(y => y.Ingredient)
+                    .Include(x => x.PizzaSizes).
+                        ThenInclude(y => y.SizeP).ToList();
+
+            foreach (var pizza in allpizzas)
             {
                 PizzaRecomendation pizzaRecomendation = pizzaRecomendations.Where(x => x.Pizza == pizza).FirstOrDefault();
                 if (pizzaRecomendation == null)
@@ -35,7 +42,7 @@ namespace Pizzaria.Code
                     pizzaRecomendations.Add(new PizzaRecomendation
                     {
                         Pizza = pizza,
-                        IngredientsQuantity = 1
+                        IngredientsQuantity = 0
                     });
                 }
                 else
@@ -45,7 +52,7 @@ namespace Pizzaria.Code
 
             }
 
-            return pizzaRecomendations.OrderBy(x => x.IngredientsQuantity).Select(x => x.Pizza).ToList();
+            return pizzaRecomendations.OrderBy(x => x.IngredientsQuantity).Reverse().Select(x => x.Pizza).ToList();
         }
 
         public static List<Pizza> GetPizzasMoreSalesWithoutByIngredients(ApplicationDbContext context, List<Pizza> pizzasByIngredients)

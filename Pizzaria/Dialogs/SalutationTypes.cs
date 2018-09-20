@@ -15,6 +15,8 @@ namespace Pizzaria.Dialogs
         public const string Salutation_How_Is_Waterfall_Text = "Salutation_How_Is";
         public const string How_Is_Waterfall_Text = "How_Is";
 
+        #region Async Methods
+
         private async Task Salutation(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             dialogContext.ActiveDialog.State = new Dictionary<string, object>();
@@ -38,11 +40,10 @@ namespace Pizzaria.Dialogs
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
             await dialogContext.Context.SendActivity($"Legal!");
-            //Todo: Ver de pedidos antigos para oferecer
+            //Todo: Pedir se o usuários quer ver os seus ultimos pedidos enviar um carrousel de receipt dos ultimos X pedidos
             await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
             await dialogContext.End();
         }
-
         private async Task Answer_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             dialogContext.ActiveDialog.State["status"] = args["Value"];
@@ -51,10 +52,14 @@ namespace Pizzaria.Dialogs
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
             await dialogContext.Context.SendActivity($"Eu estou ótimo hoje!");
-            //Todo: Ver de pedidos antigos para oferecer
+            //Todo: Pedir se o usuários quer ver os seus ultimos pedidos enviar um carrousel de receipt dos ultimos X pedidos
             await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
             await dialogContext.End();
         }
+
+        #endregion
+
+        #region Waterfall
 
         public WaterfallStep[] SalutationWaterfall()
         {
@@ -82,5 +87,7 @@ namespace Pizzaria.Dialogs
                 Answer
             };
         }
+
+        #endregion
     }
 }

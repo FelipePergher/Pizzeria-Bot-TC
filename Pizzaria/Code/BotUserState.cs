@@ -15,12 +15,13 @@ namespace Pizzaria.Code
         public BotUserState()
         {
             Order = new Order();
+            Status = "";
         }
 
         public string Name { get; set; }
 
         //Todo: Usado para pular o comprimento do usuário
-        public string Status { get; set; } = "a";
+        public string Status { get; set; } 
 
         public Order Order { get; set; }
 
