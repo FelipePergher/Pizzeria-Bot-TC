@@ -1,9 +1,11 @@
 ﻿using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Pizzaria.Code;
 using Pizzaria.Data.Models;
+using Pizzaria.Data.Models.DrinkModels;
 using Pizzaria.Data.Models.PizzaModels;
 using System;
 using System.Collections.Generic;
@@ -64,7 +66,7 @@ namespace Pizzaria.Dialogs
             List<ReceiptItem> receiptItems = new List<ReceiptItem>();
             foreach (var item in userState.Order.Pizzas)
             {
-                Pizza pizza = context.Pizzas.Find(userState.Order.Pizzas.First().PizzaId);
+                Pizza pizza = context.Pizzas.Where(x => x.PizzaId == item.PizzaId).Include(x => x.PizzaIngredients).ThenInclude(y => y.Ingredient).FirstOrDefault();
                 double price = item.Price * item.Quantity;
                 receiptItems.Add(new ReceiptItem
                 {
@@ -73,6 +75,20 @@ namespace Pizzaria.Dialogs
                     Quantity = item.Quantity.ToString(),
                     Subtitle = GetIngredientsString(pizza.PizzaIngredients),
                     Image = new CardImage(url: ServerUrl + @"/" + pizza.Image)
+                });
+            }
+
+            foreach (var item in userState.Order.Drinks)
+            {
+                Drink drink = context.Drinks.Find(item.DrinkId);
+                double price = item.Price * item.Quantity;
+                receiptItems.Add(new ReceiptItem
+                {
+                    Title = $"({item.Quantity}) {item.DrinkName}",
+                    Subtitle = item.DrinkSizeName,
+                    Price = "R$" + price.ToString("F"),
+                    Quantity = item.Quantity.ToString(),
+                    Image = new CardImage(url: ServerUrl + @"/" + drink.Image)
                 });
             }
 

@@ -57,9 +57,10 @@ namespace Pizzaria.Dialogs
             {
                 List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(entities.Ingredients, context);
                 pizzas = pizzas.Skip(quantityPizza * userState.EntitiesState.PizzasQuantityUsed).ToList();
-                userState.EntitiesState.PizzasQuantityUsed++;
 
                 List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
+                userState.EntitiesState.PizzasQuantityUsed++;
+
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity($"Estou lhe enviando as pizzas disponiveis, enviando primeiramente as pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
                 await dialogContext.Context.SendActivity(messageActivity);
@@ -67,12 +68,13 @@ namespace Pizzaria.Dialogs
             else if(entities.Drinks.Count > 0)
             {
                 //Todo: Oferecer bebidas de acordo com o que foi pedido e também o restante baseado nas vendas
-                List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(context);
+                List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(userState.EntitiesState.EntitiesParse.Drinks, context);
 
                 drinks = drinks.Skip(quantityDrink * userState.EntitiesState.DrinksQuantityUsed).ToList();
-                userState.EntitiesState.DrinksQuantityUsed++;
 
                 List<Attachment> attachments = GetDrinkAttachments(drinks, userState);
+                userState.EntitiesState.DrinksQuantityUsed++;
+
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas solicitadas");
                 await dialogContext.Context.SendActivity(messageActivity);
@@ -82,11 +84,12 @@ namespace Pizzaria.Dialogs
             {
                 if(entities.ProductTypes.Where(x => x == "pizza").ToList().Count > 0)
                 {
-                    List<Pizza> pizzas = EntitieRecomendation.GetPizzasMoreSales(context);
+                    List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(userState.EntitiesState.EntitiesParse.Ingredients, context);
                     pizzas = pizzas.Skip(quantityPizza * userState.EntitiesState.PizzasQuantityUsed).ToList();
-                    userState.EntitiesState.PizzasQuantityUsed++;
 
                     List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
+                    userState.EntitiesState.PizzasQuantityUsed++;
+
                     IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                     await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, ordenando pelas mais vendidas");
                     await dialogContext.Context.SendActivity(messageActivity);
@@ -113,12 +116,13 @@ namespace Pizzaria.Dialogs
             Activity activity = (Activity)args["Activity"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(userState.EntitiesState.EntitiesParse.Ingredients, context);
-            List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(context);
+            List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(userState.EntitiesState.EntitiesParse.Drinks, context);
 
             if (activity.Text.Contains(ActionTypes.PostBack + "AddPizza"))
             {
                 string[] productData = activity.Text.Split("||");
                 PizzaModel pizzaModel = AddPizzaOrder(productData[0], productData[1], userState);
+                userState.EntitiesState.PizzasQuantityUsed--;
 
                 await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} foi adicionada com sucesso :)");
                 await dialogContext.Context.SendActivity("Gostaria de ver mais alguma pizza? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
@@ -127,6 +131,7 @@ namespace Pizzaria.Dialogs
             }
             else if (activity.Text.Contains(ActionTypes.PostBack + "SuggestedActionPizza"))
             {
+                pizzas = pizzas.Skip(quantityPizza * userState.EntitiesState.PizzasQuantityUsed).ToList();
                 List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
                 userState.EntitiesState.PizzasQuantityUsed++;
                 IMessageActivity activitySend = MessageFactory.Carousel(attachments);
@@ -135,26 +140,25 @@ namespace Pizzaria.Dialogs
             else if (activity.Text == (ActionTypes.PostBack + "MorePizza"))
             {
                 pizzas = pizzas.Skip(quantityPizza * userState.EntitiesState.PizzasQuantityUsed).ToList();
-                if (pizzas.Count > 0)
-                {
-                    List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
-                    userState.EntitiesState.PizzasQuantityUsed++;
-                    IMessageActivity activitySend = MessageFactory.Carousel(attachments);
-                    await dialogContext.Context.SendActivity(activitySend);
-                }
+                List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
+                userState.EntitiesState.PizzasQuantityUsed++;
+                IMessageActivity activitySend = MessageFactory.Carousel(attachments);
+                await dialogContext.Context.SendActivity(activitySend);
             }
             else if (activity.Text.Contains(ActionTypes.PostBack + "AddDrink"))
             {
                 string[] productData = activity.Text.Split("||");
                 DrinkModel drinkModel = AddDrinkOrder(productData[0], productData[1], userState);
+                userState.EntitiesState.DrinksQuantityUsed--;
 
-                await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} adicionado com sucesso :)");
+                await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} {drinkModel.DrinkSizeName} adicionado com sucesso :)");
                 await dialogContext.Context.SendActivity("Gostaria de ver mais alguma bebida? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Drink"));
             }
             else if (activity.Text.Contains(ActionTypes.PostBack + "SuggestedActionDrink"))
             {
+                drinks = drinks.Skip(quantityDrink * userState.EntitiesState.DrinksQuantityUsed).ToList();
                 List<Attachment> attachments = GetDrinkAttachments(drinks, userState);
                 userState.EntitiesState.DrinksQuantityUsed++;
                 IMessageActivity activitySend = MessageFactory.Carousel(attachments);
@@ -391,10 +395,8 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                Drink drink = context.Drinks.Where(x => x.DrinkId == int.Parse(id)).FirstOrDefault();
-                DrinkSize drinkSize = context.Drinks
-                    .Include(x => x.DrinkSizes).ThenInclude(y => y.SizeD)
-                    .FirstOrDefault().DrinkSizes
+                Drink drink = context.Drinks.Where(x => x.DrinkId == int.Parse(id)).Include(x => x.DrinkSizes).ThenInclude(y => y.SizeD).FirstOrDefault();
+                DrinkSize drinkSize = drink.DrinkSizes
                     .Where(x => x.SizeD.Quantity == double.Parse(quantity)).FirstOrDefault();
 
 

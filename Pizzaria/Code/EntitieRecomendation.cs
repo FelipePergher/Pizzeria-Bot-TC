@@ -53,7 +53,7 @@ namespace Pizzaria.Code
 
             }
 
-            return pizzaRecomendations.OrderBy(x => x.IngredientsQuantity).Reverse().Select(x => x.Pizza).ToList();
+            return pizzaRecomendations.OrderBy(x => x.IngredientsQuantity).Select(x => x.Pizza).ToList();
         }
 
         public static List<Pizza> GetPizzasMoreSalesWithoutByIngredients(ApplicationDbContext context, List<Pizza> pizzasByIngredients)
@@ -66,24 +66,13 @@ namespace Pizzaria.Code
 
             return pizzas;
         }
-        public static List<Pizza> GetPizzasMoreSales(ApplicationDbContext context)
-        {
-            //Todo: Get more saled pizzas and get this on database to send to the user like recomendation
-            List<Pizza> pizzas = context.Pizzas
-                    .Include(x => x.PizzaIngredients)
-                        .ThenInclude(y => y.Ingredient)
-                    .Include(x => x.PizzaSizes).
-                        ThenInclude(y => y.SizeP).ToList();
 
-            return pizzas;
-        }
-
-        public static List<Drink> GetDrinksMoreSales(ApplicationDbContext context)
+        public static List<Drink> GetDrinksMoreSales(List<string> drinksFind, ApplicationDbContext context)
         {
             List<Drink> drinks = context.Drinks
                     .Include(x => x.DrinkSizes)
                         .ThenInclude(y => y.SizeD).ToList();
-            return drinks;
+            return drinks.OrderBy(x => x.Name).ToList();
         }
     }
 
