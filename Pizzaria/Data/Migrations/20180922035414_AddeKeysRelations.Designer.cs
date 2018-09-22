@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pizzaria.Data.Models;
 
 namespace Pizzaria.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180922035414_AddeKeysRelations")]
+    partial class AddeKeysRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,9 +44,13 @@ namespace Pizzaria.Migrations
 
                     b.Property<int>("SizeDId");
 
+                    b.Property<int>("DrinkSizeId");
+
                     b.Property<double>("Price");
 
                     b.HasKey("DrinkId", "SizeDId");
+
+                    b.HasAlternateKey("DrinkSizeId");
 
                     b.HasIndex("SizeDId");
 
@@ -117,9 +123,13 @@ namespace Pizzaria.Migrations
 
                     b.Property<int>("SizePId");
 
+                    b.Property<int>("PizzaSizeId");
+
                     b.Property<double>("Price");
 
                     b.HasKey("PizzaId", "SizePId");
+
+                    b.HasAlternateKey("PizzaSizeId");
 
                     b.HasIndex("SizePId");
 

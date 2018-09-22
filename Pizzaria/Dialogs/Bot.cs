@@ -54,9 +54,7 @@ namespace Pizzaria.Dialogs
                         { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
                     };
 
-                    //Todo: Remover depois. Usado para ir direto para o pedido
                     await dialogContext.Begin(intentResult, args);
-                    //await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, args);
                 }
             }
             else if(turnContext.Activity.Type != ActivityTypes.ConversationUpdate)

@@ -40,13 +40,13 @@ namespace Pizzaria.Dialogs
                 IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
                 await dialogContext.Context.SendActivity(messageActivity);
                 //Todo: Oferecer edição do carinho
-                dialogContext.End();
+                await dialogContext.End();
             }
             else
             {
                 await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho :(");
                 //Todo: enviar opções de compra
-                dialogContext.End();
+                await dialogContext.End();
             }
         }
 

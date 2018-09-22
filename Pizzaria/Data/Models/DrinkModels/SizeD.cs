@@ -18,6 +18,8 @@ namespace Pizzaria.Data.Models.DrinkModels
 
         public double Quantity { get; set; }
 
+        public string SizeName { get; set; }
+
         public ICollection<DrinkSize> DrinkSizes { get; set; }
 
     }

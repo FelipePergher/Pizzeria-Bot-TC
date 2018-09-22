@@ -106,27 +106,33 @@ namespace Pizzaria
                         {
                             new SizeD
                             {
-                                Quantity = InformationName.Lata350
+                                Quantity = InformationName.Lata350,
+                                SizeName = InformationName.Lata350Name
                             },
                             new SizeD
                             {
-                                Quantity = InformationName.Garrafa500
+                                Quantity = InformationName.Garrafa500,
+                                SizeName = InformationName.Garrafa500Name
                             },
                             new SizeD
                             {
-                                Quantity = InformationName.Garrafa600
+                                Quantity = InformationName.Garrafa600,
+                                SizeName = InformationName.Garrafa600Name
                             },
                             new SizeD
                             {
-                                Quantity = InformationName.Litro01
+                                Quantity = InformationName.Litro01,
+                                SizeName = InformationName.Litro01Name
                             },
                             new SizeD
                             {
-                                Quantity = InformationName.Litro02
+                                Quantity = InformationName.Litro02,
+                                SizeName = InformationName.Litro02Name
                             },
                             new SizeD
                             {
-                                Quantity = InformationName.Litro15
+                                Quantity = InformationName.Litro15,
+                                SizeName = InformationName.Litro15Name
                             }
                         };
                         List<Drink> drinks = new List<Drink>
@@ -134,6 +140,7 @@ namespace Pizzaria
                             new Drink
                             {
                                 Name = "Coca-Cola",
+                                Image = "Images/Drinks/coca.png",
                                 DrinkSizes = new List<DrinkSize>
                                 {
                                     new DrinkSize
@@ -156,6 +163,7 @@ namespace Pizzaria
                             new Drink
                             {
                                 Name = "Sprite",
+                                Image = "Images/Drinks/sprite.jpg",
                                 DrinkSizes = new List<DrinkSize>
                                 {
                                     new DrinkSize
@@ -178,6 +186,7 @@ namespace Pizzaria
                             new Drink
                             {
                                 Name = "Água Mineral",
+                                Image = "Images/Drinks/agua.png",
                                 DrinkSizes = new List<DrinkSize>
                                 {
                                     new DrinkSize

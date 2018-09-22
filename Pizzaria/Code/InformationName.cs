@@ -31,9 +31,18 @@ namespace Pizzaria.Code
         public static double Litro15 { get; set; } = 1.5d;
         public static double Litro02 { get; set; } = 2d;
 
+        //Drink Sizes
+        public static string Lata350Name { get; set; } = "350 ml";
+        public static string Garrafa500Name { get; set; } = "500 ml";
+        public static string Garrafa600Name { get; set; } = "600 ml";
+        public static string Litro01Name { get; set; } = "1 Ltr";
+        public static string Litro15Name { get; set; } = "1.5 Ltr";
+        public static string Litro02Name { get; set; } = "2 Ltr";
+
         //Entities
         public static string IngredientsEntitie { get; set; } = "Ingredients";
         public static string Product_TypeEntitie { get; set; } = "Product_Type";
+        public static string Pizza_NameEntitie { get; set; } = "Pizza_Name";
         public static string DrinkEntitie { get; set; } = "Drink";
 
         //Product Type

@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Images\Drinks\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\Images\Pizzas\bacon.png" />
     <None Include="wwwroot\Images\Pizzas\calabresa.png" />
     <None Include="wwwroot\Images\Pizzas\portuguesa.png" />

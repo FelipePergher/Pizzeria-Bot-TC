@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pizzaria.Data.Models;
+using Pizzaria.Data.Models.DrinkModels;
 using Pizzaria.Data.Models.PizzaModels;
 using System;
 using System.Collections.Generic;
@@ -68,9 +69,21 @@ namespace Pizzaria.Code
         public static List<Pizza> GetPizzasMoreSales(ApplicationDbContext context)
         {
             //Todo: Get more saled pizzas and get this on database to send to the user like recomendation
-            List<Pizza> pizzas = new List<Pizza>();
+            List<Pizza> pizzas = context.Pizzas
+                    .Include(x => x.PizzaIngredients)
+                        .ThenInclude(y => y.Ingredient)
+                    .Include(x => x.PizzaSizes).
+                        ThenInclude(y => y.SizeP).ToList();
 
             return pizzas;
+        }
+
+        public static List<Drink> GetDrinksMoreSales(ApplicationDbContext context)
+        {
+            List<Drink> drinks = context.Drinks
+                    .Include(x => x.DrinkSizes)
+                        .ThenInclude(y => y.SizeD).ToList();
+            return drinks;
         }
     }
 
@@ -80,4 +93,5 @@ namespace Pizzaria.Code
 
         public int IngredientsQuantity { get; set; }
     }
+
 }
