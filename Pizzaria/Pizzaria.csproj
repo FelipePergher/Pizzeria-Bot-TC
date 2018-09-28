@@ -23,16 +23,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\Images\Pizzas\bacon.png" />
     <None Include="wwwroot\Images\Pizzas\calabresa.png" />
     <None Include="wwwroot\Images\Pizzas\portuguesa.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
 </Project>

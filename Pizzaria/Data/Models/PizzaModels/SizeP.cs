@@ -8,17 +8,17 @@ namespace Pizzaria.Data.Models.PizzaModels
 {
     public class SizeP
     {
-        public SizeP()
-        {
-            PizzaSizes = new HashSet<PizzaSize>();
-        }
-
         [Key]
         public int SizePId { get; set; }
 
         public string Size { get; set; }
 
+
+        #region Many To many Relations
+
         public ICollection<PizzaSize> PizzaSizes { get; set; }
+
+        #endregion
 
     }
 }

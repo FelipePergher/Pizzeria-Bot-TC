@@ -8,11 +8,6 @@ namespace Pizzaria.Data.Models.DrinkModels
 {
     public class Drink
     {
-        public Drink()
-        {
-            DrinkSizes = new HashSet<DrinkSize>();
-        }
-
         [Key]
         public int DrinkId { get; set; }
 
@@ -22,6 +17,11 @@ namespace Pizzaria.Data.Models.DrinkModels
 
         public double Price { get; set; }
 
+
+        #region Many To many Relations
+
         public ICollection<DrinkSize> DrinkSizes { get; set; }
-    }       
+
+        #endregion
+    }
 }

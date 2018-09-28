@@ -12,7 +12,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     ConversationDataId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
                 },
                 constraints: table =>
                 {
@@ -24,7 +24,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     DrinkId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false)
@@ -39,7 +39,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     IngredientId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -52,7 +52,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     PizzaId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Vegetarian = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     PizzaType = table.Column<string>(nullable: true),
@@ -68,7 +68,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     SizeDId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Quantity = table.Column<double>(nullable: false),
                     SizeName = table.Column<string>(nullable: true)
                 },
@@ -82,7 +82,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     SizePId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Size = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -95,7 +95,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ConversationDataId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -188,7 +188,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     AddressId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Street = table.Column<string>(nullable: true),
                     Neighborhood = table.Column<string>(nullable: true),
                     Number = table.Column<int>(nullable: false),

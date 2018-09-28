@@ -8,12 +8,6 @@ namespace Pizzaria.Data.Models.PizzaModels
 {
     public class Pizza
     {
-        public Pizza()
-        {
-            PizzaIngredients = new HashSet<PizzaIngredient>();
-            PizzaSizes = new HashSet<PizzaSize>();
-        }
-
         [Key]
         public int PizzaId { get; set; }
 
@@ -25,7 +19,12 @@ namespace Pizzaria.Data.Models.PizzaModels
 
         public string Image { get; set; }
 
+
+        #region Many To many Relations
+
         public ICollection<PizzaIngredient> PizzaIngredients  { get; set; }
         public ICollection<PizzaSize> PizzaSizes { get; set; }
+
+        #endregion
     }
 }
