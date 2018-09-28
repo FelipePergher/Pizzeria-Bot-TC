@@ -67,13 +67,38 @@ namespace Pizzaria.Code
             return pizzas;
         }
 
-        public static List<Drink> GetDrinksMoreSales(List<string> drinksFind, ApplicationDbContext context)
+        public static List<Pizza> GetPizzasMoreSales(ApplicationDbContext context)
         {
+            List<Pizza> pizzas = context.Pizzas
+                    .Include(x => x.PizzaIngredients)
+                        .ThenInclude(y => y.Ingredient)
+                    .Include(x => x.PizzaSizes).
+                        ThenInclude(y => y.SizeP).ToList();
+            //Todo: Ordenar baseado na quantidade de vendas
+            //context.Pizzas.OrderBy(x => x.)
+
+            return pizzas;
+        }
+
+        public static List<Drink> GetDrinksMoreSalesWithUserDrinks(List<string> drinksFind, ApplicationDbContext context)
+        {
+            //Todo: Ordenar baseado na quantidade de vendas
+            //Todo: colocar os que o usuário solicitou primeiro
             List<Drink> drinks = context.Drinks
                     .Include(x => x.DrinkSizes)
                         .ThenInclude(y => y.SizeD).ToList();
             return drinks.OrderBy(x => x.Name).ToList();
         }
+
+        public static List<Drink> GetDrinksMoreSales(ApplicationDbContext context)
+        {
+            //Todo: Ordenar baseado na quantidade de vendas
+            List<Drink> drinks = context.Drinks
+                    .Include(x => x.DrinkSizes)
+                        .ThenInclude(y => y.SizeD).ToList();
+            return drinks.OrderBy(x => x.Name).ToList();
+        }
+
     }
 
     public class PizzaRecomendation

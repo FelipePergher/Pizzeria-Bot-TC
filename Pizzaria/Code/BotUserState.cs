@@ -20,7 +20,6 @@ namespace Pizzaria.Code
 
         public string Name { get; set; }
 
-        //Todo: Usado para pular o comprimento do usuário
         public string Status { get; set; } 
 
         public Order Order { get; set; }

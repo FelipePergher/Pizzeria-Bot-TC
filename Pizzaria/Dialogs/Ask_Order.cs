@@ -20,6 +20,7 @@ namespace Pizzaria.Dialogs
         public string TextPrompt { get; set; } = "textPrompt";
         public const string Ask_Order_WaterfallText = "Ask_Order";
         public const string Clean_Order_WaterfallText = "Clean_Order";
+        public const string End_Order_WaterfallText = "End_Order";
 
         private readonly ApplicationDbContext context;
         private readonly IConfiguration Configuration;
@@ -49,9 +50,12 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho :(");
-                //Todo: enviar opções de compra
-                await dialogContext.End();
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho :( \n Mas estou enviando algumas pizzas para você ver :) ");
+
+                EntitiesParse entities = (EntitiesParse)args["entities"];
+
+                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
+
             }
         }
 
@@ -96,6 +100,67 @@ namespace Pizzaria.Dialogs
                     userState.Order.PriceTotal = 0;
                     userState.Order.QuantityTotal = 0;
                     await dialogContext.Context.SendActivity("Seu carrinho foi limpo, o que você gostaria agora?");
+                }
+                else
+                {
+                    await dialogContext.Context.SendActivity("Sinto muito mas algo deu errado :(");
+                }
+            }
+            else
+            {
+                RecognizerResult luisResult = dialogContext.Context.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
+
+                IDictionary<string, object> createdArgs = new Dictionary<string, object>
+                {
+                    { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                };
+                await dialogContext.Replace(intentResult, createdArgs);
+            }
+        }
+
+        private async Task End_OrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+
+            if(userState.Order.Drinks.Count > 0 || userState.Order.Pizzas.Count > 0)
+            {
+                await dialogContext.Context.SendActivity("Você quer realmente finalizar seu pedido?");
+                await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
+                    new CardAction[]
+                    {
+                    new CardAction
+                    {
+                        Title = "Sim",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "EndOrder||true"
+                    },
+                    new CardAction
+                    {
+                        Title = "Nâo",
+                        Type = ActionTypes.PostBack,
+                        Value = "CleanOrder||false"
+                    }
+                    })
+                );
+            }
+            else
+            {
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho :(");
+                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
+            }
+        }
+
+        private async Task AnswerEnd_OrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            Activity activity = (Activity)args["Activity"];
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            if (activity.Text.Contains(ActionTypes.PostBack + "EndOrder"))
+            {
+                bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
+                if (answer)
+                {
+                    await dialogContext.Context.SendActivity("Seu pedido foi finalizado Segue as informações dele");
                 }
                 else
                 {
@@ -202,6 +267,15 @@ namespace Pizzaria.Dialogs
             {
                 Clean_OrderBegin,
                 AnswerClean_OrderBegin
+            };
+        }
+
+        public WaterfallStep[] End_OrderWaterfall()
+        {
+            return new WaterfallStep[]
+            {
+                End_OrderBegin,
+                AnswerEnd_OrderBegin
             };
         }
 
