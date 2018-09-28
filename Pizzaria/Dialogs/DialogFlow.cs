@@ -36,6 +36,8 @@ namespace Pizzaria.Dialogs
             Add(AskProduct.Order_Product_Waterfall_Text, AskProduct.OrderProductsWaterfall());
 
             Add(Ask_Order.Ask_Order_WaterfallText, Ask_Order.Ask_OrderWaterfall());
+
+            Add(Ask_Order.Clean_Order_WaterfallText, Ask_Order.Clean_OrderWaterfall());
                 
         }
     }

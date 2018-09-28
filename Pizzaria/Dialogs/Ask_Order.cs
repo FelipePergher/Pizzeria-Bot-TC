@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder.Core.Extensions;
+﻿using Microsoft.Bot.Builder.Ai.LUIS;
+using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,9 @@ namespace Pizzaria.Dialogs
 {
     public class Ask_Order : DialogSet
     {
+        public string TextPrompt { get; set; } = "textPrompt";
         public const string Ask_Order_WaterfallText = "Ask_Order";
+        public const string Clean_Order_WaterfallText = "Clean_Order";
 
         private readonly ApplicationDbContext context;
         private readonly IConfiguration Configuration;
@@ -55,6 +58,61 @@ namespace Pizzaria.Dialogs
         private async Task Answer_Ask_Orderbegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             await dialogContext.Context.SendActivity("resposta do carrinho de compras");
+        }
+
+        private async Task Clean_OrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            await dialogContext.Context.SendActivity("Você quer realmente limpar seu carrinho?");
+            await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
+                new CardAction[]
+                {
+                    new CardAction
+                    {
+                        Title = "Sim",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "CleanOrder||true"
+                    },
+                    new CardAction
+                    {
+                        Title = "Nâo",
+                        Type = ActionTypes.PostBack,
+                        Value = "CleanOrder||false"
+                    }
+                })
+            );
+        }
+
+        private async Task AnswerClean_OrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            Activity activity = (Activity)args["Activity"];
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            if (activity.Text.Contains(ActionTypes.PostBack + "CleanOrder"))
+            {
+                bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
+                if (answer)
+                {
+                    userState.Order.Drinks.Clear();
+                    userState.Order.Pizzas.Clear();
+                    userState.Order.PriceTotal = 0;
+                    userState.Order.QuantityTotal = 0;
+                    await dialogContext.Context.SendActivity("Seu carrinho foi limpo, o que você gostaria agora?");
+                }
+                else
+                {
+                    await dialogContext.Context.SendActivity("Sinto muito mas algo deu errado :(");
+                }
+            }
+            else
+            {
+                RecognizerResult luisResult = dialogContext.Context.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
+
+                IDictionary<string, object> createdArgs = new Dictionary<string, object>
+                {
+                    { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                };
+                await dialogContext.Replace(intentResult, createdArgs);
+            }
         }
 
         #endregion
@@ -124,7 +182,6 @@ namespace Pizzaria.Dialogs
             return ingredients;
         }
 
-
         #endregion
 
 
@@ -136,6 +193,15 @@ namespace Pizzaria.Dialogs
             {
                 Ask_OrderBegin,
                 Answer_Ask_Orderbegin
+            };
+        }
+
+        public WaterfallStep[] Clean_OrderWaterfall()
+        {
+            return new WaterfallStep[]
+            {
+                Clean_OrderBegin,
+                AnswerClean_OrderBegin
             };
         }
 

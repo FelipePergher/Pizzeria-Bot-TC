@@ -97,7 +97,16 @@ namespace Pizzaria.Dialogs
                 else if (entities.ProductTypes.Where(x => x == "bebida").ToList().Count > 0)
                 {
                     //Todo: Oferecer as bebidas mais vendidas
-                    await dialogContext.Context.SendActivity("Pedindo bebida");
+                    List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(userState.EntitiesState.EntitiesParse.Drinks, context);
+
+                    drinks = drinks.Skip(quantityDrink * userState.EntitiesState.DrinksQuantityUsed).ToList();
+
+                    List<Attachment> attachments = GetDrinkAttachments(drinks, userState);
+                    userState.EntitiesState.DrinksQuantityUsed++;
+
+                    IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
+                    await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity(messageActivity);
                 }
             }
             else if(entities.PizzaNames.Count > 0)
