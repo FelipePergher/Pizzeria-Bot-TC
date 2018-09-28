@@ -10,8 +10,8 @@ using Pizzaria.Data.Models;
 namespace Pizzaria.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180901050717_PriceDrinkAndPizza")]
-    partial class PriceDrinkAndPizza
+    [Migration("20180928170935_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,26 +42,30 @@ namespace Pizzaria.Migrations
                 {
                     b.Property<int>("DrinkId");
 
-                    b.Property<int>("SizeId");
+                    b.Property<int>("SizeDId");
 
-                    b.HasKey("DrinkId", "SizeId");
+                    b.Property<double>("Price");
 
-                    b.HasIndex("SizeId");
+                    b.HasKey("DrinkId", "SizeDId");
+
+                    b.HasIndex("SizeDId");
 
                     b.ToTable("DrinkSize");
                 });
 
-            modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.Size", b =>
+            modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.SizeD", b =>
                 {
-                    b.Property<int>("SizeId")
+                    b.Property<int>("SizeDId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<double>("Quantity");
 
-                    b.HasKey("SizeId");
+                    b.Property<string>("SizeName");
 
-                    b.ToTable("Sizes");
+                    b.HasKey("SizeDId");
+
+                    b.ToTable("SizesD");
                 });
 
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.Ingredient", b =>
@@ -89,8 +93,6 @@ namespace Pizzaria.Migrations
 
                     b.Property<string>("PizzaType");
 
-                    b.Property<double>("Price");
-
                     b.Property<bool>("Vegetarian");
 
                     b.HasKey("PizzaId");
@@ -109,6 +111,34 @@ namespace Pizzaria.Migrations
                     b.HasIndex("IngredientId");
 
                     b.ToTable("PizzaIngredient");
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.PizzaSize", b =>
+                {
+                    b.Property<int>("PizzaId");
+
+                    b.Property<int>("SizePId");
+
+                    b.Property<double>("Price");
+
+                    b.HasKey("PizzaId", "SizePId");
+
+                    b.HasIndex("SizePId");
+
+                    b.ToTable("PizzaSize");
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.SizeP", b =>
+                {
+                    b.Property<int>("SizePId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Size");
+
+                    b.HasKey("SizePId");
+
+                    b.ToTable("SizesP");
                 });
 
             modelBuilder.Entity("Pizzaria.Data.Models.UserModels.Address", b =>
@@ -165,9 +195,9 @@ namespace Pizzaria.Migrations
                         .HasForeignKey("DrinkId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Pizzaria.Data.Models.DrinkModels.Size", "Size")
+                    b.HasOne("Pizzaria.Data.Models.DrinkModels.SizeD", "SizeD")
                         .WithMany("DrinkSizes")
-                        .HasForeignKey("SizeId")
+                        .HasForeignKey("SizeDId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -181,6 +211,19 @@ namespace Pizzaria.Migrations
                     b.HasOne("Pizzaria.Data.Models.PizzaModels.Pizza", "Pizza")
                         .WithMany("PizzaIngredients")
                         .HasForeignKey("PizzaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.PizzaSize", b =>
+                {
+                    b.HasOne("Pizzaria.Data.Models.PizzaModels.Pizza", "Pizza")
+                        .WithMany("PizzaSizes")
+                        .HasForeignKey("PizzaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Pizzaria.Data.Models.PizzaModels.SizeP", "SizeP")
+                        .WithMany("PizzaSizes")
+                        .HasForeignKey("SizePId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Pizzaria.Migrations
 {
-    public partial class Initial : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,7 +25,9 @@ namespace Pizzaria.Migrations
                 {
                     DrinkId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +54,9 @@ namespace Pizzaria.Migrations
                     PizzaId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Vegetarian = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    PizzaType = table.Column<string>(nullable: true),
+                    Image = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,16 +64,30 @@ namespace Pizzaria.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sizes",
+                name: "SizesD",
                 columns: table => new
                 {
-                    SizeId = table.Column<int>(nullable: false)
+                    SizeDId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Quantity = table.Column<double>(nullable: false)
+                    Quantity = table.Column<double>(nullable: false),
+                    SizeName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sizes", x => x.SizeId);
+                    table.PrimaryKey("PK_SizesD", x => x.SizeDId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SizesP",
+                columns: table => new
+                {
+                    SizePId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Size = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SizesP", x => x.SizePId);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,7 +118,7 @@ namespace Pizzaria.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PizzaIngredient", x => new { x.IngredientId, x.PizzaId });
+                    table.PrimaryKey("PK_PizzaIngredient", x => new { x.PizzaId, x.IngredientId });
                     table.ForeignKey(
                         name: "FK_PizzaIngredient_Ingredients_IngredientId",
                         column: x => x.IngredientId,
@@ -119,12 +137,13 @@ namespace Pizzaria.Migrations
                 name: "DrinkSize",
                 columns: table => new
                 {
-                    SizeId = table.Column<int>(nullable: false),
-                    DrinkId = table.Column<int>(nullable: false)
+                    SizeDId = table.Column<int>(nullable: false),
+                    DrinkId = table.Column<int>(nullable: false),
+                    Price = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DrinkSize", x => new { x.DrinkId, x.SizeId });
+                    table.PrimaryKey("PK_DrinkSize", x => new { x.DrinkId, x.SizeDId });
                     table.ForeignKey(
                         name: "FK_DrinkSize_Drinks_DrinkId",
                         column: x => x.DrinkId,
@@ -132,10 +151,35 @@ namespace Pizzaria.Migrations
                         principalColumn: "DrinkId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DrinkSize_Sizes_SizeId",
-                        column: x => x.SizeId,
-                        principalTable: "Sizes",
-                        principalColumn: "SizeId",
+                        name: "FK_DrinkSize_SizesD_SizeDId",
+                        column: x => x.SizeDId,
+                        principalTable: "SizesD",
+                        principalColumn: "SizeDId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PizzaSize",
+                columns: table => new
+                {
+                    SizePId = table.Column<int>(nullable: false),
+                    PizzaId = table.Column<int>(nullable: false),
+                    Price = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PizzaSize", x => new { x.PizzaId, x.SizePId });
+                    table.ForeignKey(
+                        name: "FK_PizzaSize_Pizzas_PizzaId",
+                        column: x => x.PizzaId,
+                        principalTable: "Pizzas",
+                        principalColumn: "PizzaId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PizzaSize_SizesP_SizePId",
+                        column: x => x.SizePId,
+                        principalTable: "SizesP",
+                        principalColumn: "SizePId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -167,14 +211,19 @@ namespace Pizzaria.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DrinkSize_SizeId",
+                name: "IX_DrinkSize_SizeDId",
                 table: "DrinkSize",
-                column: "SizeId");
+                column: "SizeDId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PizzaIngredient_PizzaId",
+                name: "IX_PizzaIngredient_IngredientId",
                 table: "PizzaIngredient",
-                column: "PizzaId");
+                column: "IngredientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PizzaSize_SizePId",
+                table: "PizzaSize",
+                column: "SizePId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ConversationDataId",
@@ -194,19 +243,25 @@ namespace Pizzaria.Migrations
                 name: "PizzaIngredient");
 
             migrationBuilder.DropTable(
+                name: "PizzaSize");
+
+            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Drinks");
 
             migrationBuilder.DropTable(
-                name: "Sizes");
+                name: "SizesD");
 
             migrationBuilder.DropTable(
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
                 name: "Pizzas");
+
+            migrationBuilder.DropTable(
+                name: "SizesP");
 
             migrationBuilder.DropTable(
                 name: "ConversationDatas");
