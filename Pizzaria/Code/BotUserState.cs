@@ -23,6 +23,7 @@ namespace Pizzaria.Code
             };
             Status = "";
             ReuseAddress = true;
+            Skip = false;
         }
 
         public string Name { get; set; }
@@ -38,6 +39,8 @@ namespace Pizzaria.Code
         public bool ReuseAddress { get; set; }
 
         public List<Address> UserAddresses { get; set; }
+
+        public bool Skip { get; set; }
 
     }
 }

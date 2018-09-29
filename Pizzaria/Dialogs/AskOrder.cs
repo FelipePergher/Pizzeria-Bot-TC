@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder.Ai.LUIS;
+﻿using AdaptiveCards;
+using Microsoft.Bot.Builder.Ai.LUIS;
 using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -44,7 +45,7 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
 
             ReceiptCard receiptCard = GetReceiptCart(userState);
-            if(receiptCard.Items.Count > 0)
+            if (receiptCard.Items.Count > 0)
             {
                 IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
                 await dialogContext.Context.SendActivity(messageActivity);
@@ -133,7 +134,7 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
-            if(user == null)
+            if (user == null)
             {
                 user = new User
                 {
@@ -143,11 +144,11 @@ namespace Pizzaria.Dialogs
                 context.Users.Add(user);
                 context.SaveChanges();
             }
-            
+
 
             if (userState.Order.Drinks.Count > 0 || userState.Order.Pizzas.Count > 0)
             {
-                if(userState.Address.AddressId == -1)
+                if (userState.Address.AddressId == -1)
                 {
                     await dialogContext.Begin(AskUserAddressWaterfallText, args);
                 }
@@ -222,26 +223,32 @@ namespace Pizzaria.Dialogs
         private async Task AskUserAddressBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            if (userState.Skip)
+            {
+                await dialogContext.Continue();
+            }
+            else
+            {
+                await dialogContext.Context.SendActivity("Você quer a entrega do pedido?");
 
-            await dialogContext.Context.SendActivity("Você quer a entrega do pedido?");
-
-            await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
-               new CardAction[]
-               {
-                    new CardAction
+                await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
+                    new CardAction[]
                     {
-                        Title = "Sim",
-                        Type = ActionTypes.PostBack,
-                        Value = ActionTypes.PostBack + "DeliveryOrder||true"
-                    },
-                    new CardAction
-                    {
-                        Title = "Nâo",
-                        Type = ActionTypes.PostBack,
-                        Value = ActionTypes.PostBack + "DeliveryOrder||false"
-                    }
-               })
-           );
+                        new CardAction
+                        {
+                            Title = "Sim",
+                            Type = ActionTypes.PostBack,
+                            Value = ActionTypes.PostBack + "DeliveryOrder||true"
+                        },
+                        new CardAction
+                        {
+                            Title = "Nâo",
+                            Type = ActionTypes.PostBack,
+                            Value = ActionTypes.PostBack + "DeliveryOrder||false"
+                        }
+                    })
+               );
+            }
         }
 
         private async Task AskUserAddressSecondStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -249,10 +256,14 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
 
-            if (user != null)
+            if (userState.Skip || !userState.ReuseAddress)
+            {
+                await dialogContext.Continue();
+            }
+            else if (user != null)
             {
                 userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId).ToList();
-                if (userState.UserAddresses.Count > 0 && userState.ReuseAddress)
+                if (userState.UserAddresses.Count > 0)
                 {
                     await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
                 }
@@ -271,7 +282,12 @@ namespace Pizzaria.Dialogs
         {
             Activity activity = (Activity)args["Activity"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            if (activity.Text.Contains(ActionTypes.PostBack + "DeliveryOrder"))
+
+            if (userState.Skip)
+            {
+                await dialogContext.Continue();
+            }
+            else if (activity.Text.Contains(ActionTypes.PostBack + "DeliveryOrder"))
             {
                 bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
                 if (answer)
@@ -290,7 +306,7 @@ namespace Pizzaria.Dialogs
                 {
                     await dialogContext.Continue();
                 }
-                else if(text.Contains("nao"))
+                else if (text.Contains("nao"))
                 {
                     await dialogContext.End();
                 }
@@ -306,7 +322,6 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             await dialogContext.Prompt(TextPrompt, "Qual a rua da entrega?");
-
         }
 
         private async Task AskUserAddressFifthStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -327,7 +342,6 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
-            await dialogContext.Context.SendActivity($"Resposta-> {args["Value"]}");
             userState.Address = new Address
             {
                 Neighborhood = userState.Address.Neighborhood,
@@ -338,6 +352,9 @@ namespace Pizzaria.Dialogs
 
             context.Addresses.Add(userState.Address);
             context.SaveChanges();
+
+            //Todo: fazer a saida daqui
+            await dialogContext.Continue();
         }
 
         #endregion
@@ -347,10 +364,9 @@ namespace Pizzaria.Dialogs
         private async Task ReuseUserAddressBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            //Todo: fazer o reuso dos endereços
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
             var addresses = context.Orders.Where(x => x.UsedAddress.UserId == user.UserId).Select(x => new { x.UsedAddress, x.RegisterDate }).ToList();
-            //Todo: fazer o reuso dos endereços
+
             foreach (var address in userState.UserAddresses)
             {
                 var addressFind = addresses.Where(x => x.UsedAddress == address).FirstOrDefault();
@@ -361,13 +377,33 @@ namespace Pizzaria.Dialogs
             }
             List<Attachment> attachments = GetUserAddressesAsAttachments(userState.UserAddresses.OrderBy(x => x.LastUsedDate).Take(10).ToList());
 
-            await dialogContext.Context.SendActivity("reuso dos endereços");
+            IActivity activity = MessageFactory.Carousel(attachments);
+
+            await dialogContext.Context.SendActivity("Clique no endereço que deseja utilizar, caso não encontre o que deseja utilize a última opção :)");
+            await dialogContext.Context.SendActivity(activity);
         }
 
         private async Task ReuseUserAddressSecondStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            await dialogContext.Context.SendActivity("reuso dos endereços");
+            string text = dialogContext.Context.Activity.Text;
+
+            if (text.Contains(ActionTypes.PostBack + "UserAddress"))
+            {
+                string addressId = text.Split("||")[1];
+                await dialogContext.Context.SendActivity("id é " + addressId);
+            }
+            else if (text.Contains(ActionTypes.PostBack + "NewAddress"))
+            {
+                await dialogContext.Context.SendActivity("new address ");
+                userState.ReuseAddress = false;
+                userState.Skip = true;
+                await dialogContext.Replace(AskUserAddressWaterfallText, args);
+            }
+            else
+            {
+                await dialogContext.Context.SendActivity("else");
+            }
         }
 
         #endregion
@@ -422,20 +458,27 @@ namespace Pizzaria.Dialogs
 
             foreach (var address in addresses)
             {
-
-                AdaptiveCard adaptiveCard = new AdaptiveCard
+                attachments.Add(new HeroCard
                 {
-                    Body = new List<AdaptiveElement>
+                    Title = $"{address.Street} N° {address.Street}",
+                    Subtitle = address.Neighborhood,
+                    Tap = new CardAction
                     {
-                        new AdaptiveTextBlock
-                        {
-                            Text = "Endereço",
-                            Weight = AdaptiveTextWeight.Bolder,
-                            Size = AdaptiveTextSize.Medium
-                        }
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "UserAddress||" + address.AddressId
                     }
-                };
+                }.ToAttachment());
             }
+
+            attachments.Add(new HeroCard
+            {
+                Title = "Adicionar novo endereço",
+                Tap = new CardAction
+                {
+                    Type = ActionTypes.PostBack,
+                    Value = ActionTypes.PostBack + "NewAddress"
+                }
+            }.ToAttachment());
 
             return attachments;
         }
