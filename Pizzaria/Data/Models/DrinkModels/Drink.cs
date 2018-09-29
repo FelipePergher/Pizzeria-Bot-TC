@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pizzaria.Data.Models.OrderModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Pizzaria.Data.Models.DrinkModels
         #region Many To many Relations
 
         public ICollection<DrinkSize> DrinkSizes { get; set; }
+
+        public ICollection<OrderDrink> OrderDrinks { get; set; }
 
         #endregion
     }
