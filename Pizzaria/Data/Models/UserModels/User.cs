@@ -16,6 +16,8 @@ namespace Pizzaria.Data.Models.UserModels
         [Key]
         public int UserId { get; set; }
 
+        public string UserIdBot { get; set; }
+
         public string Name { get; set; }
 
         public ConversationData ConversationData { get; set; }

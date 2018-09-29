@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pizzaria.Data.Models.UserModels
 {
@@ -12,5 +14,10 @@ namespace Pizzaria.Data.Models.UserModels
         public string Neighborhood { get; set; }
 
         public int Number { get; set; }
+
+        public int UserId { get; set; }
+
+        [NotMapped]
+        public DateTime LastUsedDate { get; set; }
     }
 }
