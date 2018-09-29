@@ -22,6 +22,8 @@ namespace Pizzaria.Data.Models.OrderModels
 
         public Address UsedAddress { get; set; }
 
+        public double Delivery { get; set; }
+
         #region Many To Many 
 
         public ICollection<OrderDrink> OrderDrinks { get; set; }
