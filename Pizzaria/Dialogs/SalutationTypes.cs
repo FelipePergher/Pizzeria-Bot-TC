@@ -40,7 +40,6 @@ namespace Pizzaria.Dialogs
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
             await dialogContext.Context.SendActivity($"Legal!");
-            //Todo: Pedir se o usuários quer ver os seus ultimos pedidos enviar um carrousel de receipt dos ultimos X pedidos
             await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
             await dialogContext.End();
         }
@@ -52,7 +51,6 @@ namespace Pizzaria.Dialogs
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
             await dialogContext.Context.SendActivity($"Eu estou ótimo hoje!");
-            //Todo: Pedir se o usuários quer ver os seus ultimos pedidos enviar um carrousel de receipt dos ultimos X pedidos
             await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
             await dialogContext.End();
         }

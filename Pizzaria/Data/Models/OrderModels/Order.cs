@@ -24,6 +24,10 @@ namespace Pizzaria.Data.Models.OrderModels
 
         public bool Delivery { get; set; }
 
+        public bool Finished { get; set; }
+
+        public string OrderStatus { get; set; }
+
         #region Many To Many 
 
         public ICollection<OrderDrink> OrderDrinks { get; set; }

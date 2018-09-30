@@ -207,7 +207,8 @@ namespace Pizzaria.Dialogs
                         UsedAddress = context.Addresses.FirstOrDefault(x => x.AddressId == userState.Address.AddressId),
                         User = context.Users.FirstOrDefault(x => x.UserId == user.UserId),
                         OrderDrinks = GetOrderDrinksByOrder(userState.OrderModel.Drinks),
-                        OrderPizzas = GetOrderPizzasByOrder(userState.OrderModel.Pizzas)
+                        OrderPizzas = GetOrderPizzasByOrder(userState.OrderModel.Pizzas),
+                        OrderStatus = "Pedido registrado"
                     };
 
                     context.Orders.Add(order);
