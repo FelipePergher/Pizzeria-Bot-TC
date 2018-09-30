@@ -212,10 +212,13 @@ namespace Pizzaria.Dialogs
                         OrderPizzas = GetOrderPizzasByOrder(userState.OrderModel.Pizzas)
                     };
 
-                    
-
                     context.Orders.Add(order);
                     context.SaveChanges();
+
+                    userState.Address = new Address
+                    {
+                        AddressId = -1
+                    };
 
                     await dialogContext.Context.SendActivity("Seu pedido foi finalizado Segue as informações dele");
                 }
