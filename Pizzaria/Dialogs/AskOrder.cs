@@ -183,7 +183,7 @@ namespace Pizzaria.Dialogs
                 {
                     Title = "Nâo",
                     Type = ActionTypes.PostBack,
-                    Value = "CleanOrder||false"
+                    Value = ActionTypes.PostBack + "EndOrder||false"
                 }
                 })
             );
@@ -223,7 +223,7 @@ namespace Pizzaria.Dialogs
                 }
                 else
                 {
-                    await dialogContext.Context.SendActivity("Sinto muito mas algo deu errado :(");
+                    await dialogContext.Context.SendActivity("Me diga o que você gostaria agora :)");
                 }
             }
             else
