@@ -147,7 +147,6 @@ namespace Pizzaria.Dialogs
                 context.SaveChanges();
             }
 
-
             if (userState.OrderModel.Drinks.Count > 0 || userState.OrderModel.Pizzas.Count > 0)
             {
                 if (userState.Address.AddressId == -1)
@@ -156,7 +155,6 @@ namespace Pizzaria.Dialogs
                 }
                 else
                 {
-                    await dialogContext.Context.SendActivity("Endereco atual -> " + userState.Address.Street);
                     //Todo: Apresentar toda a informação para o usuário
                     //pedido e endereço usando adapative card
                     await dialogContext.Continue();
@@ -289,7 +287,8 @@ namespace Pizzaria.Dialogs
                 userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId).ToList();
                 if (userState.UserAddresses.Count > 0)
                 {
-                    await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
+                    await dialogContext.Continue();
+                    //await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
                 }
                 else
                 {
@@ -317,7 +316,8 @@ namespace Pizzaria.Dialogs
                 if (answer)
                 {
                     userState.Delivery = true;
-                    await dialogContext.Continue();
+                    await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
+                    //await dialogContext.Continue();
                 }
                 else
                 {
@@ -421,7 +421,6 @@ namespace Pizzaria.Dialogs
             }
             else if (text.Contains(ActionTypes.PostBack + "NewAddress"))
             {
-                await dialogContext.Context.SendActivity("new address ");
                 userState.ReuseAddress = false;
                 userState.Skip = true;
                 await dialogContext.Replace(AskUserAddressWaterfallText, args);
