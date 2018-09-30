@@ -8,8 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Pizzaria.Code;
 using Pizzaria.Data.Models;
 using Pizzaria.Data.Models.DrinkModels;
+using Pizzaria.Data.Models.OrderModels;
 using Pizzaria.Data.Models.PizzaModels;
 using Pizzaria.Data.Models.UserModels;
+using Pizzaria.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,10 +104,10 @@ namespace Pizzaria.Dialogs
                 bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
                 if (answer)
                 {
-                    userState.Order.Drinks.Clear();
-                    userState.Order.Pizzas.Clear();
-                    userState.Order.PriceTotal = 0;
-                    userState.Order.QuantityTotal = 0;
+                    userState.OrderModel.Drinks.Clear();
+                    userState.OrderModel.Pizzas.Clear();
+                    userState.OrderModel.PriceTotal = 0;
+                    userState.OrderModel.QuantityTotal = 0;
                     await dialogContext.Context.SendActivity("Seu carrinho foi limpo, o que você gostaria agora?");
                 }
                 else
@@ -146,7 +148,7 @@ namespace Pizzaria.Dialogs
             }
 
 
-            if (userState.Order.Drinks.Count > 0 || userState.Order.Pizzas.Count > 0)
+            if (userState.OrderModel.Drinks.Count > 0 || userState.OrderModel.Pizzas.Count > 0)
             {
                 if (userState.Address.AddressId == -1)
                 {
@@ -154,7 +156,9 @@ namespace Pizzaria.Dialogs
                 }
                 else
                 {
+                    await dialogContext.Context.SendActivity("Endereco atual -> " + userState.Address.Street);
                     //Todo: Apresentar toda a informação para o usuário
+                    //pedido e endereço usando adapative card
                     await dialogContext.Continue();
                 }
             }
@@ -190,12 +194,28 @@ namespace Pizzaria.Dialogs
         private async Task End_OrderEnd(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             Activity activity = (Activity)args["Activity"];
+            User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             if (activity.Text.Contains(ActionTypes.PostBack + "EndOrder"))
             {
                 bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
                 if (answer)
                 {
+                    Order order = new Order
+                    {
+                        AmmountTotal = userState.OrderModel.PriceTotal,
+                        RegisterDate = DateTime.Now,
+                        Delivery = userState.Delivery,
+                        UsedAddress = userState.Address,
+                        User = user
+                    };
+
+                    //order.OrderDrinks = GetOrderDrinksByOrder(userState.OrderModel.Drinks, order);
+                    //order.OrderPizzas = GetOrderPizzasByOrder(userState.OrderModel.Pizzas, order);
+
+                    context.Orders.Add(order);
+                    context.SaveChanges();
+
                     await dialogContext.Context.SendActivity("Seu pedido foi finalizado Segue as informações dele");
                 }
                 else
@@ -292,10 +312,12 @@ namespace Pizzaria.Dialogs
                 bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
                 if (answer)
                 {
+                    userState.Delivery = true;
                     await dialogContext.Continue();
                 }
                 else
                 {
+                    userState.Delivery = false;
                     await dialogContext.End();
                 }
             }
@@ -390,8 +412,9 @@ namespace Pizzaria.Dialogs
 
             if (text.Contains(ActionTypes.PostBack + "UserAddress"))
             {
-                string addressId = text.Split("||")[1];
-                await dialogContext.Context.SendActivity("id é " + addressId);
+                int addressId = int.Parse(text.Split("||")[1]);
+                userState.Address = context.Addresses.FirstOrDefault(x =>x.AddressId == addressId);
+                await dialogContext.Continue();
             }
             else if (text.Contains(ActionTypes.PostBack + "NewAddress"))
             {
@@ -402,7 +425,8 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity("else");
+                await dialogContext.Context.SendActivity("Não consegui entender tua resposta :( \n (selecione uma opção)");
+                await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
             }
         }
 
@@ -414,7 +438,7 @@ namespace Pizzaria.Dialogs
         private ReceiptCard GetReceiptCart(BotUserState userState)
         {
             List<ReceiptItem> receiptItems = new List<ReceiptItem>();
-            foreach (var item in userState.Order.Pizzas)
+            foreach (var item in userState.OrderModel.Pizzas)
             {
                 Pizza pizza = context.Pizzas.Where(x => x.PizzaId == item.PizzaId).Include(x => x.PizzaIngredients).ThenInclude(y => y.Ingredient).FirstOrDefault();
                 double price = item.Price * item.Quantity;
@@ -428,7 +452,7 @@ namespace Pizzaria.Dialogs
                 });
             }
 
-            foreach (var item in userState.Order.Drinks)
+            foreach (var item in userState.OrderModel.Drinks)
             {
                 Drink drink = context.Drinks.Find(item.DrinkId);
                 double price = item.Price * item.Quantity;
@@ -445,7 +469,7 @@ namespace Pizzaria.Dialogs
             ReceiptCard receiptCard = new ReceiptCard
             {
                 Title = "Dados da ordem",
-                Total = "R$ " + userState.Order.PriceTotal.ToString("F"),
+                Total = "R$ " + userState.OrderModel.PriceTotal.ToString("F"),
                 Items = receiptItems
             };
 
@@ -503,6 +527,42 @@ namespace Pizzaria.Dialogs
             }
 
             return ingredients;
+        }
+
+        private List<OrderDrink> GetOrderDrinksByOrder(List<DrinkModel> drinks, Order order)
+        {
+            List<OrderDrink> orderDrinks = new List<OrderDrink>();
+            foreach (var drink in drinks)
+            {
+                OrderDrink orderDrink = new OrderDrink
+                {
+                    Order = order,
+                    Drink = context.Drinks.FirstOrDefault(x => x.DrinkId == drink.DrinkId),
+                    //DrinkId = drink.DrinkId,
+                    Price = drink.Price,
+                    Quantity = drink.Quantity
+                };
+                orderDrinks.Add(orderDrink);
+            }
+            return orderDrinks;
+        }
+
+        private List<OrderPizza> GetOrderPizzasByOrder(List<PizzaModel> pizzas, Order order)
+        {
+            List<OrderPizza> orderPizzas = new List<OrderPizza>();
+            foreach (var pizza in pizzas)
+            {
+                OrderPizza orderPizza = new OrderPizza
+                {
+                    Order = order,
+                    Pizza = context.Pizzas.FirstOrDefault(x => x.PizzaId == pizza.PizzaId),
+                    //PizzaId = pizza.PizzaId,
+                    Price = pizza.Price,
+                    Quantity = pizza.Quantity
+                };
+                orderPizzas.Add(orderPizza);
+            }
+            return orderPizzas;
         }
 
         #endregion

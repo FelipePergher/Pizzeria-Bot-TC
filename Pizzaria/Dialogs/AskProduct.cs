@@ -369,12 +369,12 @@ namespace Pizzaria.Dialogs
 
         private PizzaModel AddPizzaOrder(string id, string size, BotUserState userState)
         {
-            PizzaModel pizzaModelFind = userState.Order.Pizzas.Where(x => x.PizzaId == int.Parse(id) && x.SizeName == size).FirstOrDefault();
+            PizzaModel pizzaModelFind = userState.OrderModel.Pizzas.Where(x => x.PizzaId == int.Parse(id) && x.SizeName == size).FirstOrDefault();
 
             if (pizzaModelFind != null)
             {
                 pizzaModelFind.Quantity++;
-                userState.Order.PriceTotal += pizzaModelFind.Price;
+                userState.OrderModel.PriceTotal += pizzaModelFind.Price;
                 return pizzaModelFind;
             }
             else
@@ -392,20 +392,20 @@ namespace Pizzaria.Dialogs
                     Quantity = 1,
                     Price = pizzaSize.Price
                 };
-                userState.Order.Pizzas.Add(pizzaModel);
-                userState.Order.PriceTotal += (pizzaModel.Quantity * pizzaModel.Price);
+                userState.OrderModel.Pizzas.Add(pizzaModel);
+                userState.OrderModel.PriceTotal += (pizzaModel.Quantity * pizzaModel.Price);
                 return pizzaModel;
             }
         }
 
         private DrinkModel AddDrinkOrder(string id, string quantity, BotUserState userState)
         {
-            DrinkModel drinkModelFind = userState.Order.Drinks.Where(x => x.DrinkId == int.Parse(id) && x.DrinkQuantity == double.Parse(quantity)).FirstOrDefault();
+            DrinkModel drinkModelFind = userState.OrderModel.Drinks.Where(x => x.DrinkId == int.Parse(id) && x.DrinkQuantity == double.Parse(quantity)).FirstOrDefault();
 
             if (drinkModelFind != null)
             {
                 drinkModelFind.Quantity++;
-                userState.Order.PriceTotal += drinkModelFind.Price;
+                userState.OrderModel.PriceTotal += drinkModelFind.Price;
                 return drinkModelFind;
             }
             else
@@ -425,8 +425,8 @@ namespace Pizzaria.Dialogs
                     Price = drinkSize.Price
                 };
 
-                userState.Order.Drinks.Add(drinkModel);
-                userState.Order.PriceTotal += (drinkModel.Quantity * drinkModel.Price);
+                userState.OrderModel.Drinks.Add(drinkModel);
+                userState.OrderModel.PriceTotal += (drinkModel.Quantity * drinkModel.Price);
                 return drinkModel;
             }
         }

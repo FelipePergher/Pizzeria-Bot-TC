@@ -16,7 +16,7 @@ namespace Pizzaria.Code
 
         public BotUserState()
         {
-            Order = new Order();
+            OrderModel = new OrderModel();
             Address = new Address
             {
                 AddressId = -1
@@ -24,13 +24,14 @@ namespace Pizzaria.Code
             Status = "";
             ReuseAddress = true;
             Skip = false;
+            Delivery = false;
         }
 
         public string Name { get; set; }
 
         public string Status { get; set; } 
 
-        public Order Order { get; set; }
+        public OrderModel OrderModel { get; set; }
 
         public EntitiesState EntitiesState { get; set; }
 
@@ -41,6 +42,8 @@ namespace Pizzaria.Code
         public List<Address> UserAddresses { get; set; }
 
         public bool Skip { get; set; }
+
+        public bool Delivery { get; set; }
 
     }
 }
