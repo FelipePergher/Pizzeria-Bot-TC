@@ -219,6 +219,8 @@ namespace Pizzaria.Dialogs
                         AddressId = -1
                     };
 
+                    userState.OrderModel = new OrderModel();
+
                     await dialogContext.Context.SendActivity("Seu pedido foi finalizado Segue as informações dele");
                 }
                 else
