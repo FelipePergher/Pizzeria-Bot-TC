@@ -206,12 +206,13 @@ namespace Pizzaria.Dialogs
                         AmmountTotal = userState.OrderModel.PriceTotal,
                         RegisterDate = DateTime.Now,
                         Delivery = userState.Delivery,
-                        UsedAddress = userState.Address,
-                        User = user
+                        UsedAddress = context.Addresses.FirstOrDefault(x => x.AddressId == userState.Address.AddressId),
+                        User = context.Users.FirstOrDefault(x => x.UserId == user.UserId),
+                        OrderDrinks = GetOrderDrinksByOrder(userState.OrderModel.Drinks),
+                        OrderPizzas = GetOrderPizzasByOrder(userState.OrderModel.Pizzas)
                     };
 
-                    //order.OrderDrinks = GetOrderDrinksByOrder(userState.OrderModel.Drinks, order);
-                    //order.OrderPizzas = GetOrderPizzasByOrder(userState.OrderModel.Pizzas, order);
+                    
 
                     context.Orders.Add(order);
                     context.SaveChanges();
@@ -375,7 +376,6 @@ namespace Pizzaria.Dialogs
             context.Addresses.Add(userState.Address);
             context.SaveChanges();
 
-            //Todo: fazer a saida daqui
             await dialogContext.Continue();
         }
 
@@ -529,36 +529,34 @@ namespace Pizzaria.Dialogs
             return ingredients;
         }
 
-        private List<OrderDrink> GetOrderDrinksByOrder(List<DrinkModel> drinks, Order order)
+        private List<OrderDrink> GetOrderDrinksByOrder(List<DrinkModel> drinks)
         {
             List<OrderDrink> orderDrinks = new List<OrderDrink>();
             foreach (var drink in drinks)
             {
                 OrderDrink orderDrink = new OrderDrink
                 {
-                    Order = order,
                     Drink = context.Drinks.FirstOrDefault(x => x.DrinkId == drink.DrinkId),
-                    //DrinkId = drink.DrinkId,
                     Price = drink.Price,
-                    Quantity = drink.Quantity
+                    Quantity = drink.Quantity,
+                    DrinkSizeName = drink.DrinkSizeName
                 };
                 orderDrinks.Add(orderDrink);
             }
             return orderDrinks;
         }
 
-        private List<OrderPizza> GetOrderPizzasByOrder(List<PizzaModel> pizzas, Order order)
+        private List<OrderPizza> GetOrderPizzasByOrder(List<PizzaModel> pizzas)
         {
             List<OrderPizza> orderPizzas = new List<OrderPizza>();
             foreach (var pizza in pizzas)
             {
                 OrderPizza orderPizza = new OrderPizza
                 {
-                    Order = order,
                     Pizza = context.Pizzas.FirstOrDefault(x => x.PizzaId == pizza.PizzaId),
-                    //PizzaId = pizza.PizzaId,
                     Price = pizza.Price,
-                    Quantity = pizza.Quantity
+                    Quantity = pizza.Quantity,
+                    PizzaSizeName = pizza.SizeName
                 };
                 orderPizzas.Add(orderPizza);
             }

@@ -107,11 +107,6 @@ namespace Pizzaria.Dialogs
                     await dialogContext.Context.SendActivity(messageActivity);
                 }
             }
-            else if(entities.PizzaNames.Count > 0)
-            {
-                //Todo: ver como fazer
-                await dialogContext.Context.SendActivity("Pedido por nome de pizza");
-            }
             else
             {
                 List<Pizza> pizzas = EntitieRecomendation.GetPizzasMoreSales(context);

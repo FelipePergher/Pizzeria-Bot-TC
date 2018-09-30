@@ -27,12 +27,18 @@ namespace Pizzaria.Code
 
             List<PizzaRecomendation> pizzaRecomendations = new List<PizzaRecomendation>();
 
-            //todo: pegar as mais vendidas primeiro
             List<Pizza> allpizzas = context.Pizzas
                     .Include(x => x.PizzaIngredients)
                         .ThenInclude(y => y.Ingredient)
                     .Include(x => x.PizzaSizes).
                         ThenInclude(y => y.SizeP).ToList();
+
+            foreach (var pizza in allpizzas)
+            {
+                pizza.UsedQuantity = context.OrderPizzas.Where(x => x.PizzaId == pizza.PizzaId).Count();
+            }
+
+            allpizzas.OrderBy(x => x.UsedQuantity);
 
             foreach (var pizza in allpizzas)
             {
@@ -59,12 +65,15 @@ namespace Pizzaria.Code
         public static List<Pizza> GetPizzasMoreSalesWithoutByIngredients(ApplicationDbContext context, List<Pizza> pizzasByIngredients)
         {
             List<Pizza> pizzas = new List<Pizza>();
-            //Todo: Ordenar baseado na quantidade de vendas
-            //context.Pizzas.OrderBy(x => x.)
 
             pizzas = pizzas.Except(pizzasByIngredients).ToList();
 
-            return pizzas;
+            foreach (var pizza in pizzas)
+            {
+                pizza.UsedQuantity = context.OrderPizzas.Where(x => x.PizzaId == pizza.PizzaId).Count();
+            }
+
+            return pizzas.OrderBy(x => x.UsedQuantity).ToList();
         }
 
         public static List<Pizza> GetPizzasMoreSales(ApplicationDbContext context)
@@ -74,29 +83,42 @@ namespace Pizzaria.Code
                         .ThenInclude(y => y.Ingredient)
                     .Include(x => x.PizzaSizes).
                         ThenInclude(y => y.SizeP).ToList();
-            //Todo: Ordenar baseado na quantidade de vendas
-            //context.Pizzas.OrderBy(x => x.)
 
-            return pizzas;
+            foreach (var pizza in pizzas)
+            {
+                pizza.UsedQuantity = context.OrderPizzas.Where(x => x.PizzaId == pizza.PizzaId).Count();
+            }
+
+            return pizzas.OrderBy(x => x.UsedQuantity).ToList();
         }
 
         public static List<Drink> GetDrinksMoreSalesWithUserDrinks(List<string> drinksFind, ApplicationDbContext context)
         {
-            //Todo: Ordenar baseado na quantidade de vendas
             //Todo: colocar os que o usuário solicitou primeiro
             List<Drink> drinks = context.Drinks
                     .Include(x => x.DrinkSizes)
                         .ThenInclude(y => y.SizeD).ToList();
-            return drinks.OrderBy(x => x.Name).ToList();
+
+            foreach (var drink in drinks)
+            {
+                drink.UsedQuantity = context.OrderDrinks.Where(x => x.DrinkId == drink.DrinkId).Count();
+            }
+
+            return drinks.OrderBy(x => x.UsedQuantity).ToList();
         }
 
         public static List<Drink> GetDrinksMoreSales(ApplicationDbContext context)
         {
-            //Todo: Ordenar baseado na quantidade de vendas
             List<Drink> drinks = context.Drinks
                     .Include(x => x.DrinkSizes)
                         .ThenInclude(y => y.SizeD).ToList();
-            return drinks.OrderBy(x => x.Name).ToList();
+
+            foreach (var drink in drinks)
+            {
+                drink.UsedQuantity = context.OrderDrinks.Where(x => x.DrinkId == drink.DrinkId).Count();
+            }
+
+            return drinks.OrderBy(x => x.UsedQuantity).ToList();
         }
 
     }
