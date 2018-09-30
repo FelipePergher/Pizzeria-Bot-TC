@@ -94,17 +94,27 @@ namespace Pizzaria.Code
 
         public static List<Drink> GetDrinksMoreSalesWithUserDrinks(List<string> drinksFind, ApplicationDbContext context)
         {
-            //Todo: colocar os que o usuário solicitou primeiro
+            List<Drink> drinksFinded = new List<Drink>();
+            foreach (var item in drinksFind)
+            {
+                Drink drink = context.Drinks.FirstOrDefault(x => x.Name == item);
+                drinksFinded.Add(drink);
+            }
+
             List<Drink> drinks = context.Drinks
                     .Include(x => x.DrinkSizes)
                         .ThenInclude(y => y.SizeD).ToList();
+            drinks.Except(drinksFinded);
 
             foreach (var drink in drinks)
             {
                 drink.UsedQuantity = context.OrderDrinks.Where(x => x.DrinkId == drink.DrinkId).Count();
             }
 
-            return drinks.OrderBy(x => x.UsedQuantity).ToList();
+            drinks.OrderBy(x => x.UsedQuantity);
+            drinksFinded.AddRange(drinks);
+
+            return drinksFinded;
         }
 
         public static List<Drink> GetDrinksMoreSales(ApplicationDbContext context)
