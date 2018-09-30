@@ -15,6 +15,7 @@ using Pizzaria.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pizzaria.Dialogs
@@ -43,6 +44,11 @@ namespace Pizzaria.Dialogs
 
         public async Task Ask_Product(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
             EntitiesParse entities = (EntitiesParse)args["entities"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             userState.EntitiesState = new EntitiesState
@@ -63,6 +69,11 @@ namespace Pizzaria.Dialogs
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity($"Estou lhe enviando as pizzas disponiveis, enviando primeiramente as pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                Thread.Sleep(4000);
                 await dialogContext.Context.SendActivity(messageActivity);
             }
             else if(entities.Drinks.Count > 0)
@@ -76,6 +87,11 @@ namespace Pizzaria.Dialogs
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas solicitadas");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                Thread.Sleep(4000);
                 await dialogContext.Context.SendActivity(messageActivity);
 
             }
@@ -91,6 +107,11 @@ namespace Pizzaria.Dialogs
 
                     IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                     await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, ordenando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity(new Activity
+                    {
+                        Type = ActivityTypes.Typing
+                    });
+                    Thread.Sleep(4000);
                     await dialogContext.Context.SendActivity(messageActivity);
                 }
                 else if (entities.ProductTypes.Where(x => x == "bebida").ToList().Count > 0)
@@ -104,6 +125,11 @@ namespace Pizzaria.Dialogs
 
                     IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                     await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity(new Activity
+                    {
+                        Type = ActivityTypes.Typing
+                    });
+                    Thread.Sleep(4000);
                     await dialogContext.Context.SendActivity(messageActivity);
                 }
             }
@@ -117,12 +143,22 @@ namespace Pizzaria.Dialogs
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, começando pelas mais vendidas");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                Thread.Sleep(2000);
                 await dialogContext.Context.SendActivity(messageActivity);
             }
         }
 
         public async Task OrderProducts(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
             Activity activity = (Activity)args["Activity"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(userState.EntitiesState.EntitiesParse.Ingredients, context);

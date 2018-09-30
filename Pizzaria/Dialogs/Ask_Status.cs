@@ -11,6 +11,7 @@ using Pizzaria.Data.Models.UserModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pizzaria.Dialogs
@@ -34,6 +35,11 @@ namespace Pizzaria.Dialogs
 
         private async Task Ask_StatusBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
 

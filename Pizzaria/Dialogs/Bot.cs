@@ -31,7 +31,6 @@ namespace Pizzaria.Dialogs
         {
             if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
             {
-                //Todo: Informar ao usuário as funções que o bot realiza
                 await turnContext.SendActivity("Bem vindo a conversa. Eu sou o Jorge o bot da pizzaria do manolo e estou aqui para auxiliá-lo no seu pedido lo \n" +
                     "Atualmente eu posso realizar as seguintes tarefas: \n" +
                     "*-Ofereço bebidas e pizzas cutomizadas na sua solicitação* \n" +
