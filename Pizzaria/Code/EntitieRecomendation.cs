@@ -35,13 +35,6 @@ namespace Pizzaria.Code
 
             foreach (var pizza in allpizzas)
             {
-                pizza.UsedQuantity = context.OrderPizzas.Where(x => x.PizzaId == pizza.PizzaId).Count();
-            }
-
-            allpizzas.OrderBy(x => x.UsedQuantity);
-
-            foreach (var pizza in allpizzas)
-            {
                 PizzaRecomendation pizzaRecomendation = pizzaRecomendations.Where(x => x.Pizza == pizza).FirstOrDefault();
                 if (pizzaRecomendation == null)
                 {
@@ -60,20 +53,6 @@ namespace Pizzaria.Code
             }
 
             return pizzaRecomendations.OrderBy(x => x.IngredientsQuantity).Select(x => x.Pizza).ToList();
-        }
-
-        public static List<Pizza> GetPizzasMoreSalesWithoutByIngredients(ApplicationDbContext context, List<Pizza> pizzasByIngredients)
-        {
-            List<Pizza> pizzas = new List<Pizza>();
-
-            pizzas = pizzas.Except(pizzasByIngredients).ToList();
-
-            foreach (var pizza in pizzas)
-            {
-                pizza.UsedQuantity = context.OrderPizzas.Where(x => x.PizzaId == pizza.PizzaId).Count();
-            }
-
-            return pizzas.OrderBy(x => x.UsedQuantity).ToList();
         }
 
         public static List<Pizza> GetPizzasMoreSales(ApplicationDbContext context)

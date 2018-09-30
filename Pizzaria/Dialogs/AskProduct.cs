@@ -126,6 +126,10 @@ namespace Pizzaria.Dialogs
             Activity activity = (Activity)args["Activity"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(userState.EntitiesState.EntitiesParse.Ingredients, context);
+            if(userState.EntitiesState.EntitiesParse.Ingredients.Count == 0)
+            {
+                pizzas = EntitieRecomendation.GetPizzasMoreSales(context);
+            }
             List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSalesWithUserDrinks(userState.EntitiesState.EntitiesParse.Drinks, context);
 
             if (activity.Text.Contains(ActionTypes.PostBack + "AddPizza"))

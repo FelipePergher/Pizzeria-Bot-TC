@@ -534,14 +534,34 @@ namespace Pizzaria.Dialogs
             List<OrderDrink> orderDrinks = new List<OrderDrink>();
             foreach (var drink in drinks)
             {
-                OrderDrink orderDrink = new OrderDrink
+                OrderDrink orderDrinkFind = orderDrinks.FirstOrDefault(x => x.Drink.DrinkId == drink.DrinkId);
+                if (orderDrinkFind != null)
                 {
-                    Drink = context.Drinks.FirstOrDefault(x => x.DrinkId == drink.DrinkId),
-                    Price = drink.Price,
-                    Quantity = drink.Quantity,
-                    DrinkSizeName = drink.DrinkSizeName
-                };
-                orderDrinks.Add(orderDrink);
+                    orderDrinkFind.OrderDrinkSizes.Add(new OrderDrinkSize
+                    {
+                        DrinkSize = context.SizesD.FirstOrDefault(x => x.SizeName == drink.DrinkSizeName),
+                        Quantity = drink.Quantity,
+                        Price = drink.Price
+                    });
+                }
+                else
+                {
+                    OrderDrink orderDrink = new OrderDrink
+                    {
+                        Drink = context.Drinks.FirstOrDefault(x => x.DrinkId == drink.DrinkId),
+                        OrderDrinkSizes = new List<OrderDrinkSize>
+                        {
+                            new OrderDrinkSize
+                            {
+                                DrinkSize = context.SizesD.FirstOrDefault(x => x.SizeName == drink.DrinkSizeName),
+                                Quantity = drink.Quantity,
+                                Price = drink.Price
+                            }
+                        },
+                        DrinkSizeName = drink.DrinkSizeName
+                    };
+                    orderDrinks.Add(orderDrink);
+                }
             }
             return orderDrinks;
         }
@@ -551,14 +571,35 @@ namespace Pizzaria.Dialogs
             List<OrderPizza> orderPizzas = new List<OrderPizza>();
             foreach (var pizza in pizzas)
             {
-                OrderPizza orderPizza = new OrderPizza
+                OrderPizza orderPizzaFind = orderPizzas.FirstOrDefault(x => x.Pizza.PizzaId == pizza.PizzaId);
+                if(orderPizzaFind != null)
                 {
-                    Pizza = context.Pizzas.FirstOrDefault(x => x.PizzaId == pizza.PizzaId),
-                    Price = pizza.Price,
-                    Quantity = pizza.Quantity,
-                    PizzaSizeName = pizza.SizeName
-                };
-                orderPizzas.Add(orderPizza);
+                    orderPizzaFind.OrderPizzaSizes.Add(new OrderPizzaSize
+                    {
+                        PizzaSize = context.SizesP.FirstOrDefault(x => x.SizePId == pizza.PizzaSizeId),
+                        Quantity = pizza.Quantity,
+                        Price = pizza.Price
+                    });
+                }
+                else
+                {
+                    OrderPizza orderPizza = new OrderPizza
+                    {
+                        Pizza = context.Pizzas.FirstOrDefault(x => x.PizzaId == pizza.PizzaId),
+                        OrderPizzaSizes = new List<OrderPizzaSize>
+                        {
+                            new OrderPizzaSize
+                            {
+                                PizzaSize = context.SizesP.FirstOrDefault(x => x.SizePId == pizza.PizzaSizeId),
+                                Quantity = pizza.Quantity,
+                                Price = pizza.Price
+                            }
+                        },
+                        PizzaSizeName = pizza.SizeName
+                    };
+                    orderPizzas.Add(orderPizza);
+                }
+                
             }
             return orderPizzas;
         }

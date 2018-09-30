@@ -14,9 +14,7 @@ namespace Pizzaria.Data.Models.OrderModels
         public int OrderId { get; set; }
         public Order Order { get; set; }
 
-        public int Quantity { get; set; }
-
-        public double Price { get; set; }
+        public List<OrderDrinkSize>  OrderDrinkSizes { get; set; }
 
         public string DrinkSizeName { get; set; }
     }
