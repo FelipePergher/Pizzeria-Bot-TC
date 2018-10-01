@@ -56,7 +56,7 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho :( \n Mas estou enviando algumas pizzas para você ver :) ");
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
 
                 EntitiesParse entities = (EntitiesParse)args["entities"];
 
@@ -112,7 +112,7 @@ namespace Pizzaria.Dialogs
                 }
                 else
                 {
-                    await dialogContext.Context.SendActivity("Sinto muito mas algo deu errado :(");
+                    await dialogContext.Context.SendActivity($"Sinto muito mas algo deu errado {Emojis.SmileSad}");
                 }
             }
             else
@@ -162,7 +162,7 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho :(");
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad}");
                 await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
             }
         }
@@ -253,16 +253,16 @@ namespace Pizzaria.Dialogs
 
                     if (userState.Delivery)
                     {
-                        await dialogContext.Context.SendActivity("Seu pedido foi finalizado! Logo logo será enviado :)");
+                        await dialogContext.Context.SendActivity($"Seu pedido foi finalizado! Logo logo será enviado {Emojis.SmileHappy}");
                     }
                     else
                     {
-                        await dialogContext.Context.SendActivity("Seu pedido foi finalizado! Logo logo estará pronto para retirada :)");
+                        await dialogContext.Context.SendActivity($"Seu pedido foi finalizado! Logo logo estará pronto para retirada {Emojis.SmileHappy}");
                     }
                 }
                 else
                 {
-                    await dialogContext.Context.SendActivity("Me diga o que você gostaria agora :)");
+                    await dialogContext.Context.SendActivity($"Me diga o que você gostaria agora {Emojis.SmileHappy}");
                 }
             }
             else
@@ -378,7 +378,7 @@ namespace Pizzaria.Dialogs
                 }
                 else
                 {
-                    await dialogContext.Context.SendActivity("Não consegui entender tua resposta :( \n (Preferencialmente use os botões)");
+                    await dialogContext.Context.SendActivity($"Não consegui entender tua resposta {Emojis.SmileSad} \n (Preferencialmente use os botões)");
                     await dialogContext.Replace(AskUserAddressWaterfallText, args);
                 }
             }
@@ -444,7 +444,7 @@ namespace Pizzaria.Dialogs
 
             IActivity activity = MessageFactory.Carousel(attachments);
 
-            await dialogContext.Context.SendActivity("Clique no endereço que deseja utilizar, caso não encontre o que deseja utilize a última opção :)");
+            await dialogContext.Context.SendActivity($"Clique no endereço que deseja utilizar, caso não encontre o que deseja utilize a última opção {Emojis.SmileHappy}");
             await dialogContext.Context.SendActivity(activity);
         }
 
@@ -467,7 +467,7 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity("Não consegui entender tua resposta :( \n (selecione uma opção)");
+                await dialogContext.Context.SendActivity($"Não consegui entender tua resposta {Emojis.SmileSad} \n (selecione uma opção)");
                 await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
             }
         }

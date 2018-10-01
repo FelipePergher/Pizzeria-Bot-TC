@@ -174,8 +174,8 @@ namespace Pizzaria.Dialogs
                 PizzaModel pizzaModel = AddPizzaOrder(productData[0], productData[1], userState);
                 userState.EntitiesState.PizzasQuantityUsed--;
 
-                await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName} foi adicionada com sucesso :)");
-                await dialogContext.Context.SendActivity("Gostaria de ver mais alguma pizza? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
+                await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName} foi adicionada com sucesso {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma pizza? \n(Clique em quero caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Pizza"));
             }
@@ -201,8 +201,8 @@ namespace Pizzaria.Dialogs
                 DrinkModel drinkModel = AddDrinkOrder(productData[0], productData[1], userState);
                 userState.EntitiesState.DrinksQuantityUsed--;
 
-                await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} {drinkModel.DrinkSizeName} adicionado com sucesso :)");
-                await dialogContext.Context.SendActivity("Gostaria de ver mais alguma bebida? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
+                await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} {drinkModel.DrinkSizeName} adicionado com sucesso {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma bebida? (Clique em quero caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Drink"));
             }
