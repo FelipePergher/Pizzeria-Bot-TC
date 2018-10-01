@@ -27,6 +27,8 @@ namespace Pizzaria.Dialogs
         public const string End_Order_WaterfallText = "End_Order";
         public const string AskUserAddressWaterfallText = "AskAddressUser";
         public const string ReuseUserAddressWaterfallText = "ReuseAddressUser";
+        public const string EditAddressWaterfallText = "Edit_Address";
+        public const string EditOrderWaterfallText = "Edit_Order";
 
         private readonly ApplicationDbContext context;
         private readonly IConfiguration Configuration;
@@ -143,6 +145,41 @@ namespace Pizzaria.Dialogs
                 };
                 await dialogContext.Replace(intentResult, createdArgs);
             }
+        }
+
+        #endregion
+
+        #region Edit Address
+
+        private async Task EditAddressBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            
+            if(userState.Address.AddressId == -1)
+            {
+                await dialogContext.Context.SendActivity($"Você ainda não possui um endereço de envio para o pedido atual, mas você pode registrar um agora {Emojis.SmileHappy} ");
+            }
+            else
+            {
+                userState.Address = new Address
+                {
+                    AddressId = -1
+                };
+            }
+
+            userState.SkipAddress = true;
+            await dialogContext.Replace(AskUserAddressWaterfallText, args);
+        }
+
+        #endregion
+
+        #region Edit Order
+
+        private async Task EditOrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            await dialogContext.Context.SendActivity("EditOrder");
+            //await dialogContext.Replace(AskUserAddressWaterfallText, args);
         }
 
         #endregion
@@ -304,6 +341,10 @@ namespace Pizzaria.Dialogs
             {
                 await dialogContext.Continue();
             }
+            else if (userState.SkipAddress)
+            {
+                await dialogContext.Continue();
+            }
             else
             {
                 await dialogContext.Context.SendActivity("Você quer a entrega do pedido?");
@@ -333,27 +374,26 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
 
-            if (userState.Skip || !userState.ReuseAddress)
-            {
-                await dialogContext.Continue();
-            }
-            else if (user != null)
-            {
+            //if (userState.Skip || !userState.ReuseAddress)
+            //{
+            //    await dialogContext.Continue();
+            //}
+            //else if (user != null)
+            //{
                 userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId).ToList();
-                if (userState.UserAddresses.Count > 0)
-                {
+                //if (userState.UserAddresses.Count > 0)
+                //{
                     await dialogContext.Continue();
-                    //await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
-                }
-                else
-                {
-                    await dialogContext.Continue();
-                }
-            }
-            else
-            {
-                await dialogContext.Continue();
-            }
+        //        }
+        //        else
+        //        {
+        //            await dialogContext.Continue();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        await dialogContext.Continue();
+        //    }
         }
 
         private async Task AskUserAddressThirdStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -365,14 +405,19 @@ namespace Pizzaria.Dialogs
             {
                 await dialogContext.Continue();
             }
-            else if (activity.Text.Contains(ActionTypes.PostBack + "DeliveryOrder"))
+            else if (activity.Text.Contains(ActionTypes.PostBack + "DeliveryOrder") || userState.SkipAddress)
             {
-                bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
-                if (answer)
+                bool answer = false;
+
+                if (!userState.SkipAddress)
+                {
+                    answer = activity.Text.Split("||")[1] == "true" ? true : false;
+                }
+
+                if (answer || userState.SkipAddress)
                 {
                     userState.Delivery = true;
                     await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
-                    //await dialogContext.Continue();
                 }
                 else
                 {
@@ -472,7 +517,16 @@ namespace Pizzaria.Dialogs
             {
                 int addressId = int.Parse(text.Split("||")[1]);
                 userState.Address = context.Addresses.FirstOrDefault(x =>x.AddressId == addressId);
-                await dialogContext.Continue();
+                if (userState.SkipAddress)
+                {
+                    userState.SkipAddress = false;
+                    await dialogContext.Context.SendActivity($"Seu endereço foi atribuido a seu pedido atual {Emojis.SmileHappy}");
+                    dialogContext.EndAll();
+                }
+                else
+                {
+                    await dialogContext.Continue();
+                }
             }
             else if (text.Contains(ActionTypes.PostBack + "NewAddress"))
             {
@@ -488,7 +542,6 @@ namespace Pizzaria.Dialogs
         }
 
         #endregion
-
 
         #region Private Methods
 
@@ -727,6 +780,22 @@ namespace Pizzaria.Dialogs
             {
                 ReuseUserAddressBegin,
                 ReuseUserAddressSecondStep
+            };
+        }
+
+        public WaterfallStep[] EditAddressWaterfall()
+        {
+            return new WaterfallStep[]
+            {
+                EditAddressBegin
+            };
+        }
+
+        public WaterfallStep[] EditOrderWaterfall()
+        {
+            return new WaterfallStep[]
+            {
+                EditOrderBegin
             };
         }
 

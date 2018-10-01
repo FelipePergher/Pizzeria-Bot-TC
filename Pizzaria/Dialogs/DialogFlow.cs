@@ -52,6 +52,10 @@ namespace Pizzaria.Dialogs
             Add(Ask_Status.AskStatusText, Ask_Status.Ask_StatusWaterfall());
 
             Add(Thanks.ThanksWaterfallText, Thanks.ThanksWaterfall());
+
+            Add(AskOrder.EditAddressWaterfallText, Ask_Order.EditAddressWaterfall());
+
+            Add(AskOrder.EditOrderWaterfallText, Ask_Order.EditOrderWaterfall());
                 
         }
     }

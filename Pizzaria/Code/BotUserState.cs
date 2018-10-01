@@ -24,6 +24,7 @@ namespace Pizzaria.Code
             Status = "";
             ReuseAddress = true;
             Skip = false;
+            SkipAddress = false;
             Delivery = false;
         }
 
@@ -42,6 +43,7 @@ namespace Pizzaria.Code
         public List<Address> UserAddresses { get; set; }
 
         public bool Skip { get; set; }
+        public bool SkipAddress { get; set; }
 
         public bool Delivery { get; set; }
 
