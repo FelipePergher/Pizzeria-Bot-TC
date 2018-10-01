@@ -46,7 +46,6 @@ namespace Pizzaria.Dialogs
             List<Order> orders = context.Orders.Where(x => x.User.UserId == user.UserId).ToList();
             if(orders.Count > 0)
             {
-                //Todo: Mostra o pedido do usuário
                 IActivity activity = MessageFactory.Carousel(GetAttachmentsByOrders(orders));
                 await dialogContext.Context.SendActivity(activity);
             }

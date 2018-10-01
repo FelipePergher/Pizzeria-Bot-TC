@@ -87,7 +87,7 @@ namespace Pizzaria.Dialogs
                     },
                     new CardAction
                     {
-                        Title = "Nâo",
+                        Title = "Nào",
                         Type = ActionTypes.PostBack,
                         Value = "CleanOrder||false"
                     }
@@ -156,7 +156,7 @@ namespace Pizzaria.Dialogs
                 else
                 {
                     //Todo: Apresentar toda a informação para o usuário
-                    //pedido e endereço usando adapative card
+                   
                     await dialogContext.Continue();
                 }
             }
@@ -169,7 +169,37 @@ namespace Pizzaria.Dialogs
 
         private async Task End_OrderConfirm(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+
+            ReceiptCard receiptCard = GetReceiptCart(userState);
+            IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
+            await dialogContext.Context.SendActivity(messageActivity);
+
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
+            if (userState.Delivery)
+            {
+
+                IMessageActivity addressActivity = MessageFactory.Attachment(new HeroCard
+                {
+                    Title = $"{userState.Address.Street} N° {userState.Address.Street}",
+                    Subtitle = userState.Address.Neighborhood
+                }.ToAttachment());
+
+                await dialogContext.Context.SendActivity(addressActivity);
+
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+            }
+
             await dialogContext.Context.SendActivity("Você quer realmente finalizar seu pedido?");
+
+
             await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
                 new CardAction[]
                 {
@@ -181,7 +211,7 @@ namespace Pizzaria.Dialogs
                 },
                 new CardAction
                 {
-                    Title = "Nâo",
+                    Title = "Não",
                     Type = ActionTypes.PostBack,
                     Value = ActionTypes.PostBack + "EndOrder||false"
                 }
@@ -221,7 +251,14 @@ namespace Pizzaria.Dialogs
 
                     userState.OrderModel = new OrderModel();
 
-                    await dialogContext.Context.SendActivity("Seu pedido foi finalizado Segue as informações dele");
+                    if (userState.Delivery)
+                    {
+                        await dialogContext.Context.SendActivity("Seu pedido foi finalizado! Logo logo será enviado :)");
+                    }
+                    else
+                    {
+                        await dialogContext.Context.SendActivity("Seu pedido foi finalizado! Logo logo estará pronto para retirada :)");
+                    }
                 }
                 else
                 {
@@ -267,7 +304,7 @@ namespace Pizzaria.Dialogs
                         },
                         new CardAction
                         {
-                            Title = "Nâo",
+                            Title = "Não",
                             Type = ActionTypes.PostBack,
                             Value = ActionTypes.PostBack + "DeliveryOrder||false"
                         }
@@ -375,7 +412,7 @@ namespace Pizzaria.Dialogs
             {
                 Neighborhood = userState.Address.Neighborhood,
                 Street = userState.Address.Street,
-                Number = int.Parse(args["Value"].ToString()),
+                Number = args["Value"].ToString(),
                 UserId = user.UserId
             };
 
