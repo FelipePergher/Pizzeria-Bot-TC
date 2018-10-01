@@ -13,6 +13,7 @@ namespace Pizzaria.Dialogs
         AskProduct AskProduct;
         Ask_Status Ask_Status;
         AskOrder Ask_Order;
+        Thanks Thanks;
         None None;
 
         public DialogFlow()
@@ -21,6 +22,7 @@ namespace Pizzaria.Dialogs
             AskProduct = new AskProduct();
             Ask_Order = new AskOrder();
             None = new None();
+            Thanks = new Thanks();            
             Ask_Status = new Ask_Status();
 
             Add(SalutationTypes.TextPrompt, new TextPrompt());
@@ -48,6 +50,8 @@ namespace Pizzaria.Dialogs
             Add(AskOrder.ReuseUserAddressWaterfallText, Ask_Order.ReuseUserAddressWaterfall());
 
             Add(Ask_Status.AskStatusText, Ask_Status.Ask_StatusWaterfall());
+
+            Add(Thanks.ThanksWaterfallText, Thanks.ThanksWaterfall());
                 
         }
     }

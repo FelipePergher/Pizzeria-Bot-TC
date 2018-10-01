@@ -51,8 +51,10 @@ namespace Pizzaria.Dialogs
             {
                 IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
                 await dialogContext.Context.SendActivity(messageActivity);
-                //Todo: Oferecer edição do carinho
-                await dialogContext.End();
+
+                await dialogContext.Context.SendActivity($"Você gostaria de finalizar o pedido? \n Selecione Sim ou digite o que você gostaria agora {Emojis.SmileHappy} ");
+                await dialogContext.Context.SendActivity(GetSuggestedActionEndOrder());
+
             }
             else
             {
@@ -60,14 +62,29 @@ namespace Pizzaria.Dialogs
 
                 EntitiesParse entities = (EntitiesParse)args["entities"];
 
-                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
+                await dialogContext.Replace(End_Order_WaterfallText, args);
 
             }
         }
 
         private async Task Answer_Ask_Orderbegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
-            await dialogContext.Context.SendActivity("resposta do carrinho de compras");
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            if(dialogContext.Context.Activity.Text.Contains(ActionTypes.PostBack + "SuggestedEndOrder"))
+            {
+                await dialogContext.Replace(End_Order_WaterfallText, args);
+            }
+            else
+            {
+                RecognizerResult luisResult = dialogContext.Context.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
+
+                IDictionary<string, object> createdArgs = new Dictionary<string, object>
+                {
+                    { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                };
+                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, createdArgs);
+            }
         }
 
         #endregion
@@ -155,8 +172,6 @@ namespace Pizzaria.Dialogs
                 }
                 else
                 {
-                    //Todo: Apresentar toda a informação para o usuário
-                   
                     await dialogContext.Continue();
                 }
             }
@@ -644,6 +659,20 @@ namespace Pizzaria.Dialogs
                 
             }
             return orderPizzas;
+        }
+
+        private IActivity GetSuggestedActionEndOrder()
+        {
+            return MessageFactory.SuggestedActions(
+                new CardAction[]
+                {
+                    new CardAction
+                    {
+                        Title = "Sim",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "SuggestedEndOrder",
+                    }
+                });
         }
 
         #endregion
