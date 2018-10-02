@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pizzaria.Data.Models.DrinkModels;
+using Pizzaria.Data.Models.OrderModels;
 using Pizzaria.Data.Models.PizzaModels;
 using Pizzaria.Data.Models.UserModels;
 using System;
@@ -31,10 +32,18 @@ namespace Pizzaria.Data.Models
 
         public DbSet<SizeP> SizesP { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderDrink> OrderDrinks { get; set; }
+
+        public DbSet<OrderPizza> OrderPizzas { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            #region Many to Many Relations
 
             //Drink with Drink Size N to N
             modelBuilder.Entity<DrinkSize>()
@@ -77,6 +86,36 @@ namespace Pizzaria.Data.Models
                 .HasOne(bc => bc.Pizza)
                 .WithMany(b => b.PizzaIngredients)
                 .HasForeignKey(bc => bc.PizzaId);
+
+            //OrderDrink with Order N to N
+            modelBuilder.Entity<OrderDrink>()
+           .HasKey(bc => new { bc.OrderId, bc.DrinkId });
+
+            modelBuilder.Entity<OrderDrink>()
+                .HasOne(bc => bc.Order)
+                .WithMany(c => c.OrderDrinks)
+                .HasForeignKey(bc => bc.OrderId);
+
+            modelBuilder.Entity<OrderDrink>()
+                .HasOne(bc => bc.Drink)
+                .WithMany(b => b.OrderDrinks)
+                .HasForeignKey(bc => bc.DrinkId);
+
+            //OrderPizza with Order N to N
+            modelBuilder.Entity<OrderPizza>()
+           .HasKey(bc => new { bc.OrderId, bc.PizzaId });
+
+            modelBuilder.Entity<OrderPizza>()
+                .HasOne(bc => bc.Order)
+                .WithMany(c => c.OrderPizzas)
+                .HasForeignKey(bc => bc.OrderId);
+
+            modelBuilder.Entity<OrderPizza>()
+                .HasOne(bc => bc.Pizza)
+                .WithMany(b => b.OrderPizzas)
+                .HasForeignKey(bc => bc.PizzaId);
+
+            #endregion
         }
     }
 }

@@ -15,6 +15,7 @@ using Pizzaria.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pizzaria.Dialogs
@@ -43,6 +44,11 @@ namespace Pizzaria.Dialogs
 
         public async Task Ask_Product(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
             EntitiesParse entities = (EntitiesParse)args["entities"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             userState.EntitiesState = new EntitiesState
@@ -63,12 +69,16 @@ namespace Pizzaria.Dialogs
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity($"Estou lhe enviando as pizzas disponiveis, enviando primeiramente as pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                Thread.Sleep(4000);
                 await dialogContext.Context.SendActivity(messageActivity);
             }
             else if(entities.Drinks.Count > 0)
             {
-                //Todo: Oferecer bebidas de acordo com o que foi pedido e também o restante baseado nas vendas
-                List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(userState.EntitiesState.EntitiesParse.Drinks, context);
+                List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSalesWithUserDrinks(userState.EntitiesState.EntitiesParse.Drinks, context);
 
                 drinks = drinks.Skip(quantityDrink * userState.EntitiesState.DrinksQuantityUsed).ToList();
 
@@ -77,6 +87,11 @@ namespace Pizzaria.Dialogs
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                 await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas solicitadas");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                Thread.Sleep(4000);
                 await dialogContext.Context.SendActivity(messageActivity);
 
             }
@@ -92,31 +107,66 @@ namespace Pizzaria.Dialogs
 
                     IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
                     await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, ordenando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity(new Activity
+                    {
+                        Type = ActivityTypes.Typing
+                    });
+                    Thread.Sleep(4000);
                     await dialogContext.Context.SendActivity(messageActivity);
                 }
                 else if (entities.ProductTypes.Where(x => x == "bebida").ToList().Count > 0)
                 {
-                    //Todo: Oferecer as bebidas mais vendidas
-                    await dialogContext.Context.SendActivity("Pedindo bebida");
+                    List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSalesWithUserDrinks(userState.EntitiesState.EntitiesParse.Drinks, context);
+
+                    drinks = drinks.Skip(quantityDrink * userState.EntitiesState.DrinksQuantityUsed).ToList();
+
+                    List<Attachment> attachments = GetDrinkAttachments(drinks, userState);
+                    userState.EntitiesState.DrinksQuantityUsed++;
+
+                    IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
+                    await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity(new Activity
+                    {
+                        Type = ActivityTypes.Typing
+                    });
+                    Thread.Sleep(4000);
+                    await dialogContext.Context.SendActivity(messageActivity);
                 }
-            }
-            else if(entities.PizzaNames.Count > 0)
-            {
-                await dialogContext.Context.SendActivity("Pedido por nome de pizza");
             }
             else
             {
-                //Todo: oferecerer as pizzas mais vendidas
-                await dialogContext.Context.SendActivity("Estou vendo que você gostaria de fazer um pedido :)");
+                List<Pizza> pizzas = EntitieRecomendation.GetPizzasMoreSales(context);
+                pizzas = pizzas.Skip(quantityPizza * userState.EntitiesState.PizzasQuantityUsed).ToList();
+
+                List<Attachment> attachments = GetPizzaAttachments(pizzas, userState);
+                userState.EntitiesState.PizzasQuantityUsed++;
+
+                IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
+                await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, começando pelas mais vendidas");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                Thread.Sleep(2000);
+                await dialogContext.Context.SendActivity(messageActivity);
             }
         }
 
         public async Task OrderProducts(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
             Activity activity = (Activity)args["Activity"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             List<Pizza> pizzas = EntitieRecomendation.GetPizzasByIngredients(userState.EntitiesState.EntitiesParse.Ingredients, context);
-            List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSales(userState.EntitiesState.EntitiesParse.Drinks, context);
+            if(userState.EntitiesState.EntitiesParse.Ingredients.Count == 0)
+            {
+                pizzas = EntitieRecomendation.GetPizzasMoreSales(context);
+            }
+            List<Drink> drinks = EntitieRecomendation.GetDrinksMoreSalesWithUserDrinks(userState.EntitiesState.EntitiesParse.Drinks, context);
 
             if (activity.Text.Contains(ActionTypes.PostBack + "AddPizza"))
             {
@@ -124,8 +174,8 @@ namespace Pizzaria.Dialogs
                 PizzaModel pizzaModel = AddPizzaOrder(productData[0], productData[1], userState);
                 userState.EntitiesState.PizzasQuantityUsed--;
 
-                await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} foi adicionada com sucesso :)");
-                await dialogContext.Context.SendActivity("Gostaria de ver mais alguma pizza? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
+                await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName} foi adicionada com sucesso {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma pizza? \n(Clique em quero caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Pizza"));
             }
@@ -151,8 +201,8 @@ namespace Pizzaria.Dialogs
                 DrinkModel drinkModel = AddDrinkOrder(productData[0], productData[1], userState);
                 userState.EntitiesState.DrinksQuantityUsed--;
 
-                await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} {drinkModel.DrinkSizeName} adicionado com sucesso :)");
-                await dialogContext.Context.SendActivity("Gostaria de ver mais alguma bebida? (Clique em quero caso deseje, ou simplesmente solicite o que deseja :))");
+                await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} {drinkModel.DrinkSizeName} adicionado com sucesso {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma bebida? (Clique em quero caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Drink"));
             }
@@ -354,12 +404,12 @@ namespace Pizzaria.Dialogs
 
         private PizzaModel AddPizzaOrder(string id, string size, BotUserState userState)
         {
-            PizzaModel pizzaModelFind = userState.Order.Pizzas.Where(x => x.PizzaId == int.Parse(id) && x.SizeName == size).FirstOrDefault();
+            PizzaModel pizzaModelFind = userState.OrderModel.Pizzas.Where(x => x.PizzaId == int.Parse(id) && x.SizeName == size).FirstOrDefault();
 
             if (pizzaModelFind != null)
             {
                 pizzaModelFind.Quantity++;
-                userState.Order.PriceTotal += pizzaModelFind.Price;
+                userState.OrderModel.PriceTotal += pizzaModelFind.Price;
                 return pizzaModelFind;
             }
             else
@@ -377,20 +427,20 @@ namespace Pizzaria.Dialogs
                     Quantity = 1,
                     Price = pizzaSize.Price
                 };
-                userState.Order.Pizzas.Add(pizzaModel);
-                userState.Order.PriceTotal += (pizzaModel.Quantity * pizzaModel.Price);
+                userState.OrderModel.Pizzas.Add(pizzaModel);
+                userState.OrderModel.PriceTotal += (pizzaModel.Quantity * pizzaModel.Price);
                 return pizzaModel;
             }
         }
 
         private DrinkModel AddDrinkOrder(string id, string quantity, BotUserState userState)
         {
-            DrinkModel drinkModelFind = userState.Order.Drinks.Where(x => x.DrinkId == int.Parse(id) && x.DrinkQuantity == double.Parse(quantity)).FirstOrDefault();
+            DrinkModel drinkModelFind = userState.OrderModel.Drinks.Where(x => x.DrinkId == int.Parse(id) && x.DrinkQuantity == double.Parse(quantity)).FirstOrDefault();
 
             if (drinkModelFind != null)
             {
                 drinkModelFind.Quantity++;
-                userState.Order.PriceTotal += drinkModelFind.Price;
+                userState.OrderModel.PriceTotal += drinkModelFind.Price;
                 return drinkModelFind;
             }
             else
@@ -410,8 +460,8 @@ namespace Pizzaria.Dialogs
                     Price = drinkSize.Price
                 };
 
-                userState.Order.Drinks.Add(drinkModel);
-                userState.Order.PriceTotal += (drinkModel.Quantity * drinkModel.Price);
+                userState.OrderModel.Drinks.Add(drinkModel);
+                userState.OrderModel.PriceTotal += (drinkModel.Quantity * drinkModel.Price);
                 return drinkModel;
             }
         }

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Pizzaria.Data.Models.OrderModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,9 +20,15 @@ namespace Pizzaria.Data.Models.DrinkModels
         public double Price { get; set; }
 
 
+        [NotMapped]
+        public int UsedQuantity { get; set; }
+
+
         #region Many To many Relations
 
         public ICollection<DrinkSize> DrinkSizes { get; set; }
+
+        public ICollection<OrderDrink> OrderDrinks { get; set; }
 
         #endregion
     }

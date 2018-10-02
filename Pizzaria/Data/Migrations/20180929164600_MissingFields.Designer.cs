@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pizzaria.Data.Models;
 
 namespace Pizzaria.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180929164600_MissingFields")]
+    partial class MissingFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,10 +73,6 @@ namespace Pizzaria.Migrations
 
                     b.Property<bool>("Delivery");
 
-                    b.Property<bool>("Finished");
-
-                    b.Property<string>("OrderStatus");
-
                     b.Property<DateTime>("RegisterDate");
 
                     b.Property<int?>("UsedAddressAddressId");
@@ -96,7 +94,9 @@ namespace Pizzaria.Migrations
 
                     b.Property<int>("DrinkId");
 
-                    b.Property<string>("DrinkSizeName");
+                    b.Property<double>("Price");
+
+                    b.Property<int>("Quantity");
 
                     b.HasKey("OrderId", "DrinkId");
 
@@ -105,67 +105,21 @@ namespace Pizzaria.Migrations
                     b.ToTable("OrderDrinks");
                 });
 
-            modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderDrinkSize", b =>
-                {
-                    b.Property<int>("OrderDrinkSizeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("DrinkSizeSizeDId");
-
-                    b.Property<int?>("OrderDrinkDrinkId");
-
-                    b.Property<int?>("OrderDrinkOrderId");
-
-                    b.Property<double>("Price");
-
-                    b.Property<int>("Quantity");
-
-                    b.HasKey("OrderDrinkSizeId");
-
-                    b.HasIndex("DrinkSizeSizeDId");
-
-                    b.HasIndex("OrderDrinkOrderId", "OrderDrinkDrinkId");
-
-                    b.ToTable("OrderDrinkSize");
-                });
-
             modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderPizza", b =>
                 {
                     b.Property<int>("OrderId");
 
                     b.Property<int>("PizzaId");
 
-                    b.Property<string>("PizzaSizeName");
+                    b.Property<double>("Price");
+
+                    b.Property<int>("Quantity");
 
                     b.HasKey("OrderId", "PizzaId");
 
                     b.HasIndex("PizzaId");
 
                     b.ToTable("OrderPizzas");
-                });
-
-            modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderPizzaSize", b =>
-                {
-                    b.Property<int>("OrderPizzaSizeId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("OrderPizzaOrderId");
-
-                    b.Property<int?>("OrderPizzaPizzaId");
-
-                    b.Property<int?>("PizzaSizeSizePId");
-
-                    b.Property<double>("Price");
-
-                    b.Property<int>("Quantity");
-
-                    b.HasKey("OrderPizzaSizeId");
-
-                    b.HasIndex("PizzaSizeSizePId");
-
-                    b.HasIndex("OrderPizzaOrderId", "OrderPizzaPizzaId");
-
-                    b.ToTable("OrderPizzaSize");
                 });
 
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.Ingredient", b =>
@@ -245,7 +199,7 @@ namespace Pizzaria.Migrations
 
                     b.Property<string>("Neighborhood");
 
-                    b.Property<string>("Number");
+                    b.Property<int>("Number");
 
                     b.Property<string>("Street");
 
@@ -323,17 +277,6 @@ namespace Pizzaria.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderDrinkSize", b =>
-                {
-                    b.HasOne("Pizzaria.Data.Models.DrinkModels.SizeD", "DrinkSize")
-                        .WithMany()
-                        .HasForeignKey("DrinkSizeSizeDId");
-
-                    b.HasOne("Pizzaria.Data.Models.OrderModels.OrderDrink")
-                        .WithMany("OrderDrinkSizes")
-                        .HasForeignKey("OrderDrinkOrderId", "OrderDrinkDrinkId");
-                });
-
             modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderPizza", b =>
                 {
                     b.HasOne("Pizzaria.Data.Models.OrderModels.Order", "Order")
@@ -345,17 +288,6 @@ namespace Pizzaria.Migrations
                         .WithMany("OrderPizzas")
                         .HasForeignKey("PizzaId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderPizzaSize", b =>
-                {
-                    b.HasOne("Pizzaria.Data.Models.PizzaModels.SizeP", "PizzaSize")
-                        .WithMany()
-                        .HasForeignKey("PizzaSizeSizePId");
-
-                    b.HasOne("Pizzaria.Data.Models.OrderModels.OrderPizza")
-                        .WithMany("OrderPizzaSizes")
-                        .HasForeignKey("OrderPizzaOrderId", "OrderPizzaPizzaId");
                 });
 
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.PizzaIngredient", b =>

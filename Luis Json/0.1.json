@@ -1,0 +1,844 @@
+{
+  "luis_schema_version": "3.1.0",
+  "versionId": "0.1",
+  "name": "Pizzaria",
+  "desc": "",
+  "culture": "pt-br",
+  "intents": [
+    {
+      "name": "Ask_Order"
+    },
+    {
+      "name": "Ask_Product"
+    },
+    {
+      "name": "Ask_Status"
+    },
+    {
+      "name": "Clean_Order"
+    },
+    {
+      "name": "Edit_Address"
+    },
+    {
+      "name": "Edit_Order"
+    },
+    {
+      "name": "End_Order"
+    },
+    {
+      "name": "How_Is"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "Salutation"
+    },
+    {
+      "name": "Salutation_How_Is"
+    },
+    {
+      "name": "Thanks"
+    },
+    {
+      "name": "Who_Are"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "Drink",
+      "subLists": [
+        {
+          "canonicalForm": "coca-cola",
+          "list": [
+            "coke",
+            "coca-cola light",
+            "coca-cola zero",
+            "coca"
+          ]
+        },
+        {
+          "canonicalForm": "pepsi",
+          "list": [
+            "pepsi twist"
+          ]
+        },
+        {
+          "canonicalForm": "sukita",
+          "list": []
+        },
+        {
+          "canonicalForm": "antartica",
+          "list": [
+            "guarana",
+            "guaraná zero",
+            "guaraná antarctica",
+            "guaraná",
+            "guaraná antartica zero",
+            "guarana antartica zero",
+            "guarana antarctica",
+            "guarana zero"
+          ]
+        },
+        {
+          "canonicalForm": "fanta",
+          "list": [
+            "fanta uva",
+            "fanta laranja",
+            "fanta maracuja",
+            "fanta guaraná",
+            "fanta guarana",
+            "fanta maça-verde",
+            "fanta maça verde",
+            "fanta maca",
+            "fanta maça"
+          ]
+        },
+        {
+          "canonicalForm": "sprite",
+          "list": [
+            "sprite zero"
+          ]
+        },
+        {
+          "canonicalForm": "gatorade",
+          "list": []
+        },
+        {
+          "canonicalForm": "soda",
+          "list": [
+            "soda limonada"
+          ]
+        },
+        {
+          "canonicalForm": "powerade",
+          "list": []
+        },
+        {
+          "canonicalForm": "kuat",
+          "list": [
+            "kuat zero",
+            "guarana kuat"
+          ]
+        },
+        {
+          "canonicalForm": "schweppes",
+          "list": [
+            "schweppes citrus"
+          ]
+        },
+        {
+          "canonicalForm": "tonica",
+          "list": [
+            "água tônica",
+            "agua tonica",
+            "água tonica",
+            "agua tônica"
+          ]
+        },
+        {
+          "canonicalForm": "água mineral",
+          "list": [
+            "água com gás",
+            "água sem gás",
+            "agua",
+            "agua com gas",
+            "agua sem gas",
+            "água"
+          ]
+        },
+        {
+          "canonicalForm": "h2o",
+          "list": []
+        },
+        {
+          "canonicalForm": "aquarius",
+          "list": [
+            "aquarius fresh"
+          ]
+        },
+        {
+          "canonicalForm": "suco",
+          "list": [
+            "sucos"
+          ]
+        }
+      ],
+      "roles": []
+    },
+    {
+      "name": "Ingredients",
+      "subLists": [
+        {
+          "canonicalForm": "milho",
+          "list": []
+        },
+        {
+          "canonicalForm": "ervilha",
+          "list": []
+        },
+        {
+          "canonicalForm": "cebola",
+          "list": []
+        },
+        {
+          "canonicalForm": "alho",
+          "list": []
+        },
+        {
+          "canonicalForm": "tomate",
+          "list": [
+            "tomate seco"
+          ]
+        },
+        {
+          "canonicalForm": "presunto",
+          "list": []
+        },
+        {
+          "canonicalForm": "mussarela",
+          "list": [
+            "muçarela"
+          ]
+        },
+        {
+          "canonicalForm": "palmito",
+          "list": []
+        },
+        {
+          "canonicalForm": "pimentão",
+          "list": [
+            "pimentao"
+          ]
+        },
+        {
+          "canonicalForm": "pepino",
+          "list": []
+        },
+        {
+          "canonicalForm": "bacon",
+          "list": []
+        },
+        {
+          "canonicalForm": "ovo",
+          "list": []
+        },
+        {
+          "canonicalForm": "calabresa",
+          "list": []
+        },
+        {
+          "canonicalForm": "queijo",
+          "list": [
+            "quejo"
+          ]
+        },
+        {
+          "canonicalForm": "frango",
+          "list": [
+            "frango desfiado"
+          ]
+        },
+        {
+          "canonicalForm": "catupiry",
+          "list": []
+        },
+        {
+          "canonicalForm": "atum",
+          "list": []
+        },
+        {
+          "canonicalForm": "azeitona",
+          "list": [
+            "azeitonas"
+          ]
+        },
+        {
+          "canonicalForm": "lombo",
+          "list": []
+        },
+        {
+          "canonicalForm": "carne",
+          "list": []
+        },
+        {
+          "canonicalForm": "champignon",
+          "list": []
+        },
+        {
+          "canonicalForm": "oregano",
+          "list": [
+            "orégano"
+          ]
+        },
+        {
+          "canonicalForm": "provolone",
+          "list": []
+        },
+        {
+          "canonicalForm": "parmesão",
+          "list": [
+            "parmesao"
+          ]
+        },
+        {
+          "canonicalForm": "cheddar",
+          "list": []
+        },
+        {
+          "canonicalForm": "gorgonzola",
+          "list": []
+        },
+        {
+          "canonicalForm": "requeijão",
+          "list": [
+            "requeijao"
+          ]
+        },
+        {
+          "canonicalForm": "cream cheese",
+          "list": []
+        },
+        {
+          "canonicalForm": "salame",
+          "list": []
+        },
+        {
+          "canonicalForm": "banana",
+          "list": []
+        },
+        {
+          "canonicalForm": "pimenta",
+          "list": []
+        },
+        {
+          "canonicalForm": "molho",
+          "list": []
+        },
+        {
+          "canonicalForm": "manjericão",
+          "list": [
+            "manjericao"
+          ]
+        }
+      ],
+      "roles": []
+    },
+    {
+      "name": "Pizza_Names",
+      "subLists": [
+        {
+          "canonicalForm": "margherita",
+          "list": [
+            "marguerita"
+          ]
+        },
+        {
+          "canonicalForm": "mussarela",
+          "list": [
+            "musarela"
+          ]
+        },
+        {
+          "canonicalForm": "calabresa",
+          "list": []
+        }
+      ],
+      "roles": []
+    },
+    {
+      "name": "Product_Type",
+      "subLists": [
+        {
+          "canonicalForm": "bebida",
+          "list": [
+            "bebidas",
+            "refrigerante",
+            "refrigerantes"
+          ]
+        },
+        {
+          "canonicalForm": "pizza",
+          "list": [
+            "piza",
+            "pizas",
+            "pizzas"
+          ]
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "agradecido",
+      "intent": "Thanks",
+      "entities": []
+    },
+    {
+      "text": "agradeço pela ajuda",
+      "intent": "Thanks",
+      "entities": []
+    },
+    {
+      "text": "alô",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "apague meu pedido",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "bebidas",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "boa noite",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "boa noite tudo certo",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "boa noite, tudo bem?",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "boa tarde",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "boa tarde, como vai?",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "bom dia",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "bom dia, tudo certo?",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "carrinho",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "com quem estou falando?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "como está meu pedido",
+      "intent": "Ask_Status",
+      "entities": []
+    },
+    {
+      "text": "como está?",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "como estas",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "como vai você?",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "como voce esta",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "e aí, tudo bem?",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "ei como esta",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "eu gostaria de alterar meu pedido",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "eu gostaria de uma bebida",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "eu gostaria de uma pizza",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "eu gostaria de uma pizza que tivesse queijo, salame e azeitonas",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "eu queria um refrigerante",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "gostaria de editar meu endereço",
+      "intent": "Edit_Address",
+      "entities": []
+    },
+    {
+      "text": "gostaria de editar meus itens",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "gostaria de finalizar meu pedido",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "gostaria de limpar meus pedidos",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "gostaria de ver meu carrinho",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "gostaria de ver os produtos que já adicionei",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "gostaria do status do meu pedido",
+      "intent": "Ask_Status",
+      "entities": []
+    },
+    {
+      "text": "gostaria que limpasse meu pedido",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "hey",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "limpar carrinho",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "limpe minha cesta",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "meu pedido está pronto",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "meu pedido está pronto?",
+      "intent": "Ask_Status",
+      "entities": []
+    },
+    {
+      "text": "meu pedido já foi enviado?",
+      "intent": "Ask_Status",
+      "entities": []
+    },
+    {
+      "text": "meu pedido já saiu?",
+      "intent": "Ask_Status",
+      "entities": []
+    },
+    {
+      "text": "meus itens",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "minha ordem atual",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "mostre-me minha ordem",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "o pedido está completo",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "obrigado pela atenção",
+      "intent": "Thanks",
+      "entities": []
+    },
+    {
+      "text": "obrigado pelo atendimento",
+      "intent": "Thanks",
+      "entities": []
+    },
+    {
+      "text": "oi",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "oi como vai",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "oi, como vai?",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "oi, como você está?",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "ola",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "olá",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "olá tudo bem",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "ola tudo certo",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "ola, tudo bem",
+      "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "opa",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "por favor delete minha cesta de produtos",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "por favor quero trocar o endereço do pedido",
+      "intent": "Edit_Address",
+      "entities": []
+    },
+    {
+      "text": "preciso editar meu carrinho",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "preciso modificar o endereço do pedido",
+      "intent": "Edit_Address",
+      "entities": []
+    },
+    {
+      "text": "quais items eu já adicionei?",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "quem é você?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "queria editar meu carrinho",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "queria um guarana",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "queria uma coca",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "queria ver meus items",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "quero apagar meu pedido",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "quero editar meu pedido",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "quero encerrar meu pedido",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "quero finalizar meu pedido",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "quero modificar minhas cesta de produtos",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "quero mudar meu carrinho",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "quero remover todos os produtos do carrinho",
+      "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "quero trocar o endereço",
+      "intent": "Edit_Address",
+      "entities": []
+    },
+    {
+      "text": "quero uma agua",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "quero uma bebida",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "quero uma coca",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "quero ver meu pedido",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "quero ver meus pedidos",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "ss",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "tudo beleza",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "tudo bem?",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "tudo certo",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "tudo certo?",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "tudo ok?",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "valeu pela ajuda",
+      "intent": "Thanks",
+      "entities": []
+    },
+    {
+      "text": "vamos finalizar o pedido",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "você é humano?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "você é um robô?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "você está bem?",
+      "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "você existe realmente?",
+      "intent": "Who_Are",
+      "entities": []
+    }
+  ],
+  "settings": []
+}

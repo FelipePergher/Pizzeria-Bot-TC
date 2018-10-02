@@ -31,13 +31,31 @@ namespace Pizzaria.Dialogs
         {
             if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
             {
-                //Todo: Informar ao usuário as funções que o bot realiza
-                await turnContext.SendActivity("Bem vindo a conversa.");
+                await turnContext.SendActivity($"Seja bem vindo a pizzaria do Manolo {Emojis.SmileHappy}");
+
+                await turnContext.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+
+                await turnContext.SendActivity($"Eu sou o Jorge o bot da pizzaria do manolo e estou aqui para auxiliá-lo no seu pedido {Emojis.SmileHappy} \n" +
+                    "Atualmente eu posso realizar as seguintes tarefas: \n" +
+                    "*-Ofereço bebidas e pizzas cutomizadas na sua solicitação* \n" +
+                    "*-Mostro como seu carrinho está no momento* \n" +
+                    "*-Limpo seu carrinho quando solicitado* \n" +
+                    "*-Finalizo seu carrinho quando solicitado* \n" +
+                    "*-Edito e removo itens seu carrinho quando solicitado* \n" +
+                    "*-Edito seu endreço de entrega atual quando solicitado* \n" +
+                    "*-Busco seus pedidos abertos para saber o seu estado* \n");
+
+                await turnContext.SendActivity($"Quando tiver alguma dúvida simplesmente escreva *AJUDA* e lhe redirecionarei para exemplos de uso {Emojis.SmileHappy}\n" +
+                    $"Caso queira sair de uma conversa que esteja no momento, simplesmente digite *SAIR* e voltaremos ao fluxo normal da conversa {Emojis.SmileHappy}\n" +
+                    $"Em que lhe posso ser útil no momento?");
+
             }
             else if (turnContext.Activity.Type == ActivityTypes.Message)
             {
                 var dialogState = turnContext.GetConversationState<Dictionary<string, object>>();
-
                 DialogContext dialogContext = DialogFlow.CreateContext(turnContext, dialogState);
 
                 await dialogContext.Continue();
@@ -59,7 +77,8 @@ namespace Pizzaria.Dialogs
             }
             else if(turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
-                await turnContext.SendActivity("Evento não tratado -> " + turnContext.Activity.Type);
+                await turnContext.SendActivity($"Olá, ainda não estou preparado para tratar este tipo de informacão {Emojis.SmileSad}\n" +
+                    $"Peço que utilize apenas texto para nossa interação ser melhor {Emojis.SmileHappy}");
             }
         }
         

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Pizzaria.Models
 {
-    public class Order
+    public class OrderModel
     {
-        public Order()
+        public OrderModel()
         {
             Pizzas = new List<PizzaModel>();
             Drinks = new List<DrinkModel>();
