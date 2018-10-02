@@ -1,25 +1,49 @@
 ﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <meta charset="utf-8" />
+<html lang="en">
 
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Pizzaria</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link href="css/creative.min.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
 </head>
-<body style="font-family:'Segoe UI'">
-    <h1>EchoBot sample using ASP.Net Core 2</h1>
-    <p>Describe your bot here and your terms of use etc.</p>
-    <p>To debug you bot using the Bot Framework Emulator, paste this URL into the Emulator window:</p>
-    <div style="padding-left: 50px;" id="botBaseUrl"></div>
-    <p>Visit <a href="https://www.botframework.com/">Bot Framework</a> to register your bot. When you register, remember to set the endpoint to:</p>
-    <div style="padding-left: 50px;">
-        https://<strong>{your domain name}</strong>/api/messages
-    </div>
-    <script>
-        var urlDiv = document.getElementById("botBaseUrl");
-        var aTag = document.createElement('a');
-        aTag.setAttribute('href', location.protocol + "//" + location.host + "/api/messages");
-        aTag.innerHTML = location.protocol + "//" + location.host + "/api/messages";
-        urlDiv.appendChild(aTag);
-    </script>
+
+<body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            <div class="navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#">Documentação</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="masthead text-center text-white d-flex">
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <h1 class="text-uppercase">
+                        <strong>Um bot em desenvolvimento para pedidos em Pizzaria</strong>
+                    </h1>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </header>
+    <iframe src='https://webchat.botframework.com/embed/Pizzeria-tc?s=LqSYmVnEGU4.cwA.9vI.0jc9zR26I84BkP12JgxtWS4bxgOZSi3Jp7we4t8eB5k' id="chat"></iframe>
 </body>
+
 </html>
