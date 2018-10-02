@@ -26,6 +26,7 @@ namespace Pizzaria.Code
             Skip = false;
             SkipAddress = false;
             Delivery = false;
+            OrderEditIsEdit = false;
         }
 
         public string Name { get; set; }
@@ -46,6 +47,14 @@ namespace Pizzaria.Code
         public bool SkipAddress { get; set; }
 
         public bool Delivery { get; set; }
+
+        public int OrderIdEdit { get; set; }
+
+        public string OrderSizeNameEdit { get; set; }
+
+        public bool OrderEditIsPizza { get; set; }
+
+        public bool OrderEditIsEdit { get; set; }
 
     }
 }

@@ -61,9 +61,6 @@ namespace Pizzaria.Dialogs
             else
             {
                 await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
-
-                EntitiesParse entities = (EntitiesParse)args["entities"];
-
                 await dialogContext.Replace(End_Order_WaterfallText, args);
 
             }
@@ -72,7 +69,7 @@ namespace Pizzaria.Dialogs
         private async Task Answer_Ask_Orderbegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            if(dialogContext.Context.Activity.Text.Contains(ActionTypes.PostBack + "SuggestedEndOrder"))
+            if (dialogContext.Context.Activity.Text.Contains(ActionTypes.PostBack + "SuggestedEndOrder"))
             {
                 await dialogContext.Replace(End_Order_WaterfallText, args);
             }
@@ -154,8 +151,8 @@ namespace Pizzaria.Dialogs
         private async Task EditAddressBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            
-            if(userState.Address.AddressId == -1)
+
+            if (userState.Address.AddressId == -1)
             {
                 await dialogContext.Context.SendActivity($"Você ainda não possui um endereço de envio para o pedido atual, mas você pode registrar um agora {Emojis.SmileHappy} ");
             }
@@ -178,8 +175,168 @@ namespace Pizzaria.Dialogs
         private async Task EditOrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            await dialogContext.Context.SendActivity("EditOrder");
+
+            if (userState.OrderEditIsEdit)
+            {
+                await dialogContext.Continue();
+            }
+            else if (userState.OrderModel.Drinks.Count > 0 || userState.OrderModel.Pizzas.Count > 0)
+            {
+                await dialogContext.Context.SendActivity($"Estou lhe enviando o itens já adicionados no carrinho, clique no que você gostaria de editar \n" +
+                    $"Ou simplesmente solicite o que deseja {Emojis.SmileHappy}");
+
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+
+                IActivity activity = MessageFactory.Carousel(GetOrderUserAsAtachments(userState));
+
+                await dialogContext.Context.SendActivity(activity);
+            }
+            else
+            {
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
+                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
+            }
+
             //await dialogContext.Replace(AskUserAddressWaterfallText, args);
+        }
+
+        private async Task EditOrderSecondStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            string text = dialogContext.Context.Activity.Text;
+
+            if (userState.OrderEditIsEdit)
+            {
+                await dialogContext.Continue();
+            }
+            else if (text.Contains(ActionTypes.PostBack + "EditOrderDrink"))
+            {
+                userState.OrderIdEdit = int.Parse(text.Split("||")[1]);
+                userState.OrderSizeNameEdit = text.Split("||")[2];
+                userState.OrderEditIsPizza = false;
+                DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
+                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a pizza {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}? \n" +
+                    $"Utilize os botõees, ou solicite o que deseja {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity(GetSuggestedActionEditDeleteOrderItem());
+            }
+            else if (text.Contains(ActionTypes.PostBack + "EditOrderPizza"))
+            {
+                userState.OrderIdEdit = int.Parse(text.Split("||")[1]);
+                userState.OrderSizeNameEdit = text.Split("||")[2];
+                userState.OrderEditIsPizza = true;
+                PizzaModel pizzaModel = userState.OrderModel.Pizzas.FirstOrDefault(x => x.PizzaId == userState.OrderIdEdit && x.SizeName == userState.OrderSizeNameEdit);
+                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName}? \n" +
+                    $"Utilize os botõees, ou solicite o que deseja {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity(GetSuggestedActionEditDeleteOrderItem());
+            }
+            else
+            {
+                RecognizerResult luisResult = dialogContext.Context.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
+
+                IDictionary<string, object> createdArgs = new Dictionary<string, object>
+                {
+                    { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                };
+                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, createdArgs);
+            }
+        }
+
+        private async Task EditOrderThirdStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+
+            string text = dialogContext.Context.Activity.Text;
+
+            if (text.Contains(ActionTypes.PostBack + "SuggestedEditItemOrder") || userState.OrderEditIsEdit)
+            {
+                userState.OrderEditIsEdit = true;
+                await dialogContext.Context.SendActivity("Qual a quantidade deste produto que gostaria?");
+            }
+            else if (text.Contains(ActionTypes.PostBack + "SuggestedDeleteItemOrder"))
+            {
+                if (userState.OrderEditIsPizza)
+                {
+                    PizzaModel pizzaModel = userState.OrderModel.Pizzas.FirstOrDefault(x => x.PizzaId == userState.OrderIdEdit && x.SizeName == userState.OrderSizeNameEdit);
+                    userState.OrderModel.Pizzas.Remove(pizzaModel);
+                    userState.OrderModel.PriceTotal -= (pizzaModel.Price * pizzaModel.Quantity);
+                    userState.OrderModel.QuantityTotal-= pizzaModel.Quantity;
+                    await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi removido do seu carrinho, o que você gostaria agora?");
+                    await dialogContext.End();
+                }
+                else
+                {
+                    DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
+                    userState.OrderModel.Drinks.Remove(drinkModel);
+                    userState.OrderModel.PriceTotal -= (drinkModel.Price * drinkModel.Quantity);
+                    userState.OrderModel.QuantityTotal-=drinkModel.Quantity;
+                    await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi removido do seu carrinho, o que você gostaria agora?");
+                    await dialogContext.End();
+                }
+            }
+            else
+            {
+                RecognizerResult luisResult = dialogContext.Context.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
+
+                IDictionary<string, object> createdArgs = new Dictionary<string, object>
+                {
+                    { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                };
+                await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, createdArgs);
+            }
+        }
+
+        private async Task EditOrderForthStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
+        {
+            BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            try
+            {
+                int quantity = int.Parse(dialogContext.Context.Activity.Text);
+                if(quantity > 0 || quantity > 1000)
+                {
+                    if (userState.OrderEditIsPizza)
+                    {
+                        PizzaModel pizzaModel = userState.OrderModel.Pizzas.FirstOrDefault(x => x.PizzaId == userState.OrderIdEdit && x.SizeName == userState.OrderSizeNameEdit);
+                        userState.OrderModel.Pizzas.Remove(pizzaModel);
+                        userState.OrderModel.PriceTotal -= (pizzaModel.Price * pizzaModel.Quantity);
+                        userState.OrderModel.QuantityTotal -= pizzaModel.Quantity;
+
+                        pizzaModel.Quantity = quantity;
+                        userState.OrderModel.PriceTotal += (pizzaModel.Quantity * pizzaModel.Price);
+                        userState.OrderModel.QuantityTotal += pizzaModel.Quantity;
+                        userState.OrderModel.Pizzas.Add(pizzaModel);
+                        await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi alterado, o que você gostaria agora?");
+                    }
+                    else
+                    {
+                        DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
+                        userState.OrderModel.Drinks.Remove(drinkModel);
+                        userState.OrderModel.PriceTotal -= (drinkModel.Price * drinkModel.Quantity);
+                        userState.OrderModel.QuantityTotal -= drinkModel.Quantity;
+
+                        drinkModel.Quantity = quantity;
+                        userState.OrderModel.PriceTotal += (drinkModel.Quantity * drinkModel.Price);
+                        userState.OrderModel.QuantityTotal += drinkModel.Quantity;
+                        userState.OrderModel.Drinks.Add(drinkModel);
+                        await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi alterado, o que você gostaria agora?");
+                    }
+                }
+                else
+                {
+                    await dialogContext.Context.SendActivity($"Insira uma quantidade válida {Emojis.SmileHappy}");
+                    await dialogContext.Replace(EditOrderWaterfallText, args);
+                }
+            }
+            catch (Exception)
+            {
+                await dialogContext.Context.SendActivity($"Insira uma quantidade válida {Emojis.SmileHappy}");
+                await dialogContext.Replace(EditOrderWaterfallText, args);
+            }
+
         }
 
         #endregion
@@ -380,20 +537,20 @@ namespace Pizzaria.Dialogs
             //}
             //else if (user != null)
             //{
-                userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId).ToList();
-                //if (userState.UserAddresses.Count > 0)
-                //{
-                    await dialogContext.Continue();
-        //        }
-        //        else
-        //        {
-        //            await dialogContext.Continue();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        await dialogContext.Continue();
-        //    }
+            userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId).ToList();
+            //if (userState.UserAddresses.Count > 0)
+            //{
+            await dialogContext.Continue();
+            //        }
+            //        else
+            //        {
+            //            await dialogContext.Continue();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        await dialogContext.Continue();
+            //    }
         }
 
         private async Task AskUserAddressThirdStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -516,7 +673,7 @@ namespace Pizzaria.Dialogs
             if (text.Contains(ActionTypes.PostBack + "UserAddress"))
             {
                 int addressId = int.Parse(text.Split("||")[1]);
-                userState.Address = context.Addresses.FirstOrDefault(x =>x.AddressId == addressId);
+                userState.Address = context.Addresses.FirstOrDefault(x => x.AddressId == addressId);
                 if (userState.SkipAddress)
                 {
                     userState.SkipAddress = false;
@@ -617,6 +774,46 @@ namespace Pizzaria.Dialogs
             return attachments;
         }
 
+        private List<Attachment> GetOrderUserAsAtachments(BotUserState userState)
+        {
+            List<Attachment> attachments = new List<Attachment>();
+
+            foreach (var drink in userState.OrderModel.Drinks)
+            {
+                Drink drinkFind = context.Drinks.FirstOrDefault(x => x.DrinkId == drink.DrinkId);
+                attachments.Add(new HeroCard
+                {
+                    Title = $"({drink.Quantity}) " + drink.DrinkName,
+                    Subtitle = drink.DrinkSizeName,
+                    Images = new List<CardImage> { new CardImage(url: ServerUrl + @"/" + drinkFind.Image) },
+                    Tap = new CardAction
+                    {
+                        Type = ActionTypes.PostBack,
+                        Value = $"{ActionTypes.PostBack}EditOrderDrink||{drink.DrinkId}||{drink.DrinkSizeName}"
+                    }
+                }.ToAttachment());
+            }
+
+            foreach (var pizza in userState.OrderModel.Pizzas)
+            {
+                Pizza pizzaFind = context.Pizzas.Include(x => x.PizzaIngredients).ThenInclude(x => x.Ingredient).FirstOrDefault(x => x.PizzaId == pizza.PizzaId);
+                attachments.Add(new HeroCard
+                {
+                    Title = $"({pizza.Quantity}) " + pizza.PizzaName,
+                    Subtitle = pizza.SizeName,
+                    Text = GetIngredientsString(pizzaFind.PizzaIngredients),
+                    Images = new List<CardImage> { new CardImage(url: ServerUrl + @"/" + pizzaFind.Image) },
+                    Tap = new CardAction
+                    {
+                        Type = ActionTypes.PostBack,
+                        Value = $"{ActionTypes.PostBack}EditOrderPizza||{pizza.PizzaId}||{pizza.SizeName}"
+                    }
+                }.ToAttachment());
+            }
+
+            return attachments;
+        }
+
         private string GetIngredientsString(ICollection<PizzaIngredient> pizzaIngredients)
         {
             string ingredients = "Ingredientes: ";
@@ -682,7 +879,7 @@ namespace Pizzaria.Dialogs
             foreach (var pizza in pizzas)
             {
                 OrderPizza orderPizzaFind = orderPizzas.FirstOrDefault(x => x.Pizza.PizzaId == pizza.PizzaId);
-                if(orderPizzaFind != null)
+                if (orderPizzaFind != null)
                 {
                     orderPizzaFind.OrderPizzaSizes.Add(new OrderPizzaSize
                     {
@@ -709,7 +906,7 @@ namespace Pizzaria.Dialogs
                     };
                     orderPizzas.Add(orderPizza);
                 }
-                
+
             }
             return orderPizzas;
         }
@@ -724,6 +921,26 @@ namespace Pizzaria.Dialogs
                         Title = "Sim",
                         Type = ActionTypes.PostBack,
                         Value = ActionTypes.PostBack + "SuggestedEndOrder",
+                    }
+                });
+        }
+
+        private IActivity GetSuggestedActionEditDeleteOrderItem()
+        {
+            return MessageFactory.SuggestedActions(
+                new CardAction[]
+                {
+                    new CardAction
+                    {
+                        Title = "Editar",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "SuggestedEditItemOrder",
+                    },
+                    new CardAction
+                    {
+                        Title = "Remover",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "SuggestedDeleteItemOrder",
                     }
                 });
         }
@@ -795,7 +1012,10 @@ namespace Pizzaria.Dialogs
         {
             return new WaterfallStep[]
             {
-                EditOrderBegin
+                EditOrderBegin,
+                EditOrderSecondStep,
+                EditOrderThirdStep,
+                EditOrderForthStep
             };
         }
 
