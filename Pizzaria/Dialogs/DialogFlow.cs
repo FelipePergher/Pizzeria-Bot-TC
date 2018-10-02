@@ -15,6 +15,7 @@ namespace Pizzaria.Dialogs
         AskOrder Ask_Order;
         Thanks Thanks;
         None None;
+        WhoAre WhoAre;
 
         public DialogFlow()
         {
@@ -24,6 +25,7 @@ namespace Pizzaria.Dialogs
             None = new None();
             Thanks = new Thanks();            
             Ask_Status = new Ask_Status();
+            WhoAre = new WhoAre();
 
             Add(SalutationTypes.TextPrompt, new TextPrompt());
 
@@ -56,6 +58,8 @@ namespace Pizzaria.Dialogs
             Add(AskOrder.EditAddressWaterfallText, Ask_Order.EditAddressWaterfall());
 
             Add(AskOrder.EditOrderWaterfallText, Ask_Order.EditOrderWaterfall());
+
+            Add(WhoAre.WhoAreWaterfallText, WhoAre.WhoAreWaterfall());
                 
         }
     }

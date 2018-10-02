@@ -13,7 +13,6 @@ namespace Pizzaria.Dialogs
 
         private async Task Thank(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
-            dialogContext.ActiveDialog.State = new Dictionary<string, object>();
             await dialogContext.Context.SendActivity($"De nada, eu que agradeço a preferência {Emojis.SmileHappy}");
         }
 
