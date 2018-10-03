@@ -70,7 +70,7 @@ namespace Pizzaria.Dialogs
                             {
                                 Title = "Abrir documentação",
                                 Type = ActionTypes.OpenUrl,
-                                Value = "https://pizzeria-tc.azurewebsites.net/"
+                                Value = "https://pizzeria-bot-tc.readthedocs.io/pt/latest/index.html"
                             }
                         });
 
