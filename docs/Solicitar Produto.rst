@@ -1,5 +1,5 @@
 ============
-Pedir Produto
+Solicitar Produto
 ============
 
 Exemplos de como pedir um produto::
