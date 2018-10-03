@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Pizzaria'
-copyright = u'2018, <a href="github.com/felipepergher"> Felipe Pergher</a>'
+copyright = u'2018, Felipe Pergher'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
