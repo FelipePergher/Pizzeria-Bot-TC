@@ -62,6 +62,21 @@ namespace Pizzaria.Dialogs
                 {
                     dialogContext.EndAll();
                 }
+                else if(turnContext.Activity.Text.ToLower() == "ajuda")
+                {
+                    IActivity activity = MessageFactory.SuggestedActions(new CardAction[]
+                        {
+                            new CardAction
+                            {
+                                Title = "Abrir documentação",
+                                Type = ActionTypes.OpenUrl,
+                                Value = "https://pizzeria-tc.azurewebsites.net/"
+                            }
+                        });
+
+                    await dialogContext.Context.SendActivity($"Clique no botão abaixo para abrir a documentação {Emojis.SmileHappy} ");
+                    await dialogContext.Context.SendActivity(activity);
+                }
                 else
                 {
                     await dialogContext.Continue();
