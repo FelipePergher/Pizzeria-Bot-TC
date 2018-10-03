@@ -58,22 +58,45 @@ namespace Pizzaria.Dialogs
                 var dialogState = turnContext.GetConversationState<Dictionary<string, object>>();
                 DialogContext dialogContext = DialogFlow.CreateContext(turnContext, dialogState);
 
-                await dialogContext.Continue();
-
-                BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-               
-                if (!turnContext.Responded)
+                if(turnContext.Activity.Text.ToLower() == "sair")
                 {
-                    RecognizerResult luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
-                    string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
-
-                    IDictionary<string, object> args = new Dictionary<string, object>
-                    {
-                        { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
-                    };
-
-                    await dialogContext.Begin(intentResult, args);
+                    dialogContext.EndAll();
                 }
+                else if(turnContext.Activity.Text.ToLower() == "ajuda")
+                {
+                    IActivity activity = MessageFactory.SuggestedActions(new CardAction[]
+                        {
+                            new CardAction
+                            {
+                                Title = "Abrir documentação",
+                                Type = ActionTypes.OpenUrl,
+                                Value = "https://pizzeria-tc.azurewebsites.net/"
+                            }
+                        });
+
+                    await dialogContext.Context.SendActivity($"Clique no botão abaixo para abrir a documentação {Emojis.SmileHappy} ");
+                    await dialogContext.Context.SendActivity(activity);
+                }
+                else
+                {
+                    await dialogContext.Continue();
+
+                    BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+               
+                    if (!turnContext.Responded)
+                    {
+                        RecognizerResult luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
+                        string intentResult = LuisResult.GetLuisIntent(luisResult, userState);
+
+                        IDictionary<string, object> args = new Dictionary<string, object>
+                        {
+                            { "entities", EntitiesParse.RecognizeEntities(luisResult.Entities) }
+                        };
+
+                        await dialogContext.Begin(intentResult, args);
+                    }
+                }
+
             }
             else if(turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
