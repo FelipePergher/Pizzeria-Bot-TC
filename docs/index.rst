@@ -6,7 +6,7 @@
 Bem vindo a Documentação do bot da pizzaria do Manolo!
 ==================================================
 
-Contents:
+Conteúdo:
 
 .. toctree::
    :maxdepth: 2
