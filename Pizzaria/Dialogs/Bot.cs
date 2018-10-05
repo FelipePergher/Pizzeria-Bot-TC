@@ -63,9 +63,21 @@ namespace Pizzaria.Dialogs
                 {
                     dialogContext.EndAll();
                 }
-                else if(turnContext.Activity.Text.ToLower() == "ajuda")
+                else if (turnContext.Activity.Text.ToLower() == "ajuda")
                 {
-                    IActivity activity = MessageFactory.SuggestedActions(new CardAction[]
+                    //IActivity activity = MessageFactory.SuggestedActions(new CardAction[]
+                    //    {
+                    //        new CardAction
+                    //        {
+                    //            Title = "Abrir documentação",
+                    //            Type = ActionTypes.OpenUrl,
+                    //            Value = "https://pizzeria-bot-tc.readthedocs.io/pt/latest/index.html"
+                    //        }
+                    //    });
+
+                    IActivity activity = MessageFactory.Attachment(new HeroCard
+                    {
+                        Buttons = new List<CardAction>
                         {
                             new CardAction
                             {
@@ -73,7 +85,8 @@ namespace Pizzaria.Dialogs
                                 Type = ActionTypes.OpenUrl,
                                 Value = "https://pizzeria-bot-tc.readthedocs.io/pt/latest/index.html"
                             }
-                        });
+                        }
+                    }.ToAttachment());
 
                     await dialogContext.Context.SendActivity($"Clique no botão abaixo para abrir a documentação {Emojis.SmileHappy} ");
                     await dialogContext.Context.SendActivity(activity);
@@ -83,7 +96,7 @@ namespace Pizzaria.Dialogs
                     await dialogContext.Continue();
 
                     BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-               
+
                     if (!turnContext.Responded)
                     {
                         RecognizerResult luisResult = turnContext.Services.Get<RecognizerResult>(LuisRecognizerMiddleware.LuisRecognizerResultKey);
@@ -99,13 +112,13 @@ namespace Pizzaria.Dialogs
                 }
 
             }
-            else if(turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
+            else if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
                 await turnContext.SendActivity($"Olá, ainda não estou preparado para tratar este tipo de informacão {Emojis.SmileSad}\n" +
                     $"Peço que utilize apenas texto para nossa interação ser melhor {Emojis.SmileHappy}");
             }
         }
-        
+
     }
 
 }

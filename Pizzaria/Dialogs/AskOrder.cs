@@ -48,7 +48,7 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
 
-            ReceiptCard receiptCard = GetReceiptCart(userState);
+            ReceiptCard receiptCard = GetReceiptCard(userState);
             if (receiptCard.Items.Count > 0)
             {
                 IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
@@ -92,8 +92,9 @@ namespace Pizzaria.Dialogs
         private async Task Clean_OrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             await dialogContext.Context.SendActivity("Você quer realmente limpar seu carrinho?");
-            await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
-                new CardAction[]
+            await dialogContext.Context.SendActivity(MessageFactory.Attachment(new HeroCard
+            {
+                Buttons = new List<CardAction>
                 {
                     new CardAction
                     {
@@ -107,8 +108,25 @@ namespace Pizzaria.Dialogs
                         Type = ActionTypes.PostBack,
                         Value = "CleanOrder||false"
                     }
-                })
-            );
+                }
+            }.ToAttachment()));
+            //await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
+            //    new CardAction[]
+            //    {
+            //        new CardAction
+            //        {
+            //            Title = "Sim",
+            //            Type = ActionTypes.PostBack,
+            //            Value = ActionTypes.PostBack + "CleanOrder||true"
+            //        },
+            //        new CardAction
+            //        {
+            //            Title = "Nào",
+            //            Type = ActionTypes.PostBack,
+            //            Value = "CleanOrder||false"
+            //        }
+            //    })
+            //);
         }
 
         private async Task AnswerClean_OrderBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -263,7 +281,7 @@ namespace Pizzaria.Dialogs
                     PizzaModel pizzaModel = userState.OrderModel.Pizzas.FirstOrDefault(x => x.PizzaId == userState.OrderIdEdit && x.SizeName == userState.OrderSizeNameEdit);
                     userState.OrderModel.Pizzas.Remove(pizzaModel);
                     userState.OrderModel.PriceTotal -= (pizzaModel.Price * pizzaModel.Quantity);
-                    userState.OrderModel.QuantityTotal-= pizzaModel.Quantity;
+                    userState.OrderModel.QuantityTotal -= pizzaModel.Quantity;
                     await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi removido do seu carrinho, o que você gostaria agora?");
                     await dialogContext.End();
                 }
@@ -272,7 +290,7 @@ namespace Pizzaria.Dialogs
                     DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
                     userState.OrderModel.Drinks.Remove(drinkModel);
                     userState.OrderModel.PriceTotal -= (drinkModel.Price * drinkModel.Quantity);
-                    userState.OrderModel.QuantityTotal-=drinkModel.Quantity;
+                    userState.OrderModel.QuantityTotal -= drinkModel.Quantity;
                     await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi removido do seu carrinho, o que você gostaria agora?");
                     await dialogContext.End();
                 }
@@ -296,7 +314,7 @@ namespace Pizzaria.Dialogs
             try
             {
                 int quantity = int.Parse(dialogContext.Context.Activity.Text);
-                if(quantity > 0 || quantity > 1000)
+                if (quantity > 0 || quantity > 1000)
                 {
                     if (userState.OrderEditIsPizza)
                     {
@@ -380,7 +398,7 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
 
-            ReceiptCard receiptCard = GetReceiptCart(userState);
+            ReceiptCard receiptCard = GetReceiptCard(userState);
             IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
             await dialogContext.Context.SendActivity(messageActivity);
 
@@ -408,24 +426,43 @@ namespace Pizzaria.Dialogs
 
             await dialogContext.Context.SendActivity("Você quer realmente finalizar seu pedido?");
 
-
-            await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
-                new CardAction[]
+            await dialogContext.Context.SendActivity(MessageFactory.Attachment(new HeroCard
+            {
+                Buttons = new List<CardAction>
                 {
-                new CardAction
-                {
-                    Title = "Sim",
-                    Type = ActionTypes.PostBack,
-                    Value = ActionTypes.PostBack + "EndOrder||true"
-                },
-                new CardAction
-                {
-                    Title = "Não",
-                    Type = ActionTypes.PostBack,
-                    Value = ActionTypes.PostBack + "EndOrder||false"
+                    new CardAction
+                    {
+                        Title = "Sim",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "EndOrder||true"
+                    },
+                    new CardAction
+                    {
+                        Title = "Não",
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "EndOrder||false"
+                    }
                 }
-                })
-            );
+            }.ToAttachment()));
+
+
+            //await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
+            //    new CardAction[]
+            //    {
+            //    new CardAction
+            //    {
+            //        Title = "Sim",
+            //        Type = ActionTypes.PostBack,
+            //        Value = ActionTypes.PostBack + "EndOrder||true"
+            //    },
+            //    new CardAction
+            //    {
+            //        Title = "Não",
+            //        Type = ActionTypes.PostBack,
+            //        Value = ActionTypes.PostBack + "EndOrder||false"
+            //    }
+            //    })
+            //);
         }
 
         private async Task End_OrderEnd(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -506,8 +543,9 @@ namespace Pizzaria.Dialogs
             {
                 await dialogContext.Context.SendActivity("Você quer a entrega do pedido?");
 
-                await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
-                    new CardAction[]
+                await dialogContext.Context.SendActivity(MessageFactory.Attachment(new HeroCard
+                {
+                    Buttons = new List<CardAction>
                     {
                         new CardAction
                         {
@@ -521,8 +559,26 @@ namespace Pizzaria.Dialogs
                             Type = ActionTypes.PostBack,
                             Value = ActionTypes.PostBack + "DeliveryOrder||false"
                         }
-                    })
-               );
+                    }
+                }.ToAttachment()));
+
+                //await dialogContext.Context.SendActivity(MessageFactory.SuggestedActions(
+                //     new CardAction[]
+                //     {
+                //         new CardAction
+                //         {
+                //             Title = "Sim",
+                //             Type = ActionTypes.PostBack,
+                //             Value = ActionTypes.PostBack + "DeliveryOrder||true"
+                //         },
+                //         new CardAction
+                //         {
+                //             Title = "Não",
+                //             Type = ActionTypes.PostBack,
+                //             Value = ActionTypes.PostBack + "DeliveryOrder||false"
+                //         }
+                //     })
+                //);
             }
         }
 
@@ -702,7 +758,7 @@ namespace Pizzaria.Dialogs
 
         #region Private Methods
 
-        private ReceiptCard GetReceiptCart(BotUserState userState)
+        private ReceiptCard GetReceiptCard(BotUserState userState)
         {
             List<ReceiptItem> receiptItems = new List<ReceiptItem>();
             foreach (var item in userState.OrderModel.Pizzas)
@@ -926,8 +982,9 @@ namespace Pizzaria.Dialogs
 
         private IActivity GetSuggestedActionEndOrder()
         {
-            return MessageFactory.SuggestedActions(
-                new CardAction[]
+            return MessageFactory.Attachment(new HeroCard
+            {
+                Buttons = new List<CardAction>
                 {
                     new CardAction
                     {
@@ -935,27 +992,58 @@ namespace Pizzaria.Dialogs
                         Type = ActionTypes.PostBack,
                         Value = ActionTypes.PostBack + "SuggestedEndOrder",
                     }
-                });
+                }
+            }.ToAttachment());
+
+            //return MessageFactory.SuggestedActions(
+            //    new CardAction[]
+            //    {
+            //        new CardAction
+            //        {
+            //            Title = "Sim",
+            //            Type = ActionTypes.PostBack,
+            //            Value = ActionTypes.PostBack + "SuggestedEndOrder",
+            //        }
+            //    });
         }
 
         private IActivity GetSuggestedActionEditDeleteOrderItem()
         {
-            return MessageFactory.SuggestedActions(
-                new CardAction[]
+            return MessageFactory.Attachment(new HeroCard
+            {
+                Buttons = new List<CardAction>
                 {
-                    new CardAction
-                    {
-                        Title = "Editar",
-                        Type = ActionTypes.PostBack,
-                        Value = ActionTypes.PostBack + "SuggestedEditItemOrder",
-                    },
-                    new CardAction
-                    {
-                        Title = "Remover",
-                        Type = ActionTypes.PostBack,
-                        Value = ActionTypes.PostBack + "SuggestedDeleteItemOrder",
-                    }
-                });
+                     new CardAction
+                        {
+                            Title = "Editar",
+                            Type = ActionTypes.PostBack,
+                            Value = ActionTypes.PostBack + "SuggestedEditItemOrder",
+                        },
+                        new CardAction
+                        {
+                            Title = "Remover",
+                            Type = ActionTypes.PostBack,
+                            Value = ActionTypes.PostBack + "SuggestedDeleteItemOrder",
+                        }
+                }
+            }.ToAttachment());
+
+            //return MessageFactory.SuggestedActions(
+            //    new CardAction[]
+            //    {
+            //        new CardAction
+            //        {
+            //            Title = "Editar",
+            //            Type = ActionTypes.PostBack,
+            //            Value = ActionTypes.PostBack + "SuggestedEditItemOrder",
+            //        },
+            //        new CardAction
+            //        {
+            //            Title = "Remover",
+            //            Type = ActionTypes.PostBack,
+            //            Value = ActionTypes.PostBack + "SuggestedDeleteItemOrder",
+            //        }
+            //    });
         }
 
         #endregion

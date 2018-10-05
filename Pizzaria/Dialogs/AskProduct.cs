@@ -252,16 +252,29 @@ namespace Pizzaria.Dialogs
 
         private IActivity GetSuggestedActionsNewsPizzasAndDrinks(string type)
         {
-            return MessageFactory.SuggestedActions(
-                new CardAction[]
+            return MessageFactory.Attachment(new HeroCard
+            {
+                Buttons = new List<CardAction>
                 {
                     new CardAction
-                    {
-                        Title = "Quero",
-                        Type = ActionTypes.PostBack,
-                        Value = "quero||" + ActionTypes.PostBack + "SuggestedAction" + type,
-                    }
-                });
+                     {
+                         Title = "Quero",
+                         Type = ActionTypes.PostBack,
+                         Value = "quero||" + ActionTypes.PostBack + "SuggestedAction" + type,
+                     }
+                }
+            }.ToAttachment());
+
+            //return MessageFactory.SuggestedActions(
+            //    new CardAction[]
+            //    {
+            //        new CardAction
+            //        {
+            //            Title = "Quero",
+            //            Type = ActionTypes.PostBack,
+            //            Value = "quero||" + ActionTypes.PostBack + "SuggestedAction" + type,
+            //        }
+            //    });
         }
 
         private string GetIngredientsFindedText(List<Pizza> pizzas, List<string> ingredients)
