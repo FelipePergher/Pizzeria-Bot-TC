@@ -753,22 +753,28 @@ namespace Pizzaria.Dialogs
                 {
                     Title = $"{address.Street} N° {address.Street}",
                     Subtitle = address.Neighborhood,
-                    Tap = new CardAction
-                    {
-                        Type = ActionTypes.PostBack,
-                        Value = ActionTypes.PostBack + "UserAddress||" + address.AddressId
+                    Buttons = new List<CardAction> {
+                        new CardAction
+                        {
+                            Title = "Use este endereço",
+                            Type = ActionTypes.PostBack,
+                            Value = ActionTypes.PostBack + "UserAddress||" + address.AddressId
+                        }
                     }
                 }.ToAttachment());
             }
 
             attachments.Add(new HeroCard
             {
-                Title = "Adicionar novo endereço",
-                Tap = new CardAction
+                Buttons = new List<CardAction>
                 {
-                    Type = ActionTypes.PostBack,
-                    Value = ActionTypes.PostBack + "NewAddress"
-                }
+                    new CardAction
+                    {
+                        Type = ActionTypes.PostBack,
+                        Value = ActionTypes.PostBack + "NewAddress"
+                    }
+                },
+                Title = "Adicionar novo endereço"
             }.ToAttachment());
 
             return attachments;
@@ -786,10 +792,14 @@ namespace Pizzaria.Dialogs
                     Title = $"({drink.Quantity}) " + drink.DrinkName,
                     Subtitle = drink.DrinkSizeName,
                     Images = new List<CardImage> { new CardImage(url: ServerUrl + @"/" + drinkFind.Image) },
-                    Tap = new CardAction
+                    Buttons = new List<CardAction>
                     {
-                        Type = ActionTypes.PostBack,
-                        Value = $"{ActionTypes.PostBack}EditOrderDrink||{drink.DrinkId}||{drink.DrinkSizeName}"
+                        new CardAction
+                        {
+                            Title = "Editar esta bebida",
+                            Type = ActionTypes.PostBack,
+                            Value = $"{ActionTypes.PostBack}EditOrderDrink||{drink.DrinkId}||{drink.DrinkSizeName}"
+                        }
                     }
                 }.ToAttachment());
             }
@@ -803,10 +813,13 @@ namespace Pizzaria.Dialogs
                     Subtitle = pizza.SizeName,
                     Text = GetIngredientsString(pizzaFind.PizzaIngredients),
                     Images = new List<CardImage> { new CardImage(url: ServerUrl + @"/" + pizzaFind.Image) },
-                    Tap = new CardAction
+                    Buttons = new List<CardAction>
                     {
-                        Type = ActionTypes.PostBack,
-                        Value = $"{ActionTypes.PostBack}EditOrderPizza||{pizza.PizzaId}||{pizza.SizeName}"
+                        new CardAction
+                        {
+                            Type = ActionTypes.PostBack,
+                            Value = $"{ActionTypes.PostBack}EditOrderPizza||{pizza.PizzaId}||{pizza.SizeName}"
+                        }
                     }
                 }.ToAttachment());
             }

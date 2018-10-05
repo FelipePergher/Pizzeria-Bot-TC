@@ -29,7 +29,7 @@ namespace Pizzaria.Dialogs
 
         public async Task OnTurn(ITurnContext turnContext)
         {
-            if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
+            /*if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
             {
                 await turnContext.SendActivity($"Seja bem vindo a pizzaria do Manolo {Emojis.SmileHappy}");
 
@@ -52,13 +52,14 @@ namespace Pizzaria.Dialogs
                     $"Caso queira sair de uma conversa que esteja no momento, simplesmente digite *SAIR* e voltaremos ao fluxo normal da conversa {Emojis.SmileHappy}\n" +
                     $"Em que lhe posso ser útil no momento?");
 
-            }
-            else if (turnContext.Activity.Type == ActivityTypes.Message)
+            }*/
+
+            if (turnContext.Activity.Type == ActivityTypes.Message)
             {
                 var dialogState = turnContext.GetConversationState<Dictionary<string, object>>();
                 DialogContext dialogContext = DialogFlow.CreateContext(turnContext, dialogState);
 
-                if(turnContext.Activity.Text.ToLower() == "sair")
+                if (turnContext.Activity.Text.ToLower() == "sair")
                 {
                     dialogContext.EndAll();
                 }

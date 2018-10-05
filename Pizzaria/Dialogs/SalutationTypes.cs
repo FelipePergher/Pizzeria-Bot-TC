@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
 using Pizzaria.Code;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,16 @@ namespace Pizzaria.Dialogs
         {
             dialogContext.ActiveDialog.State = new Dictionary<string, object>();
             await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
+
+            await dialogContext.Context.SendActivity($"Eeu sou o Jorge {Emojis.SmileHappy} o _bot_ da pizzaria do Manolo que estou aqui para auxiliá-lo em seu pedido\n" +
+                $"Caso possua alguma duvida simplesmente digite *AJUDA* e lhe encaminharei para exemplos de utilização {Emojis.SmileHappy}\n" +
+                $"Caso queira sair de alguma parte da conversa simplesmente digite *SAIR* e voltaremos ao fluxo normal da conversa {Emojis.SmileHappy}\n" +
+                $"Em que lhe posso ser útil no momento?");
+
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
             await dialogContext.Prompt(TextPrompt, "Como você está se sentindo hoje?");
         }
         private async Task Salutation_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)

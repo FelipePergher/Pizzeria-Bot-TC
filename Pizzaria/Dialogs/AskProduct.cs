@@ -335,10 +335,13 @@ namespace Pizzaria.Dialogs
                         {
                             new CardImage
                             {
-                                Url = ServerUrl + @"/Images/Icons/more-button.png",
-                                Tap = new CardAction { Title = "Mais Pizzas", Value = ActionTypes.PostBack + "MorePizza", Type = ActionTypes.PostBack }
+                                Url = ServerUrl + @"/Images/Icons/more-button.png"
                             }
-                        }
+                        },
+                    Buttons = new List<CardAction>
+                    {
+                        new CardAction { Title = "Mais Pizzas", Value = ActionTypes.PostBack + "MorePizza", Type = ActionTypes.PostBack }
+                    }
                 }.ToAttachment());
             }
             return attachments;
@@ -371,10 +374,13 @@ namespace Pizzaria.Dialogs
                         {
                             new CardImage
                             {
-                                Url = ServerUrl + @"/Images/Icons/more-button.png",
-                                Tap = new CardAction { Title = "Mais bebidas", Value = ActionTypes.PostBack + "MoreDrink", Type = ActionTypes.PostBack }
+                                Url = ServerUrl + @"/Images/Icons/more-button.png"
                             }
-                        }
+                        },
+                    Buttons = new List<CardAction>
+                    {
+                        new CardAction { Title = "Mais bebidas", Value = ActionTypes.PostBack + "MoreDrink", Type = ActionTypes.PostBack }
+                    }
                 }.ToAttachment());
             }
             return attachments;
