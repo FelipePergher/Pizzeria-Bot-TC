@@ -36,8 +36,8 @@ namespace Pizzaria.Dialogs
             ServerUrl = Configuration.GetSection("ServerUrl").Value;
             //ServerUrl = dialogContext.Context.Activity.ServiceUrl;
             context = ServiceProviderFactory.GetApplicationDbContext();
-            quantityPizza = 1;
-            quantityDrink = 1;
+            quantityPizza = 2;
+            quantityDrink = 2;
         }
 
         #region Async Methods
@@ -344,13 +344,6 @@ namespace Pizzaria.Dialogs
             {
                 attachments.Add(new HeroCard
                 {
-                    Images = new List<CardImage>
-                        {
-                            new CardImage
-                            {
-                                Url = ServerUrl + @"/Images/Icons/more-button.png"
-                            }
-                        },
                     Buttons = new List<CardAction>
                     {
                         new CardAction { Title = "Mais Pizzas", Value = ActionTypes.PostBack + "MorePizza", Type = ActionTypes.PostBack }
@@ -383,13 +376,6 @@ namespace Pizzaria.Dialogs
             {
                 attachments.Add(new HeroCard
                 {
-                    Images = new List<CardImage>
-                        {
-                            new CardImage
-                            {
-                                Url = ServerUrl + @"/Images/Icons/more-button.png"
-                            }
-                        },
                     Buttons = new List<CardAction>
                     {
                         new CardAction { Title = "Mais bebidas", Value = ActionTypes.PostBack + "MoreDrink", Type = ActionTypes.PostBack }

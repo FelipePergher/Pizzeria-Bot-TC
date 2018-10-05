@@ -61,7 +61,7 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
-            await dialogContext.Context.SendActivity($"Eu estou ótimo hoje!");
+            await dialogContext.Context.SendActivity($"Eu estou ótimo!");
             await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
             await dialogContext.End();
         }
