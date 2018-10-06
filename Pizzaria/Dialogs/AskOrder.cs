@@ -739,6 +739,7 @@ namespace Pizzaria.Dialogs
             if (userState.EditAddress)
             {
                 userState.EditAddress = false;
+                userState.Skip = false;
                 await dialogContext.Context.SendActivity($"Seu endereço foi atualizado com sucesso {Emojis.SmileHappy} O que você gostaria agora? {Emojis.SmileHappy}");
                 dialogContext.EndAll();
             }
