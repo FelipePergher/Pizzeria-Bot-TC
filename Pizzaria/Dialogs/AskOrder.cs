@@ -222,8 +222,6 @@ namespace Pizzaria.Dialogs
                 await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
                 await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
             }
-
-            //await dialogContext.Replace(AskUserAddressWaterfallText, args);
         }
 
         private async Task EditOrderSecondStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -241,7 +239,7 @@ namespace Pizzaria.Dialogs
                 userState.OrderSizeNameEdit = text.Split("||")[2];
                 userState.OrderEditIsPizza = false;
                 DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
-                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a pizza {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}? \n" +
+                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a bebida {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}? \n" +
                     $"Utilize os botõees, ou solicite o que deseja {Emojis.SmileHappy}");
                 await dialogContext.Context.SendActivity(GetSuggestedActionEditDeleteOrderItem());
             }
@@ -288,7 +286,7 @@ namespace Pizzaria.Dialogs
                     userState.OrderModel.PriceTotal -= (pizzaModel.Price * pizzaModel.Quantity);
                     userState.OrderModel.QuantityTotal -= pizzaModel.Quantity;
                     await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi removido do seu carrinho, o que você gostaria agora?");
-                    await dialogContext.End();
+                    dialogContext.EndAll();
                 }
                 else
                 {
@@ -297,7 +295,7 @@ namespace Pizzaria.Dialogs
                     userState.OrderModel.PriceTotal -= (drinkModel.Price * drinkModel.Quantity);
                     userState.OrderModel.QuantityTotal -= drinkModel.Quantity;
                     await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi removido do seu carrinho, o que você gostaria agora?");
-                    await dialogContext.End();
+                    dialogContext.EndAll();
                 }
             }
             else
@@ -333,6 +331,8 @@ namespace Pizzaria.Dialogs
                         userState.OrderModel.QuantityTotal += pizzaModel.Quantity;
                         userState.OrderModel.Pizzas.Add(pizzaModel);
                         await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi alterado, o que você gostaria agora?");
+                        userState.OrderEditIsEdit = false;
+                        dialogContext.EndAll();
                     }
                     else
                     {
@@ -346,6 +346,8 @@ namespace Pizzaria.Dialogs
                         userState.OrderModel.QuantityTotal += drinkModel.Quantity;
                         userState.OrderModel.Drinks.Add(drinkModel);
                         await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi alterado, o que você gostaria agora?");
+                        userState.OrderEditIsEdit = false;
+                        dialogContext.EndAll();
                     }
                 }
                 else
@@ -923,6 +925,7 @@ namespace Pizzaria.Dialogs
                     {
                         new CardAction
                         {
+                            Title = "Editar esta pizza",
                             Type = ActionTypes.PostBack,
                             Value = $"{ActionTypes.PostBack}EditOrderPizza||{pizza.PizzaId}||{pizza.SizeName}"
                         }
