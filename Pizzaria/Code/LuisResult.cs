@@ -18,12 +18,6 @@ namespace Pizzaria.Code
             var (intent, score) = luisResult.GetTopScoringIntent();
             var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
 
-            if (!string.IsNullOrEmpty(userState.Status) && (intentResult == SalutationTypes.How_Is_Waterfall_Text ||
-                intentResult == SalutationTypes.SalutationWaterfallText ||
-                intentResult == SalutationTypes.Salutation_How_Is_Waterfall_Text))
-            {
-                intentResult = "None";
-            }
             return intentResult;
         }
     }

@@ -400,8 +400,8 @@
       "entities": []
     },
     {
-      "text": "bebidas",
-      "intent": "None",
+      "text": "bebida",
+      "intent": "Ask_Product",
       "entities": []
     },
     {
@@ -480,8 +480,18 @@
       "entities": []
     },
     {
+      "text": "editar pedido",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
       "text": "ei como esta",
       "intent": "Salutation_How_Is",
+      "entities": []
+    },
+    {
+      "text": "encerrar meu carrinho",
+      "intent": "End_Order",
       "entities": []
     },
     {
@@ -507,6 +517,11 @@
     {
       "text": "eu queria um refrigerante",
       "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "gostaria de adquirir uma casa",
+      "intent": "None",
       "entities": []
     },
     {
@@ -562,6 +577,11 @@
     {
       "text": "limpe minha cesta",
       "intent": "Clean_Order",
+      "entities": []
+    },
+    {
+      "text": "meu carrinho",
+      "intent": "Ask_Order",
       "entities": []
     },
     {
@@ -665,6 +685,11 @@
       "entities": []
     },
     {
+      "text": "pizza",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
       "text": "por favor delete minha cesta de produtos",
       "intent": "Clean_Order",
       "entities": []
@@ -690,12 +715,52 @@
       "entities": []
     },
     {
+      "text": "qual o meu orçamento",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "qual o resultado de jogo de quarta-feira?",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "qual o seu nome?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "que dia que é hoje?",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "que horário é o jornal da globo?",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "que horas são?",
+      "intent": "None",
+      "entities": []
+    },
+    {
       "text": "quem é você?",
       "intent": "Who_Are",
       "entities": []
     },
     {
+      "text": "queria comprar uma passagem de avião",
+      "intent": "None",
+      "entities": []
+    },
+    {
       "text": "queria editar meu carrinho",
+      "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "queria mudar minha cesta de produtos",
       "intent": "Edit_Order",
       "entities": []
     },
@@ -780,8 +845,23 @@
       "entities": []
     },
     {
-      "text": "ss",
+      "text": "quero ver minha cesta de produtos",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "será que chove?",
       "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "seu bosta",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "terminar meu pedido",
+      "intent": "End_Order",
       "entities": []
     },
     {
@@ -807,6 +887,11 @@
     {
       "text": "tudo ok?",
       "intent": "How_Is",
+      "entities": []
+    },
+    {
+      "text": "vai tomar no cu bot burro",
+      "intent": "None",
       "entities": []
     },
     {
