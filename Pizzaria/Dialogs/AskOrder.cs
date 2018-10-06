@@ -822,7 +822,7 @@ namespace Pizzaria.Dialogs
                 receiptItems.Add(new ReceiptItem
                 {
                     Title = $"({item.Quantity}) {item.PizzaName} | {item.SizeName}",
-                    Price = "R$" + price.ToString("F"),
+                    Price = price.ToString("F"),
                     Quantity = item.Quantity.ToString(),
                     Subtitle = GetIngredientsString(pizza.PizzaIngredients),
                     Image = new CardImage(url: ServerUrl + @"/" + pizza.Image)
@@ -861,7 +861,7 @@ namespace Pizzaria.Dialogs
             {
                 attachments.Add(new HeroCard
                 {
-                    Title = $"{address.Street} N° {address.Street}",
+                    Title = $"{address.Street} N° {address.Number}",
                     Subtitle = address.Neighborhood,
                     Buttons = new List<CardAction> {
                         new CardAction
