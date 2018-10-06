@@ -477,6 +477,7 @@ namespace Pizzaria.Dialogs
             Activity activity = (Activity)args["Activity"];
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            userState.Skip = false;
             if (activity.Text.Contains(ActionTypes.PostBack + "EndOrder"))
             {
                 bool answer = activity.Text.Split("||")[1] == "true" ? true : false;
