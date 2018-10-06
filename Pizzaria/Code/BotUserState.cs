@@ -27,6 +27,8 @@ namespace Pizzaria.Code
             SkipAddress = false;
             Delivery = false;
             OrderEditIsEdit = false;
+            UserAddresses = new List<Address>();
+            EditAddress = false;
         }
 
         public string Name { get; set; }
@@ -55,6 +57,8 @@ namespace Pizzaria.Code
         public bool OrderEditIsPizza { get; set; }
 
         public bool OrderEditIsEdit { get; set; }
+
+        public bool EditAddress { get; set; }
 
     }
 }

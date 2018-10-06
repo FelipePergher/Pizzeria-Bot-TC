@@ -65,65 +65,12 @@ namespace Pizzaria.Dialogs
 
             foreach (var order in orders)
             {
-                AdaptiveCard adaptiveCard = new AdaptiveCard
+                attachments.Add(new HeroCard
                 {
-                    Body =
-                    {
-                        new AdaptiveContainer
-                        {
-                            Items =
-                            {
-                                new AdaptiveColumnSet
-                                {
-                                    Columns =
-                                    {
-                                        new AdaptiveColumn
-                                        {
-                                            Items =
-                                            {
-                                                new AdaptiveTextBlock
-                                                {
-                                                    Text = "Pedido numero " + order.OrderId,
-                                                    Weight = AdaptiveTextWeight.Bolder,
-                                                    Wrap = true
-                                                },
-                                                new AdaptiveTextBlock
-                                                {
-                                                    Text = "Criado: " + order.RegisterDate.ToString("dd/MM/yyyy HH:ss"),
-                                                    IsSubtle = true,
-                                                    Wrap = true
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        new AdaptiveContainer
-                        {
-                            Items =
-                            {
-                                new AdaptiveFactSet
-                                {
-                                   Facts =
-                                    {
-                                        new AdaptiveFact
-                                        {
-                                            Title = "Status:",
-                                            Value = order.OrderStatus
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                attachments.Add(new Attachment
-                {
-                    ContentType = AdaptiveCard.ContentType,
-                    Content = adaptiveCard
-                });
+                    Title = "Pedido numero " + order.OrderId,
+                    Subtitle = "Criado: " + order.RegisterDate.ToString("dd/MM/yyyy HH:ss"),
+                    Text = "Status:" + order.OrderStatus
+                }.ToAttachment());
 
             }
 

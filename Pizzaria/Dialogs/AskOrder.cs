@@ -169,10 +169,15 @@ namespace Pizzaria.Dialogs
         private async Task EditAddressBegin(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
 
             if (userState.Address.AddressId == -1)
             {
-                await dialogContext.Context.SendActivity($"Você ainda não possui um endereço de envio para o pedido atual, mas você pode registrar um agora {Emojis.SmileHappy} ");
+                if (user != null && context.Addresses.Where(x => x.UserId == user.UserId).Count() == 0)
+                {
+                    await dialogContext.Context.SendActivity($"Você ainda não possui um endereço de envio para o pedido atual, mas você pode registrar um agora {Emojis.SmileHappy} ");
+                }
+                userState.EditAddress = true;
             }
             else
             {
@@ -217,8 +222,6 @@ namespace Pizzaria.Dialogs
                 await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
                 await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
             }
-
-            //await dialogContext.Replace(AskUserAddressWaterfallText, args);
         }
 
         private async Task EditOrderSecondStep(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -236,7 +239,7 @@ namespace Pizzaria.Dialogs
                 userState.OrderSizeNameEdit = text.Split("||")[2];
                 userState.OrderEditIsPizza = false;
                 DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
-                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a pizza {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}? \n" +
+                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a bebida {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}? \n" +
                     $"Utilize os botõees, ou solicite o que deseja {Emojis.SmileHappy}");
                 await dialogContext.Context.SendActivity(GetSuggestedActionEditDeleteOrderItem());
             }
@@ -283,7 +286,7 @@ namespace Pizzaria.Dialogs
                     userState.OrderModel.PriceTotal -= (pizzaModel.Price * pizzaModel.Quantity);
                     userState.OrderModel.QuantityTotal -= pizzaModel.Quantity;
                     await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi removido do seu carrinho, o que você gostaria agora?");
-                    await dialogContext.End();
+                    dialogContext.EndAll();
                 }
                 else
                 {
@@ -292,7 +295,7 @@ namespace Pizzaria.Dialogs
                     userState.OrderModel.PriceTotal -= (drinkModel.Price * drinkModel.Quantity);
                     userState.OrderModel.QuantityTotal -= drinkModel.Quantity;
                     await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi removido do seu carrinho, o que você gostaria agora?");
-                    await dialogContext.End();
+                    dialogContext.EndAll();
                 }
             }
             else
@@ -328,6 +331,8 @@ namespace Pizzaria.Dialogs
                         userState.OrderModel.QuantityTotal += pizzaModel.Quantity;
                         userState.OrderModel.Pizzas.Add(pizzaModel);
                         await dialogContext.Context.SendActivity($"{pizzaModel.PizzaName} - {pizzaModel.SizeName} foi alterado, o que você gostaria agora?");
+                        userState.OrderEditIsEdit = false;
+                        dialogContext.EndAll();
                     }
                     else
                     {
@@ -341,6 +346,8 @@ namespace Pizzaria.Dialogs
                         userState.OrderModel.QuantityTotal += drinkModel.Quantity;
                         userState.OrderModel.Drinks.Add(drinkModel);
                         await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} - {drinkModel.DrinkSizeName} foi alterado, o que você gostaria agora?");
+                        userState.OrderEditIsEdit = false;
+                        dialogContext.EndAll();
                     }
                 }
                 else
@@ -503,7 +510,7 @@ namespace Pizzaria.Dialogs
                     }
                     else
                     {
-                        await dialogContext.Context.SendActivity($"Seu pedido foi finalizado! Logo logo estará pronto para retirada {Emojis.SmileHappy}");
+                        await dialogContext.Context.SendActivity($"Seu pedido foi finalizado! Logo logo estará pronto para retirada {Emojis.SmileHappy}. Rua XV de Janeiro bairro Das Torres nº 57");
                     }
                 }
                 else
@@ -593,7 +600,10 @@ namespace Pizzaria.Dialogs
             //}
             //else if (user != null)
             //{
-            userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId).ToList();
+            if(user != null && context.Addresses.Where(x => x.UserId == user.UserId).Count() > 0)
+            {
+                userState.UserAddresses = context.Addresses.Where(x => x.UserId == user.UserId)?.ToList();
+            }
             //if (userState.UserAddresses.Count > 0)
             //{
             await dialogContext.Continue();
@@ -613,6 +623,7 @@ namespace Pizzaria.Dialogs
         {
             Activity activity = (Activity)args["Activity"];
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
 
             if (userState.Skip)
             {
@@ -627,10 +638,30 @@ namespace Pizzaria.Dialogs
                     answer = activity.Text.Split("||")[1] == "true" ? true : false;
                 }
 
-                if (answer || userState.SkipAddress)
+                if ((answer || userState.SkipAddress) && !userState.EditAddress)
                 {
                     userState.Delivery = true;
-                    await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
+                    if(user != null && context.Addresses.Where(x => x.UserId == user.UserId).Count() > 0)
+                    {
+                        await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
+                    }
+                    else
+                    {
+                        userState.ReuseAddress = false;
+                        userState.Skip = true;
+                        await dialogContext.Replace(AskUserAddressWaterfallText, args);
+                    }
+                }
+                else if (userState.EditAddress)
+                {
+                    if (user != null && context.Addresses.Where(x => x.UserId == user.UserId).Count() > 0)
+                    {
+                        await dialogContext.Replace(ReuseUserAddressWaterfallText, args);
+                    }
+                    else
+                    {
+                        await dialogContext.Continue();
+                    }
                 }
                 else
                 {
@@ -681,6 +712,18 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             User user = context.Users.Where(x => x.UserIdBot == dialogContext.Context.Activity.From.Id).FirstOrDefault();
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    Name = dialogContext.Context.Activity.From.Name,
+                    UserIdBot = dialogContext.Context.Activity.From.Id
+                };
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
+
             userState.Address = new Address
             {
                 Neighborhood = userState.Address.Neighborhood,
@@ -692,7 +735,16 @@ namespace Pizzaria.Dialogs
             context.Addresses.Add(userState.Address);
             context.SaveChanges();
 
-            await dialogContext.Continue();
+            if (userState.EditAddress)
+            {
+                userState.EditAddress = false;
+                await dialogContext.Context.SendActivity($"Seu endereço foi atualizado com sucesso {Emojis.SmileHappy} O que você gostaria agora? {Emojis.SmileHappy}");
+                dialogContext.EndAll();
+            }
+            else
+            {
+                await dialogContext.Continue();
+            }
         }
 
         #endregion
@@ -783,7 +835,7 @@ namespace Pizzaria.Dialogs
                 {
                     Title = $"({item.Quantity}) {item.DrinkName}",
                     Subtitle = item.DrinkSizeName,
-                    Price = "R$" + price.ToString("F"),
+                    Price = price.ToString("F"),
                     Quantity = item.Quantity.ToString(),
                     Image = new CardImage(url: ServerUrl + @"/" + drink.Image)
                 });
@@ -792,7 +844,7 @@ namespace Pizzaria.Dialogs
             ReceiptCard receiptCard = new ReceiptCard
             {
                 Title = "Dados da ordem",
-                Total = "R$ " + userState.OrderModel.PriceTotal.ToString("F"),
+                Total = userState.OrderModel.PriceTotal.ToString("F"),
                 Items = receiptItems
             };
 
@@ -826,11 +878,11 @@ namespace Pizzaria.Dialogs
                 {
                     new CardAction
                     {
+                        Title = "Adicionar novo endereço",
                         Type = ActionTypes.PostBack,
                         Value = ActionTypes.PostBack + "NewAddress"
                     }
-                },
-                Title = "Adicionar novo endereço"
+                }
             }.ToAttachment());
 
             return attachments;
@@ -873,6 +925,7 @@ namespace Pizzaria.Dialogs
                     {
                         new CardAction
                         {
+                            Title = "Editar esta pizza",
                             Type = ActionTypes.PostBack,
                             Value = $"{ActionTypes.PostBack}EditOrderPizza||{pizza.PizzaId}||{pizza.SizeName}"
                         }

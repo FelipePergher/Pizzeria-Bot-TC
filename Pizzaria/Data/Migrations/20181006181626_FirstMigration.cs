@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Pizzaria.Migrations
@@ -96,6 +97,8 @@ namespace Pizzaria.Migrations
                 {
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserIdBot = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
                     ConversationDataId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -191,8 +194,8 @@ namespace Pizzaria.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Street = table.Column<string>(nullable: true),
                     Neighborhood = table.Column<string>(nullable: true),
-                    Number = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: true)
+                    Number = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -202,6 +205,145 @@ namespace Pizzaria.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RegisterDate = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<int>(nullable: true),
+                    AmmountTotal = table.Column<double>(nullable: false),
+                    UsedAddressAddressId = table.Column<int>(nullable: true),
+                    Delivery = table.Column<bool>(nullable: false),
+                    Finished = table.Column<bool>(nullable: false),
+                    OrderStatus = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_UsedAddressAddressId",
+                        column: x => x.UsedAddressAddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderDrinks",
+                columns: table => new
+                {
+                    DrinkId = table.Column<int>(nullable: false),
+                    OrderId = table.Column<int>(nullable: false),
+                    DrinkSizeName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDrinks", x => new { x.OrderId, x.DrinkId });
+                    table.ForeignKey(
+                        name: "FK_OrderDrinks_Drinks_DrinkId",
+                        column: x => x.DrinkId,
+                        principalTable: "Drinks",
+                        principalColumn: "DrinkId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderDrinks_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderPizzas",
+                columns: table => new
+                {
+                    PizzaId = table.Column<int>(nullable: false),
+                    OrderId = table.Column<int>(nullable: false),
+                    PizzaSizeName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderPizzas", x => new { x.OrderId, x.PizzaId });
+                    table.ForeignKey(
+                        name: "FK_OrderPizzas_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderPizzas_Pizzas_PizzaId",
+                        column: x => x.PizzaId,
+                        principalTable: "Pizzas",
+                        principalColumn: "PizzaId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderDrinkSize",
+                columns: table => new
+                {
+                    OrderDrinkSizeId = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    DrinkSizeSizeDId = table.Column<int>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    OrderDrinkDrinkId = table.Column<int>(nullable: true),
+                    OrderDrinkOrderId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDrinkSize", x => x.OrderDrinkSizeId);
+                    table.ForeignKey(
+                        name: "FK_OrderDrinkSize_SizesD_DrinkSizeSizeDId",
+                        column: x => x.DrinkSizeSizeDId,
+                        principalTable: "SizesD",
+                        principalColumn: "SizeDId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderDrinkSize_OrderDrinks_OrderDrinkOrderId_OrderDrinkDrink~",
+                        columns: x => new { x.OrderDrinkOrderId, x.OrderDrinkDrinkId },
+                        principalTable: "OrderDrinks",
+                        principalColumns: new[] { "OrderId", "DrinkId" },
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderPizzaSize",
+                columns: table => new
+                {
+                    OrderPizzaSizeId = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    PizzaSizeSizePId = table.Column<int>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    OrderPizzaOrderId = table.Column<int>(nullable: true),
+                    OrderPizzaPizzaId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderPizzaSize", x => x.OrderPizzaSizeId);
+                    table.ForeignKey(
+                        name: "FK_OrderPizzaSize_SizesP_PizzaSizeSizePId",
+                        column: x => x.PizzaSizeSizePId,
+                        principalTable: "SizesP",
+                        principalColumn: "SizePId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderPizzaSize_OrderPizzas_OrderPizzaOrderId_OrderPizzaPizza~",
+                        columns: x => new { x.OrderPizzaOrderId, x.OrderPizzaPizzaId },
+                        principalTable: "OrderPizzas",
+                        principalColumns: new[] { "OrderId", "PizzaId" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -214,6 +356,46 @@ namespace Pizzaria.Migrations
                 name: "IX_DrinkSize_SizeDId",
                 table: "DrinkSize",
                 column: "SizeDId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDrinks_DrinkId",
+                table: "OrderDrinks",
+                column: "DrinkId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDrinkSize_DrinkSizeSizeDId",
+                table: "OrderDrinkSize",
+                column: "DrinkSizeSizeDId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDrinkSize_OrderDrinkOrderId_OrderDrinkDrinkId",
+                table: "OrderDrinkSize",
+                columns: new[] { "OrderDrinkOrderId", "OrderDrinkDrinkId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderPizzas_PizzaId",
+                table: "OrderPizzas",
+                column: "PizzaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderPizzaSize_PizzaSizeSizePId",
+                table: "OrderPizzaSize",
+                column: "PizzaSizeSizePId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderPizzaSize_OrderPizzaOrderId_OrderPizzaPizzaId",
+                table: "OrderPizzaSize",
+                columns: new[] { "OrderPizzaOrderId", "OrderPizzaPizzaId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UsedAddressAddressId",
+                table: "Orders",
+                column: "UsedAddressAddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PizzaIngredient_IngredientId",
@@ -234,10 +416,13 @@ namespace Pizzaria.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "DrinkSize");
 
             migrationBuilder.DropTable(
-                name: "DrinkSize");
+                name: "OrderDrinkSize");
+
+            migrationBuilder.DropTable(
+                name: "OrderPizzaSize");
 
             migrationBuilder.DropTable(
                 name: "PizzaIngredient");
@@ -246,22 +431,34 @@ namespace Pizzaria.Migrations
                 name: "PizzaSize");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Drinks");
-
-            migrationBuilder.DropTable(
                 name: "SizesD");
+
+            migrationBuilder.DropTable(
+                name: "OrderDrinks");
+
+            migrationBuilder.DropTable(
+                name: "OrderPizzas");
 
             migrationBuilder.DropTable(
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
+                name: "SizesP");
+
+            migrationBuilder.DropTable(
+                name: "Drinks");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "Pizzas");
 
             migrationBuilder.DropTable(
-                name: "SizesP");
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "ConversationDatas");
