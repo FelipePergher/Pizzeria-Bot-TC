@@ -68,7 +68,7 @@ namespace Pizzaria.Dialogs
                 attachments.Add(new HeroCard
                 {
                     Title = "Pedido numero " + order.OrderId,
-                    Subtitle = "Criado: " + order.RegisterDate.ToString("dd/MM/yyyy HH:ss"),
+                    Subtitle = "Criado: " + order.RegisterDate.AddHours(-3).ToString("dd/MM/yyyy HH:ss"),
                     Text = "Status:" + order.OrderStatus
                 }.ToAttachment());
 

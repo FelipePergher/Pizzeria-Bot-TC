@@ -39,7 +39,7 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Olá {Emojis.SmileHappy}, é um prazer tê-lo aqui {Emojis.SmileHappy} ");
+                await dialogContext.Context.SendActivity($"Olá {Emojis.SmileHappy}, é um prazer tê-lo aqui {Emojis.SmileHappy} O que você gostaria hoje? ");
                 await dialogContext.End();
             }
             
@@ -47,29 +47,13 @@ namespace Pizzaria.Dialogs
         private async Task Salutation_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            if (string.IsNullOrEmpty(userState.Status))
-            {
-                await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
-                await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
-            }
-            else
-            {
-                await dialogContext.Context.SendActivity($"Olá {Emojis.SmileHappy}, é um prazer tê-lo aqui {Emojis.SmileHappy} ");
-                await dialogContext.End();
-            }
+            await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
+            await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
         }
         private async Task How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            if (string.IsNullOrEmpty(userState.Status))
-            {
-                await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
-            }
-            else
-            {
-                await dialogContext.Context.SendActivity($"Olá {Emojis.SmileHappy}, é um prazer tê-lo aqui {Emojis.SmileHappy} ");
-                await dialogContext.End();
-            }
+            await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
         }
         private async Task Answer(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {

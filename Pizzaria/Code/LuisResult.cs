@@ -11,12 +11,12 @@ namespace Pizzaria.Code
 {
     public class LuisResult
     {
-        private const double LUIS_INTENT_THRESHOLD = 0.75d;
+        private const double LUIS_INTENT_THRESHOLD = 0.70d;
 
         public static string GetLuisIntent(RecognizerResult luisResult, BotUserState userState)
         {
             var (intent, score) = luisResult.GetTopScoringIntent();
-            var intentResult = score > LUIS_INTENT_THRESHOLD ? intent : "None";
+            var intentResult = score >= LUIS_INTENT_THRESHOLD ? intent : "None";
 
             return intentResult;
         }
