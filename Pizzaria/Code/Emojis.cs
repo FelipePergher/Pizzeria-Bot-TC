@@ -11,5 +11,7 @@ namespace Pizzaria.Code
 
         public static string SmileSad { get; set; } = "\U0001F641";
 
+        public static string ManRaisingHand { get; set; } = "\U0001F64B";
+
     }
 }
