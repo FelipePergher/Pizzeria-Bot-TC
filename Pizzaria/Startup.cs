@@ -48,8 +48,8 @@ namespace Pizzaria
 
                 options.Middleware.Add(new CatchExceptionMiddleware<Exception>(async (context, exception) =>
                 {
-                    await context.SendActivity($"Olá, ainda não estou preparado para tratar este tipo de informacão {Emojis.SmileSad}\n" +
-                        $"Peço que utilize apenas texto para nossa interação ser melhor {Emojis.SmileHappy}");
+                    await context.SendActivity($"Olá, ainda não estou preparado para tratar este tipo de informacão {Emojis.SmileSad}  \n" +
+                    $"Peço que utilize apenas texto para melhorar nossa interação {Emojis.SmileHappy}");
                 }));
 
                 IStorage dataStore = new MemoryStorage();

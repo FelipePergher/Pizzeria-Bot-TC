@@ -375,7 +375,32 @@
   "patternAnyEntities": [],
   "regex_entities": [],
   "prebuiltEntities": [],
-  "model_features": [],
+  "model_features": [
+    {
+      "name": "Products",
+      "mode": true,
+      "words": "pizza,bebida,queijo,comida,presunto,tomate,água,ovo,bacon,mussarela,calabresa,cebola,palmito,ervilha,milho,frango,catupiry,azeitona,maionese,molho,alho,pimentão,cenoura,atum,orégano,milho verde,batata,champignon,tomate seco,manjericão",
+      "activated": true
+    },
+    {
+      "name": "Address",
+      "mode": true,
+      "words": "endereço,bairro,rua,n",
+      "activated": true
+    },
+    {
+      "name": "Order",
+      "mode": true,
+      "words": "pedido,entrega,produtos,produto,pedidos",
+      "activated": true
+    },
+    {
+      "name": "Cart",
+      "mode": true,
+      "words": "carrinho,minha conta,finalizar compra,fechar pedido,meu carrinho,carrinho de compras,finalizar pedido,minha lista",
+      "activated": true
+    }
+  ],
   "regex_features": [],
   "patterns": [],
   "utterances": [

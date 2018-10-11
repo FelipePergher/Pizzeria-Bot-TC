@@ -36,14 +36,18 @@ namespace Pizzaria.Dialogs
 
             if (entities.Ingredients.Count > 0 || entities.Drinks.Count > 0 || entities.ProductTypes.Count > 0)
             {
-                await dialogContext.Context.SendActivity($"Me desculpe { dialogContext.Context.Activity.From.Name}, mas não consegui entender o que você gostaria {Emojis.SmileSad} " +
-                    $"\nMas baseado em informações encontradas na sua mensagem lhe recomendo os seguintes produtos {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Me desculpe { dialogContext.Context.Activity.From.Name}, mas não consegui entender o que você gostaria {Emojis.SmileSad}" +
+                    $"  \nMas baseado em informações encontradas na sua mensagem lhe recomendo os seguintes produtos {Emojis.SmileHappy}");
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Me desculpe { dialogContext.Context.Activity.From.Name}, mas não consegui entender o que você gostaria {Emojis.SmileSad} " +
-                    $"\nMas estou enviando algumas pizzas para você ver {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Me desculpe { dialogContext.Context.Activity.From.Name}, mas não consegui entender o que você gostaria {Emojis.SmileSad}" +
+                    $"  \nMas estou enviando algumas pizzas para você ver {Emojis.SmileHappy}");
             }
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
             Thread.Sleep(4000);
             await dialogContext.Begin(AskProduct.Ask_Product_Waterfall_Text, args);
 

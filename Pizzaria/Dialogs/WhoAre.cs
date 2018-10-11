@@ -13,19 +13,19 @@ namespace Pizzaria.Dialogs
 
         private async Task WhoAreYou(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
-            await dialogContext.Context.SendActivity($"Eu sou o Jorge o bot da pizzaria do manolo e estou aqui para auxiliá-lo no seu pedido {Emojis.SmileHappy} \n" +
-                           "Atualmente eu posso realizar as seguintes tarefas: \n" +
-                           "*-Ofereço bebidas e pizzas cutomizadas na sua solicitação* \n" +
-                           "*-Mostro como seu carrinho está no momento* \n" +
-                           "*-Limpo seu carrinho quando solicitado* \n" +
-                           "*-Finalizo seu carrinho quando solicitado* \n" +
-                           "*-Edito e removo itens seu carrinho quando solicitado* \n" +
-                           "*-Edito seu endreço de entrega atual quando solicitado* \n" +
-                           "*-Busco seus pedidos abertos para saber o seu estado* \n");
+            await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.SmileHappy} o bot da pizzaria do Manolo. Estou aqui para te ajudar em seu pedido.  \n" +
+                           "Eu posso realizar as seguintes tarefas quando solicitado:  \n" +
+                           "* Ofereço bebidas e pizzas customizadas  \n" +
+                           "* Mostro como seu carrinho está no momento  \n" +
+                           "* Limpo seu carrinho  \n" +
+                           "* Finalizo seu carrinho  \n" +
+                           "* Edito e removo itens do seu carrinho  \n" +
+                           "* Edito seu endereço de entrega atual  \n" +
+                           "* Busco seus pedidos abertos para saber você acompanhar  \n");
 
-            await dialogContext.Context.SendActivity($"Caso possua alguma duvida simplesmente digite *AJUDA* e lhe encaminharei para exemplos de utilização {Emojis.SmileHappy}\n" +
-                $"Caso queira sair de alguma parte da conversa simplesmente digite *SAIR* e voltaremos ao fluxo normal da conversa {Emojis.SmileHappy}\n" +
-                $"Em que lhe posso ser útil no momento?");
+            await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.SmileHappy} o bot da pizzaria do Manolo. Estou aqui para te ajudar em seu pedido.  \n" +
+                              $"Dúvidas? Digite *AJUDA* e será encaminhado ao manual de utilização {Emojis.SmileHappy}  \n" +
+                              $"Problemas em alguma parte da conversa? Digite *SAIR* e voltaremos ao fluxo normal {Emojis.SmileHappy}");
         }
 
         public WaterfallStep[] WhoAreWaterfall()

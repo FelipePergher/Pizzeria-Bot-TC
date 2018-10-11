@@ -51,7 +51,7 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity("Você não possui nenhum pedido em aberto no momento!");
+                await dialogContext.Context.SendActivity("Você não possui nenhum pedido em aberto no momento!  \n O que você gostaria hoje?");
             }
         }
 
@@ -67,11 +67,10 @@ namespace Pizzaria.Dialogs
             {
                 attachments.Add(new HeroCard
                 {
-                    Title = "Pedido numero " + order.OrderId,
-                    Subtitle = "Criado: " + order.RegisterDate.AddHours(-3).ToString("dd/MM/yyyy HH:ss"),
-                    Text = "Status:" + order.OrderStatus
+                    Title = "Pedido número " + order.OrderId,
+                    Subtitle = "Criado: " + order.RegisterDate.AddHours(-3).ToString("dd/MM/yyyy HH:ss") + " ",
+                    Text = " Status: " + order.OrderStatus
                 }.ToAttachment());
-
             }
 
             return attachments;
