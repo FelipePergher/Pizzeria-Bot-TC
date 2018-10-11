@@ -26,10 +26,9 @@ namespace Pizzaria.Dialogs
                 dialogContext.ActiveDialog.State = new Dictionary<string, object>();
                 await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
 
-                await dialogContext.Context.SendActivity($"Eeu sou o Jorge {Emojis.SmileHappy} o _bot_ da pizzaria do Manolo que estou aqui para auxiliá-lo em seu pedido\n" +
-                    $"Caso possua alguma duvida simplesmente digite *AJUDA* e lhe encaminharei para exemplos de utilização {Emojis.SmileHappy}\n" +
-                    $"Caso queira sair de alguma parte da conversa simplesmente digite *SAIR* e voltaremos ao fluxo normal da conversa {Emojis.SmileHappy}\n" +
-                    $"Em que lhe posso ser útil no momento?");
+                await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.ManRaisingHand} o bot da pizzaria do Manolo. Estou aqui para te ajudar em seu pedido.  \n" +
+                    $"Dúvidas? Digite *AJUDA* e será encaminhado ao manual de utilização.  \n" +
+                    $"Problemas em alguma parte da conversa? Digite *SAIR* e voltaremos ao fluxo normal.");
 
                 await dialogContext.Context.SendActivity(new Activity
                 {
@@ -39,7 +38,11 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Olá {Emojis.SmileHappy}, é um prazer tê-lo aqui {Emojis.SmileHappy} O que você gostaria hoje? ");
+                await dialogContext.Context.SendActivity(new Activity
+                {
+                    Type = ActivityTypes.Typing
+                });
+                await dialogContext.Context.SendActivity($"Olá, é um prazer ter você aqui {Emojis.SmileHappy}  \nO que você gostaria hoje? ");
                 await dialogContext.End();
             }
             
@@ -48,11 +51,19 @@ namespace Pizzaria.Dialogs
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
             await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
         }
         private async Task How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
             await dialogContext.Prompt(TextPrompt, "Eu estou ótimo e você, como está se sentindo hoje?");
         }
         private async Task Answer(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -62,8 +73,12 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
-            await dialogContext.Context.SendActivity($"Legal!");
-            await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
+            await dialogContext.Context.SendActivity($"Legal!  \n O que você gostaria hoje?");
             await dialogContext.End();
         }
         private async Task Answer_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
@@ -73,8 +88,12 @@ namespace Pizzaria.Dialogs
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
             userState.Status = Convert.ToString(dialogContext.ActiveDialog.State["status"]);
 
-            await dialogContext.Context.SendActivity($"Eu estou ótimo!");
-            await dialogContext.Context.SendActivity($"O que você gostaria hoje?");
+            await dialogContext.Context.SendActivity(new Activity
+            {
+                Type = ActivityTypes.Typing
+            });
+
+            await dialogContext.Context.SendActivity($"Eu estou ótimo {Emojis.SmileHappy}!  \nO que você gostaria hoje?");
             await dialogContext.End();
         }
 

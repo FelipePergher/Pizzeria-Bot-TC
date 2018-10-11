@@ -54,13 +54,13 @@ namespace Pizzaria.Dialogs
                 IMessageActivity messageActivity = MessageFactory.Attachment(receiptCard.ToAttachment());
                 await dialogContext.Context.SendActivity(messageActivity);
 
-                await dialogContext.Context.SendActivity($"Você gostaria de finalizar o pedido? \n Selecione Sim ou digite o que você gostaria agora {Emojis.SmileHappy} ");
+                await dialogContext.Context.SendActivity($"Você gostaria de finalizar o pedido?  \nSelecione o botão ou digite o que você gostaria agora {Emojis.SmileHappy} ");
                 await dialogContext.Context.SendActivity(GetSuggestedActionEndOrder());
 
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad}  \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
                 await dialogContext.Replace(End_Order_WaterfallText, args);
 
             }
@@ -205,7 +205,7 @@ namespace Pizzaria.Dialogs
             }
             else if (userState.OrderModel.Drinks.Count > 0 || userState.OrderModel.Pizzas.Count > 0)
             {
-                await dialogContext.Context.SendActivity($"Estou lhe enviando o itens já adicionados no carrinho, clique no que você gostaria de editar \n" +
+                await dialogContext.Context.SendActivity($"Estou lhe enviando os itens já adicionados no carrinho, clique no que você gostaria de editar \n" +
                     $"Ou simplesmente solicite o que deseja {Emojis.SmileHappy}");
 
                 await dialogContext.Context.SendActivity(new Activity
@@ -219,7 +219,7 @@ namespace Pizzaria.Dialogs
             }
             else
             {
-                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad} \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
+                await dialogContext.Context.SendActivity($"Você ainda não possui nada em seu carrinho {Emojis.SmileSad}  \n Mas estou enviando algumas pizzas para você ver {Emojis.SmileHappy} ");
                 await dialogContext.Replace(AskProduct.Ask_Product_Waterfall_Text, args);
             }
         }
@@ -239,8 +239,8 @@ namespace Pizzaria.Dialogs
                 userState.OrderSizeNameEdit = text.Split("||")[2];
                 userState.OrderEditIsPizza = false;
                 DrinkModel drinkModel = userState.OrderModel.Drinks.FirstOrDefault(x => x.DrinkId == userState.OrderIdEdit && x.DrinkSizeName == userState.OrderSizeNameEdit);
-                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a bebida {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}? \n" +
-                    $"Utilize os botõees, ou solicite o que deseja {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a bebida {drinkModel.DrinkName} - {drinkModel.DrinkSizeName}?  \n" +
+                    $"Utilize os botões, ou solicite o que deseja {Emojis.SmileHappy}");
                 await dialogContext.Context.SendActivity(GetSuggestedActionEditDeleteOrderItem());
             }
             else if (text.Contains(ActionTypes.PostBack + "EditOrderPizza"))
@@ -249,8 +249,8 @@ namespace Pizzaria.Dialogs
                 userState.OrderSizeNameEdit = text.Split("||")[2];
                 userState.OrderEditIsPizza = true;
                 PizzaModel pizzaModel = userState.OrderModel.Pizzas.FirstOrDefault(x => x.PizzaId == userState.OrderIdEdit && x.SizeName == userState.OrderSizeNameEdit);
-                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName}? \n" +
-                    $"Utilize os botõees, ou solicite o que deseja {Emojis.SmileHappy}");
+                await dialogContext.Context.SendActivity($"Você gostaria de editar ou remover a pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName}?  \n" +
+                    $"Utilize os botões, ou solicite o que deseja {Emojis.SmileHappy}");
                 await dialogContext.Context.SendActivity(GetSuggestedActionEditDeleteOrderItem());
             }
             else
@@ -511,7 +511,8 @@ namespace Pizzaria.Dialogs
                     }
                     else
                     {
-                        await dialogContext.Context.SendActivity($"Seu pedido foi finalizado! Logo logo estará pronto para retirada {Emojis.SmileHappy}. Rua XV de Janeiro bairro Das Torres nº 57");
+                        await dialogContext.Context.SendActivity($"Seu pedido foi finalizado! Logo logo estará pronto para retirada {Emojis.SmileHappy}. " +
+                            $"  \nRua XV de Janeiro bairro Das Torres nº 57");
                     }
                 }
                 else
@@ -822,7 +823,7 @@ namespace Pizzaria.Dialogs
                 receiptItems.Add(new ReceiptItem
                 {
                     Title = $"({item.Quantity}) {item.PizzaName} | {item.SizeName}",
-                    Price = "R$" + price.ToString("F"),
+                    Price = price.ToString("F"),
                     Quantity = item.Quantity.ToString(),
                     Subtitle = GetIngredientsString(pizza.PizzaIngredients),
                     Image = new CardImage(url: ServerUrl + @"/" + pizza.Image)
@@ -861,7 +862,7 @@ namespace Pizzaria.Dialogs
             {
                 attachments.Add(new HeroCard
                 {
-                    Title = $"{address.Street} N° {address.Street}",
+                    Title = $"{address.Street} N° {address.Number}",
                     Subtitle = address.Neighborhood,
                     Buttons = new List<CardAction> {
                         new CardAction
@@ -1043,7 +1044,7 @@ namespace Pizzaria.Dialogs
                 {
                     new CardAction
                     {
-                        Title = "Sim",
+                        Title = "Finalizar Pedido",
                         Type = ActionTypes.PostBack,
                         Value = ActionTypes.PostBack + "SuggestedEndOrder",
                     }

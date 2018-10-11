@@ -1,7 +1,7 @@
 {
   "luis_schema_version": "3.1.0",
   "versionId": "0.1",
-  "name": "Pizzaria",
+  "name": "Pizzeria-tc",
   "desc": "",
   "culture": "pt-br",
   "intents": [
@@ -375,7 +375,32 @@
   "patternAnyEntities": [],
   "regex_entities": [],
   "prebuiltEntities": [],
-  "model_features": [],
+  "model_features": [
+    {
+      "name": "Products",
+      "mode": true,
+      "words": "pizza,bebida,queijo,comida,presunto,tomate,água,ovo,bacon,mussarela,calabresa,cebola,palmito,ervilha,milho,frango,catupiry,azeitona,maionese,molho,alho,pimentão,cenoura,atum,orégano,milho verde,batata,champignon,tomate seco,manjericão",
+      "activated": true
+    },
+    {
+      "name": "Address",
+      "mode": true,
+      "words": "endereço,bairro,rua,n",
+      "activated": true
+    },
+    {
+      "name": "Order",
+      "mode": true,
+      "words": "pedido,entrega,produtos,produto,pedidos",
+      "activated": true
+    },
+    {
+      "name": "Cart",
+      "mode": true,
+      "words": "carrinho,minha conta,finalizar compra,fechar pedido,meu carrinho,carrinho de compras,finalizar pedido,minha lista",
+      "activated": true
+    }
+  ],
   "regex_features": [],
   "patterns": [],
   "utterances": [
@@ -445,6 +470,11 @@
       "entities": []
     },
     {
+      "text": "com que estou falando?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
       "text": "com quem estou falando?",
       "intent": "Who_Are",
       "entities": []
@@ -477,11 +507,6 @@
     {
       "text": "e aí, tudo bem?",
       "intent": "Salutation_How_Is",
-      "entities": []
-    },
-    {
-      "text": "editar pedido",
-      "intent": "Edit_Order",
       "entities": []
     },
     {
@@ -585,8 +610,8 @@
       "entities": []
     },
     {
-      "text": "meu pedido está pronto",
-      "intent": "End_Order",
+      "text": "meu pedido",
+      "intent": "Ask_Order",
       "entities": []
     },
     {
@@ -607,6 +632,11 @@
     {
       "text": "meus itens",
       "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "meus pedidos abertos",
+      "intent": "Ask_Status",
       "entities": []
     },
     {
@@ -745,6 +775,16 @@
       "entities": []
     },
     {
+      "text": "quem e voce",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "quem é voce?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
       "text": "quem é você?",
       "intent": "Who_Are",
       "entities": []
@@ -757,6 +797,11 @@
     {
       "text": "queria editar meu carrinho",
       "intent": "Edit_Order",
+      "entities": []
+    },
+    {
+      "text": "queria editar meu endereço",
+      "intent": "Edit_Address",
       "entities": []
     },
     {
@@ -782,11 +827,6 @@
     {
       "text": "quero apagar meu pedido",
       "intent": "Clean_Order",
-      "entities": []
-    },
-    {
-      "text": "quero editar meu pedido",
-      "intent": "Edit_Order",
       "entities": []
     },
     {
@@ -825,6 +865,11 @@
       "entities": []
     },
     {
+      "text": "quero uma água",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
       "text": "quero uma bebida",
       "intent": "Ask_Product",
       "entities": []
@@ -857,6 +902,11 @@
     {
       "text": "seu bosta",
       "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "status dos meus pedidos",
+      "intent": "Ask_Status",
       "entities": []
     },
     {
@@ -906,6 +956,11 @@
     },
     {
       "text": "você é humano?",
+      "intent": "Who_Are",
+      "entities": []
+    },
+    {
+      "text": "você é um robo?",
       "intent": "Who_Are",
       "entities": []
     },

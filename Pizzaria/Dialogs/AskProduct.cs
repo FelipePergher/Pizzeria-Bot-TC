@@ -68,7 +68,7 @@ namespace Pizzaria.Dialogs
                 userState.EntitiesState.PizzasQuantityUsed++;
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
-                await dialogContext.Context.SendActivity($"Estou lhe enviando as pizzas disponiveis, enviando primeiramente as pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
+                await dialogContext.Context.SendActivity($"Estou lhe enviando as pizzas disponíveis, começando pelas pizzas que possuem {GetIngredientsFindedText(pizzas, entities.Ingredients)}");
                 await dialogContext.Context.SendActivity(new Activity
                 {
                     Type = ActivityTypes.Typing
@@ -86,7 +86,7 @@ namespace Pizzaria.Dialogs
                 userState.EntitiesState.DrinksQuantityUsed++;
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
-                await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas solicitadas");
+                await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponíveis, começando pelas solicitadas");
                 await dialogContext.Context.SendActivity(new Activity
                 {
                     Type = ActivityTypes.Typing
@@ -106,7 +106,7 @@ namespace Pizzaria.Dialogs
                     userState.EntitiesState.PizzasQuantityUsed++;
 
                     IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
-                    await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, ordenando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponíveis, ordenando pelas mais vendidas");
                     await dialogContext.Context.SendActivity(new Activity
                     {
                         Type = ActivityTypes.Typing
@@ -124,7 +124,7 @@ namespace Pizzaria.Dialogs
                     userState.EntitiesState.DrinksQuantityUsed++;
 
                     IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
-                    await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponiveis, começando pelas mais vendidas");
+                    await dialogContext.Context.SendActivity("Estou lhe enviando as bebidas disponíveis, ordenando pelas mais vendidas");
                     await dialogContext.Context.SendActivity(new Activity
                     {
                         Type = ActivityTypes.Typing
@@ -142,7 +142,7 @@ namespace Pizzaria.Dialogs
                 userState.EntitiesState.PizzasQuantityUsed++;
 
                 IMessageActivity messageActivity = MessageFactory.Carousel(attachments);
-                await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponiveis, começando pelas mais vendidas");
+                await dialogContext.Context.SendActivity("Estou lhe enviando as pizzas disponíveis, ordenando pelas mais vendidas");
                 await dialogContext.Context.SendActivity(new Activity
                 {
                     Type = ActivityTypes.Typing
@@ -175,7 +175,7 @@ namespace Pizzaria.Dialogs
                 userState.EntitiesState.PizzasQuantityUsed--;
 
                 await dialogContext.Context.SendActivity($"A pizza {pizzaModel.PizzaName} - {pizzaModel.SizeName} foi adicionada com sucesso {Emojis.SmileHappy}");
-                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma pizza? \n(Clique em quero caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
+                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma pizza?  \nClique no botão caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Pizza"));
             }
@@ -202,7 +202,7 @@ namespace Pizzaria.Dialogs
                 userState.EntitiesState.DrinksQuantityUsed--;
 
                 await dialogContext.Context.SendActivity($"{drinkModel.DrinkName} {drinkModel.DrinkSizeName} adicionado com sucesso {Emojis.SmileHappy}");
-                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma bebida? (Clique em quero caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy})");
+                await dialogContext.Context.SendActivity($"Gostaria de ver mais alguma bebida?  \nClique no botão caso deseje, ou simplesmente solicite o que deseja {Emojis.SmileHappy}");
 
                 await dialogContext.Context.SendActivity(GetSuggestedActionsNewsPizzasAndDrinks("Drink"));
             }
@@ -252,13 +252,15 @@ namespace Pizzaria.Dialogs
 
         private IActivity GetSuggestedActionsNewsPizzasAndDrinks(string type)
         {
+            string text = type == "Pizza" ? "Mais pizzas" : "Mais bebidas";
+
             return MessageFactory.Attachment(new HeroCard
             {
                 Buttons = new List<CardAction>
                 {
                     new CardAction
                      {
-                         Title = "Quero",
+                         Title = text,
                          Type = ActionTypes.PostBack,
                          Value = "quero||" + ActionTypes.PostBack + "SuggestedAction" + type,
                      }

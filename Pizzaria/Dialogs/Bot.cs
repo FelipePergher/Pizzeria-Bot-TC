@@ -81,14 +81,14 @@ namespace Pizzaria.Dialogs
                         {
                             new CardAction
                             {
-                                Title = "Abrir documentação",
+                                Title = "Abrir manual",
                                 Type = ActionTypes.OpenUrl,
                                 Value = "https://pizzeria-bot-tc.readthedocs.io/pt/latest/index.html"
                             }
                         }
                     }.ToAttachment());
 
-                    await dialogContext.Context.SendActivity($"Clique no botão abaixo para abrir a documentação {Emojis.SmileHappy} ");
+                    await dialogContext.Context.SendActivity($"Clique no botão abaixo para abrir o manual {Emojis.SmileHappy} ");
                     await dialogContext.Context.SendActivity(activity);
                 }
                 else
@@ -114,8 +114,8 @@ namespace Pizzaria.Dialogs
             }
             else if (turnContext.Activity.Type != ActivityTypes.ConversationUpdate)
             {
-                await turnContext.SendActivity($"Olá, ainda não estou preparado para tratar este tipo de informacão {Emojis.SmileSad}\n" +
-                    $"Peço que utilize apenas texto para nossa interação ser melhor {Emojis.SmileHappy}");
+                await turnContext.SendActivity($"Olá, ainda não estou preparado para tratar este tipo de informacão {Emojis.SmileSad}  \n" +
+                    $"Peço que utilize apenas texto para melhorar nossa interação {Emojis.SmileHappy}");
             }
         }
 
