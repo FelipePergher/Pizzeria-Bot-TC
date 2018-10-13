@@ -31,14 +31,14 @@ namespace Pizzaria.Dialogs
         {
             /*if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate && turnContext.Activity.MembersAdded.FirstOrDefault()?.Id == turnContext.Activity.Recipient.Id)
             {
-                await turnContext.SendActivity($"Seja bem vindo a pizzaria do Manolo {Emojis.SmileHappy}");
+                await turnContext.SendActivity($"Seja bem vindo a Pergher pizzaria {Emojis.SmileHappy}");
 
                 await turnContext.SendActivity(new Activity
                 {
                     Type = ActivityTypes.Typing
                 });
 
-                await turnContext.SendActivity($"Eu sou o Jorge o bot da pizzaria do manolo e estou aqui para auxiliá-lo no seu pedido {Emojis.SmileHappy} \n" +
+                await turnContext.SendActivity($"Eu sou o Jorge o bot da Pergher pizzaria e estou aqui para auxiliá-lo no seu pedido {Emojis.SmileHappy} \n" +
                     "Atualmente eu posso realizar as seguintes tarefas: \n" +
                     "*-Ofereço bebidas e pizzas cutomizadas na sua solicitação* \n" +
                     "*-Mostro como seu carrinho está no momento* \n" +

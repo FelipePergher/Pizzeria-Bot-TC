@@ -13,7 +13,7 @@ namespace Pizzaria.Dialogs
 
         private async Task WhoAreYou(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
-            await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.ManRaisingHand} o bot da pizzaria do Manolo. Estou aqui para te ajudar em seu pedido.  \n" +
+            await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.ManRaisingHand} o bot da Pergher pizzaria. Estou aqui para te ajudar em seu pedido.  \n" +
                            "Eu posso realizar as seguintes tarefas quando solicitado:  \n" +
                            "* Ofereço bebidas e pizzas customizadas  \n" +
                            "* Mostro como seu carrinho está no momento  \n" +
