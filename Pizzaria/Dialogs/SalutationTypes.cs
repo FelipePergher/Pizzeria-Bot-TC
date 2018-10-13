@@ -24,9 +24,9 @@ namespace Pizzaria.Dialogs
             if (string.IsNullOrEmpty(userState.Status))
             {
                 dialogContext.ActiveDialog.State = new Dictionary<string, object>();
-                await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
+                await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pergher Pizzaria!!!");
 
-                await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.ManRaisingHand} o bot da pizzaria do Manolo. Estou aqui para te ajudar em seu pedido.  \n" +
+                await dialogContext.Context.SendActivity($"Eu sou o Jorge {Emojis.ManRaisingHand} o bot da Pergher pizzaria. Estou aqui para te ajudar em seu pedido.  \n" +
                     $"Dúvidas? Digite *AJUDA* e será encaminhado ao manual de utilização.  \n" +
                     $"Problemas em alguma parte da conversa? Digite *SAIR* e voltaremos ao fluxo normal.");
 
@@ -50,7 +50,7 @@ namespace Pizzaria.Dialogs
         private async Task Salutation_How_Is(DialogContext dialogContext, IDictionary<string, object> args, SkipStepFunction next)
         {
             BotUserState userState = UserState<BotUserState>.Get(dialogContext.Context);
-            await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pizzaria do Manolo!!!");
+            await dialogContext.Context.SendActivity("Olá, seja bem vindo a Pergher Pizzaria!!!");
             await dialogContext.Context.SendActivity(new Activity
             {
                 Type = ActivityTypes.Typing
