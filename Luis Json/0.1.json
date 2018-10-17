@@ -328,28 +328,6 @@
       "roles": []
     },
     {
-      "name": "Pizza_Names",
-      "subLists": [
-        {
-          "canonicalForm": "margherita",
-          "list": [
-            "marguerita"
-          ]
-        },
-        {
-          "canonicalForm": "mussarela",
-          "list": [
-            "musarela"
-          ]
-        },
-        {
-          "canonicalForm": "calabresa",
-          "list": []
-        }
-      ],
-      "roles": []
-    },
-    {
       "name": "Product_Type",
       "subLists": [
         {
@@ -391,7 +369,7 @@
     {
       "name": "Order",
       "mode": true,
-      "words": "pedido,entrega,produtos,produto,pedidos",
+      "words": "pedido,entrega,produtos,produto,pedidos,compra,compras",
       "activated": true
     },
     {
@@ -510,6 +488,11 @@
       "entities": []
     },
     {
+      "text": "editar meu endereço",
+      "intent": "Edit_Address",
+      "entities": []
+    },
+    {
       "text": "ei como esta",
       "intent": "Salutation_How_Is",
       "entities": []
@@ -545,6 +528,11 @@
       "entities": []
     },
     {
+      "text": "eu quero ver pizzas",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
       "text": "gostaria de adquirir uma casa",
       "intent": "None",
       "entities": []
@@ -570,12 +558,22 @@
       "entities": []
     },
     {
+      "text": "gostaria de uma pizza",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
       "text": "gostaria de ver meu carrinho",
       "intent": "Ask_Order",
       "entities": []
     },
     {
       "text": "gostaria de ver os produtos que já adicionei",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "gostaria de visualizar meu carrinho",
       "intent": "Ask_Order",
       "entities": []
     },
@@ -720,6 +718,16 @@
       "entities": []
     },
     {
+      "text": "poderia me mostrar meu carrinho?",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
+      "text": "poderia mostrar minha cesta",
+      "intent": "Ask_Order",
+      "entities": []
+    },
+    {
       "text": "por favor delete minha cesta de produtos",
       "intent": "Clean_Order",
       "entities": []
@@ -830,12 +838,22 @@
       "entities": []
     },
     {
+      "text": "quero comprar uma bebida",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
       "text": "quero encerrar meu pedido",
       "intent": "End_Order",
       "entities": []
     },
     {
       "text": "quero finalizar meu pedido",
+      "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "quero finalizar minha compra",
       "intent": "End_Order",
       "entities": []
     },
@@ -876,6 +894,11 @@
     },
     {
       "text": "quero uma coca",
+      "intent": "Ask_Product",
+      "entities": []
+    },
+    {
+      "text": "quero uma pizza",
       "intent": "Ask_Product",
       "entities": []
     },
@@ -952,6 +975,11 @@
     {
       "text": "vamos finalizar o pedido",
       "intent": "End_Order",
+      "entities": []
+    },
+    {
+      "text": "ver meus pedidos em aberto",
+      "intent": "Ask_Status",
       "entities": []
     },
     {
