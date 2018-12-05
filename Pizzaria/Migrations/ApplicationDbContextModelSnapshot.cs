@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pizzaria.Data.Models;
 
@@ -15,12 +16,14 @@ namespace Pizzaria.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.0-preview1-35029")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.Drink", b =>
                 {
                     b.Property<int>("DrinkId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Image");
 
@@ -51,7 +54,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.DrinkModels.SizeD", b =>
                 {
                     b.Property<int>("SizeDId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<double>("Quantity");
 
@@ -65,7 +69,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.Order", b =>
                 {
                     b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<double>("AmmountTotal");
 
@@ -108,7 +113,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderDrinkSize", b =>
                 {
                     b.Property<int>("OrderDrinkSizeId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("DrinkSizeSizeDId");
 
@@ -147,7 +153,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.OrderModels.OrderPizzaSize", b =>
                 {
                     b.Property<int>("OrderPizzaSizeId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("OrderPizzaOrderId");
 
@@ -171,7 +178,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name");
 
@@ -183,7 +191,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.Pizza", b =>
                 {
                     b.Property<int>("PizzaId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Image");
 
@@ -229,7 +238,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.PizzaModels.SizeP", b =>
                 {
                     b.Property<int>("SizePId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Size");
 
@@ -241,7 +251,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.UserModels.Address", b =>
                 {
                     b.Property<int>("AddressId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Neighborhood");
 
@@ -261,7 +272,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.UserModels.ConversationData", b =>
                 {
                     b.Property<int>("ConversationDataId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.HasKey("ConversationDataId");
 
@@ -271,7 +283,8 @@ namespace Pizzaria.Migrations
             modelBuilder.Entity("Pizzaria.Data.Models.UserModels.User", b =>
                 {
                     b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("ConversationDataId");
 

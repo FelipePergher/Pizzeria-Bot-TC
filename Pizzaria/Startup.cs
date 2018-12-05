@@ -63,7 +63,7 @@ namespace Pizzaria
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -513,6 +513,7 @@ namespace Pizzaria
 
                         context.SizesD.AddRange(sizesD);
                         context.Drinks.AddRange(drinks);
+                        context.SaveChanges();
 
                         context.Ingredients.AddRange(ingredients);
                         context.SizesP.AddRange(sizesP);

@@ -13,7 +13,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     ConversationDataId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
                 },
                 constraints: table =>
                 {
@@ -25,7 +25,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     DrinkId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false)
@@ -40,7 +40,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     IngredientId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -53,7 +53,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     PizzaId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Vegetarian = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     PizzaType = table.Column<string>(nullable: true),
@@ -69,7 +69,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     SizeDId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Quantity = table.Column<double>(nullable: false),
                     SizeName = table.Column<string>(nullable: true)
                 },
@@ -83,7 +83,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     SizePId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Size = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -96,7 +96,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserIdBot = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     ConversationDataId = table.Column<int>(nullable: true)
@@ -191,7 +191,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     AddressId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Street = table.Column<string>(nullable: true),
                     Neighborhood = table.Column<string>(nullable: true),
                     Number = table.Column<string>(nullable: true),
@@ -213,7 +213,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     OrderId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RegisterDate = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: true),
                     AmmountTotal = table.Column<double>(nullable: false),
@@ -294,7 +294,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     OrderDrinkSizeId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DrinkSizeSizeDId = table.Column<int>(nullable: true),
                     Price = table.Column<double>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
@@ -311,7 +311,7 @@ namespace Pizzaria.Migrations
                         principalColumn: "SizeDId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OrderDrinkSize_OrderDrinks_OrderDrinkOrderId_OrderDrinkDrink~",
+                        name: "FK_OrderDrinkSize_OrderDrinks_OrderDrinkOrderId_OrderDrinkDrinkId",
                         columns: x => new { x.OrderDrinkOrderId, x.OrderDrinkDrinkId },
                         principalTable: "OrderDrinks",
                         principalColumns: new[] { "OrderId", "DrinkId" },
@@ -323,7 +323,7 @@ namespace Pizzaria.Migrations
                 columns: table => new
                 {
                     OrderPizzaSizeId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     PizzaSizeSizePId = table.Column<int>(nullable: true),
                     Price = table.Column<double>(nullable: false),
                     Quantity = table.Column<int>(nullable: false),
@@ -340,7 +340,7 @@ namespace Pizzaria.Migrations
                         principalColumn: "SizePId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OrderPizzaSize_OrderPizzas_OrderPizzaOrderId_OrderPizzaPizza~",
+                        name: "FK_OrderPizzaSize_OrderPizzas_OrderPizzaOrderId_OrderPizzaPizzaId",
                         columns: x => new { x.OrderPizzaOrderId, x.OrderPizzaPizzaId },
                         principalTable: "OrderPizzas",
                         principalColumns: new[] { "OrderId", "PizzaId" },
